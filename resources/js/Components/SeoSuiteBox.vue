@@ -251,7 +251,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watchEffect } from 'vue';
 
 const props = defineProps({
   form: Object,
@@ -260,7 +260,7 @@ const props = defineProps({
   rawContent: String,
 });
 
-defineEmits(['open-media']);
+const emit = defineEmits(['open-media', 'score-change']);
 
 const activeSeoTab = ref('general');
 
@@ -381,6 +381,15 @@ const overallScoreTextClass = computed(() => {
   if (count >= 5) return 'text-emerald-600';
   if (count >= 3) return 'text-amber-600';
   return 'text-rose-600';
+});
+
+watchEffect(() => {
+  emit('score-change', {
+    passed: passedChecksCount.value,
+    total: analysisChecks.value.length,
+    dotClass: overallScoreClass.value,
+    textClass: overallScoreTextClass.value,
+  });
 });
 </script>
 

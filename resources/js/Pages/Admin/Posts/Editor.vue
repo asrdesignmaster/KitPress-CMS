@@ -99,14 +99,26 @@
           
           <!-- Title & Permalink Input -->
           <div class="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-3">
-            <input 
-              v-model="form.title" 
-              @input="onTitleInput"
-              type="text" 
-              placeholder="Add Title..." 
-              required
-              class="w-full text-2xl font-bold tracking-tight text-slate-900 border-0 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:ring-0 focus:outline-hidden py-1 px-0 transition placeholder-slate-400"
-            />
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <input 
+                v-model="form.title" 
+                @input="onTitleInput"
+                type="text" 
+                placeholder="Add Title..." 
+                required
+                class="flex-1 min-w-0 text-2xl font-bold tracking-tight text-slate-900 border-0 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:ring-0 focus:outline-hidden py-1 px-0 transition placeholder-slate-400"
+              />
+
+              <a
+                href="#seo-suite-box"
+                class="shrink-0 inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 transition text-xs font-bold tracking-wide"
+                title="Jump to SEO Suite"
+              >
+                <span class="w-2.5 h-2.5 rounded-full" :class="seoScore.dotClass"></span>
+                <span class="text-slate-500">SCORE:</span>
+                <span :class="seoScore.textClass">{{ seoScore.passed }}/{{ seoScore.total }} PASSED</span>
+              </a>
+            </div>
 
             <!-- Slug editor -->
             <div class="flex items-center space-x-2 text-xs text-slate-500">
@@ -162,13 +174,16 @@
           </div>
 
           <!-- Advanced SEO Suite Box (Requirement D) -->
-          <SeoSuiteBox 
-            :form="form"
-            :title="form.title"
-            :slug="form.slug"
-            :raw-content="extractedContentText"
-            @open-media="openMediaModal('seo_og_image')"
-          />
+          <div id="seo-suite-box">
+            <SeoSuiteBox 
+              :form="form"
+              :title="form.title"
+              :slug="form.slug"
+              :raw-content="extractedContentText"
+              @open-media="openMediaModal('seo_og_image')"
+              @score-change="(s) => seoScore = s"
+            />
+          </div>
 
         </div>
 
@@ -416,6 +431,7 @@ const tagsInput = ref(props.post?.tags?.map(t => t.name).join(', ') || '');
 const mediaModalOpen = ref(false);
 const mediaTarget = ref('featured'); // 'featured', 'tiptap', 'builder_widget', 'seo_og_image'
 const showRevisionsModal = ref(false);
+const seoScore = ref({ passed: 0, total: 6, dotClass: 'bg-rose-500', textClass: 'text-rose-600' });
 const rightSidebarCollapsed = ref(
   typeof window !== 'undefined' && window.localStorage.getItem('cms_editor_right_sidebar_collapsed') === 'true'
 );
