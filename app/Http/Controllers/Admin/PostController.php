@@ -93,6 +93,10 @@ class PostController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        if ($request->filled('slug')) {
+            $request->merge(['slug' => Str::slug((string) $request->input('slug'))]);
+        }
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:posts,slug'],
@@ -190,6 +194,10 @@ class PostController extends Controller
         if ($user->role === 'author' && $post->user_id !== $user->id) {
             abort(403, 'You can only edit your own content.');
         }
+
+        $request->merge([
+            'slug' => Str::slug((string) ($request->input('slug') ?: $request->input('title'))),
+        ]);
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],

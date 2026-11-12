@@ -114,6 +114,7 @@
               <span class="text-slate-400">yourdomain.com/</span>
               <input 
                 v-model="form.slug" 
+                @blur="onSlugBlur"
                 type="text" 
                 class="px-2 py-0.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded text-slate-800 w-64 focus:bg-white focus:outline-hidden focus:border-indigo-400"
               />
@@ -429,14 +430,23 @@ const toggleRightSidebar = () => {
 const tiptapRef = ref(null);
 const builderRef = ref(null);
 
+const slugify = (value) => {
+  return String(value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 const onTitleInput = () => {
   if (!isEditing.value || !form.slug) {
-    form.slug = form.title
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    form.slug = slugify(form.title);
   }
+};
+
+const onSlugBlur = () => {
+  form.slug = slugify(form.slug || form.title);
 };
 
 const updateTagsFromInput = () => {
@@ -509,6 +519,7 @@ const publishWithStatus = (newStatus) => {
 };
 
 const savePost = () => {
+  onSlugBlur();
   updateTagsFromInput();
   if (isEditing.value) {
     form.put(`/admin/posts/${props.post.id}`);
