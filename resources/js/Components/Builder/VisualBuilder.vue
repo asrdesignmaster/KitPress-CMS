@@ -122,6 +122,7 @@
           @duplicate-widget="duplicateCurrentWidget"
           @delete-section="deleteCurrentSection"
           @duplicate-section="duplicateCurrentSection"
+          @set-section-columns="setSectionColumns"
           @open-media="openMediaForTarget"
         />
 
@@ -314,7 +315,7 @@
                 <div
                   :class="[
                     section.containerWidth === 'full' ? 'w-full px-4' : 'max-w-6xl mx-auto px-4',
-                    viewport === 'mobile' ? 'flex-col' : 'flex-col md:flex-row'
+                    (viewport === 'mobile' || section.stackColumns) ? 'flex-col' : 'flex-col md:flex-row'
                   ]"
                   class="flex gap-4"
                 >
@@ -323,8 +324,8 @@
                     :key="column.id"
                     @click.stop="selectColumn(column, section)"
                     :style="{
-                      flex: viewport === 'mobile' ? '1 1 100%' : `1 1 ${column.width || '100%'}`,
-                      width: viewport === 'mobile' ? '100%' : undefined,
+                      flex: (viewport === 'mobile' || section.stackColumns) ? '1 1 100%' : `1 1 ${column.width || '100%'}`,
+                      width: (viewport === 'mobile' || section.stackColumns) ? '100%' : undefined,
                       backgroundColor: column.backgroundColor || 'transparent',
                       padding: column.padding || '10px',
                       borderRadius: column.borderRadius || '8px',
@@ -508,6 +509,36 @@ const addSection = (colWidths = [100]) => {
 
   layoutTree.value.push(newSection);
   selectColumn(columns[0], newSection);
+  recordHistory();
+};
+
+const setSectionColumns = (widths) => {
+  const section = selectedSection.value;
+  if (!section || !Array.isArray(widths) || widths.length === 0) return;
+
+  if (widths.length < section.columns.length) {
+    const targetCol = section.columns[widths.length - 1];
+    for (let i = widths.length; i < section.columns.length; i++) {
+      if (Array.isArray(section.columns[i].widgets) && section.columns[i].widgets.length > 0) {
+        targetCol.widgets.push(...section.columns[i].widgets);
+      }
+    }
+    section.columns.length = widths.length;
+  } else if (widths.length > section.columns.length) {
+    for (let i = section.columns.length; i < widths.length; i++) {
+      section.columns.push({
+        id: `col_${section.id}_${Date.now()}_${i}`,
+        width: `${widths[i]}%`,
+        padding: '10px',
+        widgets: [],
+      });
+    }
+  }
+
+  section.columns.forEach((col, i) => {
+    col.width = `${widths[i]}%`;
+  });
+  section.stackColumns = false;
   recordHistory();
 };
 

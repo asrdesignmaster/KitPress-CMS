@@ -472,6 +472,58 @@
         </select>
       </div>
 
+      <div class="space-y-1.5 pt-2 border-t border-slate-200">
+        <label class="font-semibold text-slate-700 block">Column Layout</label>
+        <p class="text-[11px] text-slate-500">Convert columns (widgets in removed columns merge automatically).</p>
+        <div class="grid grid-cols-2 gap-1.5">
+          <button
+            type="button"
+            @click="$emit('set-section-columns', [100])"
+            :class="selectedSection.columns.length === 1 ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-semibold' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
+            class="px-2 py-1.5 rounded-lg border text-[11px] transition text-center"
+          >
+            1 Col (100%)
+          </button>
+          <button
+            type="button"
+            @click="$emit('set-section-columns', [50, 50])"
+            :class="selectedSection.columns.length === 2 && selectedSection.columns[0]?.width === '50%' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-semibold' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
+            class="px-2 py-1.5 rounded-lg border text-[11px] transition text-center"
+          >
+            2 Col (50/50)
+          </button>
+          <button
+            type="button"
+            @click="$emit('set-section-columns', [33.33, 66.66])"
+            :class="selectedSection.columns.length === 2 && selectedSection.columns[0]?.width === '33.33%' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-semibold' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
+            class="px-2 py-1.5 rounded-lg border text-[11px] transition text-center"
+          >
+            2 Col (33/66)
+          </button>
+          <button
+            type="button"
+            @click="$emit('set-section-columns', [33.33, 33.33, 33.33])"
+            :class="selectedSection.columns.length === 3 ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-semibold' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
+            class="px-2 py-1.5 rounded-lg border text-[11px] transition text-center"
+          >
+            3 Col (33x3)
+          </button>
+          <button
+            type="button"
+            @click="$emit('set-section-columns', [25, 25, 25, 25])"
+            :class="selectedSection.columns.length === 4 ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-semibold' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
+            class="col-span-2 px-2 py-1.5 rounded-lg border text-[11px] transition text-center"
+          >
+            4 Col (25x4)
+          </button>
+        </div>
+
+        <label v-if="selectedSection.columns.length > 1" class="flex items-center space-x-2 pt-1.5 cursor-pointer">
+          <input type="checkbox" v-model="selectedSection.stackColumns" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+          <span class="text-slate-700 font-medium">Stack Columns Vertically (1 Col)</span>
+        </label>
+      </div>
+
       <div class="flex items-center justify-between">
         <label class="text-slate-600">Background Color</label>
         <div class="flex items-center space-x-1.5">
@@ -538,6 +590,7 @@ defineEmits([
   'duplicate-widget',
   'delete-section',
   'duplicate-section',
+  'set-section-columns',
   'open-media',
 ]);
 

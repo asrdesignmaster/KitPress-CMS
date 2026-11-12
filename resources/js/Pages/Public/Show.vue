@@ -67,19 +67,22 @@
         }"
       >
         <div
-          :class="section.containerWidth === 'full' ? 'w-full px-4' : 'max-w-6xl mx-auto px-4'"
-          class="flex flex-col md:flex-row gap-6"
+          :class="[
+            section.containerWidth === 'full' ? 'w-full px-4' : 'max-w-6xl mx-auto px-4',
+            section.stackColumns ? 'flex-col' : 'flex-col md:flex-row'
+          ]"
+          class="flex gap-6"
         >
           <div 
             v-for="column in section.columns" 
             :key="column.id"
             :style="{
-              '--col-width': column.width || '100%',
+              '--col-width': section.stackColumns ? '100%' : (column.width || '100%'),
               backgroundColor: column.backgroundColor || 'transparent',
               padding: column.padding || '0px',
               borderRadius: column.borderRadius || '0px',
             }"
-            class="builder-flex-col space-y-4"
+            :class="section.stackColumns ? 'w-full space-y-4' : 'builder-flex-col space-y-4'"
           >
             <BuilderWidgetRenderer
               v-for="widget in column.widgets"
