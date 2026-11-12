@@ -26,6 +26,8 @@ class OptimizationController extends Controller
             'response_compression' => (bool) Setting::get('response_compression', true),
             'site_name' => (string) Setting::get('site_name', 'Modern CMS'),
             'site_tagline' => (string) Setting::get('site_tagline', 'Lightweight Laravel + Vue CMS Platform'),
+            'homepage_display' => (string) (Setting::get('homepage_display', 'latest_posts') ?: 'latest_posts'),
+            'homepage_post_id' => Setting::get('homepage_post_id') ? (int) Setting::get('homepage_post_id') : null,
         ];
 
         $revisionsCount = PostRevision::count();
@@ -34,8 +36,13 @@ class OptimizationController extends Controller
         $linkedMediaIds = Post::whereNotNull('featured_image_id')->pluck('featured_image_id')->toArray();
         $orphanMediaCount = Media::whereNotIn('id', $linkedMediaIds)->count();
 
+        $publishedPages = Post::published()->pages()->select('id', 'title', 'slug')->orderBy('title')->get();
+        $publishedPosts = Post::published()->posts()->select('id', 'title', 'slug')->orderBy('title')->get();
+
         return Inertia::render('Admin/Settings/Optimization', [
             'settings' => $settings,
+            'publishedPages' => $publishedPages,
+            'publishedPosts' => $publishedPosts,
             'stats' => [
                 'revisions_count' => $revisionsCount,
                 'orphan_media_count' => $orphanMediaCount,
@@ -51,6 +58,8 @@ class OptimizationController extends Controller
         $validated = $request->validate([
             'site_name' => ['required', 'string', 'max:255'],
             'site_tagline' => ['nullable', 'string', 'max:255'],
+            'homepage_display' => ['required', 'in:latest_posts,static_page'],
+            'homepage_post_id' => ['nullable', 'integer', 'exists:posts,id'],
             'lazy_loading' => ['boolean'],
             'response_compression' => ['boolean'],
             'route_caching' => ['boolean'],

@@ -14,7 +14,21 @@ class PublicController extends Controller
 {
     public function home(Request $request): Response
     {
-        // Find if there is a front page slug defined, otherwise show latest published posts
+        $homepageDisplay = Setting::get('homepage_display', 'latest_posts');
+        $homepagePostId = Setting::get('homepage_post_id');
+
+        if ($homepageDisplay === 'static_page' && $homepagePostId) {
+            $frontPost = Post::published()
+                ->where('id', (int) $homepagePostId)
+                ->with(['category', 'user', 'tags', 'featuredMedia'])
+                ->first();
+
+            if ($frontPost) {
+                return $this->renderSinglePost($frontPost, url('/'));
+            }
+        }
+
+        // Default: show latest published posts
         $posts = Post::published()
             ->posts()
             ->with(['category', 'user', 'tags'])
@@ -50,6 +64,11 @@ class PublicController extends Controller
             ->with(['category', 'user', 'tags', 'featuredMedia'])
             ->firstOrFail();
 
+        return $this->renderSinglePost($post, url($post->slug));
+    }
+
+    private function renderSinglePost(Post $post, string $canonical): Response
+    {
         $recentPosts = Post::published()
             ->where('id', '!=', $post->id)
             ->where('type', $post->type)
@@ -65,7 +84,7 @@ class PublicController extends Controller
             'og_image' => $post->seo_og_image ?: $post->featured_image,
             'robots_index' => (bool) $post->seo_robots_index,
             'robots_follow' => (bool) $post->seo_robots_follow,
-            'canonical' => url($post->slug),
+            'canonical' => $canonical,
         ];
 
         return Inertia::render('Public/Show', [
