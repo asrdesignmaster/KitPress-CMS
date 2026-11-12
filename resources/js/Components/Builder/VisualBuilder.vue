@@ -312,22 +312,27 @@
 
                 <!-- Section Columns Container -->
                 <div
-                  :class="section.containerWidth === 'full' ? 'w-full px-4' : 'max-w-6xl mx-auto px-4'"
-                  class="flex flex-col md:flex-row gap-4"
+                  :class="[
+                    section.containerWidth === 'full' ? 'w-full px-4' : 'max-w-6xl mx-auto px-4',
+                    viewport === 'mobile' ? 'flex-col' : 'flex-col md:flex-row'
+                  ]"
+                  class="flex gap-4"
                 >
                   <div
                     v-for="column in section.columns"
                     :key="column.id"
                     @click.stop="selectColumn(column, section)"
                     :style="{
-                      width: viewport === 'mobile' ? '100%' : (column.width || '100%'),
+                      flex: viewport === 'mobile' ? '1 1 100%' : `1 1 ${column.width || '100%'}`,
+                      width: viewport === 'mobile' ? '100%' : undefined,
                       backgroundColor: column.backgroundColor || 'transparent',
                       padding: column.padding || '10px',
                       borderRadius: column.borderRadius || '8px',
                     }"
                     :class="[
                       !previewMode && activeColumnId === column.id ? 'border-indigo-400 bg-indigo-50/15' : 'border-dashed border-slate-300/80 hover:border-slate-400',
-                      !previewMode ? 'border min-h-[110px] transition relative' : ''
+                      !previewMode ? 'border min-h-[110px] transition relative' : '',
+                      'min-w-0'
                     ]"
                   >
                     <span v-if="!previewMode" class="text-[9px] font-mono font-semibold text-slate-400 block mb-1">

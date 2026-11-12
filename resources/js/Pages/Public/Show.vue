@@ -74,12 +74,12 @@
             v-for="column in section.columns" 
             :key="column.id"
             :style="{
-              width: column.width || '100%',
+              '--col-width': column.width || '100%',
               backgroundColor: column.backgroundColor || 'transparent',
               padding: column.padding || '0px',
               borderRadius: column.borderRadius || '0px',
             }"
-            class="space-y-4 w-full md:w-auto"
+            class="builder-flex-col space-y-4"
           >
             <BuilderWidgetRenderer
               v-for="widget in column.widgets"
