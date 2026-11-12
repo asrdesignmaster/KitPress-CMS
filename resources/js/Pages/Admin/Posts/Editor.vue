@@ -436,13 +436,30 @@ const extractedContentText = computed(() => {
   if (form.editor_type === 'classic') {
     return form.classic_content;
   }
-  // Extract text nodes from builder JSON
+  // Extract text nodes from builder JSON across all Pro widgets
   let text = '';
   if (Array.isArray(form.builder_json)) {
     form.builder_json.forEach(sec => {
       sec.columns?.forEach(col => {
         col.widgets?.forEach(w => {
           if (w.content) text += ' ' + w.content;
+          if (w.title) text += ' ' + w.title;
+          if (w.subtitle) text += ' ' + w.subtitle;
+          if (w.description) text += ' ' + w.description;
+          if (w.quote) text += ' ' + w.quote;
+          if (Array.isArray(w.features)) text += ' ' + w.features.join(' ');
+          if (Array.isArray(w.items)) {
+            w.items.forEach(item => {
+              if (item.title) text += ' ' + item.title;
+              if (item.content) text += ' ' + item.content;
+            });
+          }
+          if (Array.isArray(w.slides)) {
+            w.slides.forEach(slide => {
+              if (slide.title) text += ' ' + slide.title;
+              if (slide.subtitle) text += ' ' + slide.subtitle;
+            });
+          }
         });
       });
     });

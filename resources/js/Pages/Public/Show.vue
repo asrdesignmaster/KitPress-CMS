@@ -60,97 +60,33 @@
         :key="section.id"
         :style="{
           backgroundColor: section.backgroundColor || '#ffffff',
+          backgroundImage: section.backgroundGradient || 'none',
           color: section.textColor || '#1e293b',
           paddingTop: section.paddingTop || '48px',
           paddingBottom: section.paddingBottom || '48px',
         }"
       >
-        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row gap-6">
+        <div
+          :class="section.containerWidth === 'full' ? 'w-full px-4' : 'max-w-6xl mx-auto px-4'"
+          class="flex flex-col md:flex-row gap-6"
+        >
           <div 
             v-for="column in section.columns" 
             :key="column.id"
-            :style="{ width: column.width || '100%' }"
-            class="space-y-4"
+            :style="{
+              width: column.width || '100%',
+              backgroundColor: column.backgroundColor || 'transparent',
+              padding: column.padding || '0px',
+              borderRadius: column.borderRadius || '0px',
+            }"
+            class="space-y-4 w-full md:w-auto"
           >
-            <!-- Render Column Widgets -->
-            <div v-for="widget in column.widgets" :key="widget.id">
-              
-              <!-- Heading -->
-              <component 
-                v-if="widget.type === 'heading'"
-                :is="widget.tag || 'h2'"
-                :style="{
-                  color: widget.color || 'inherit',
-                  fontSize: widget.fontSize,
-                  textAlign: widget.textAlign || 'left',
-                  marginBottom: widget.marginBottom || '0.5rem',
-                }"
-                class="font-bold tracking-tight"
-              >
-                {{ widget.content }}
-              </component>
-
-              <!-- Paragraph / Text -->
-              <p 
-                v-else-if="widget.type === 'text'"
-                :style="{
-                  color: widget.color || 'inherit',
-                  fontSize: widget.fontSize || '16px',
-                  textAlign: widget.textAlign || 'left',
-                  lineHeight: widget.lineHeight || '1.7',
-                  marginBottom: widget.marginBottom || '0.75rem',
-                }"
-              >
-                {{ widget.content }}
-              </p>
-
-              <!-- WebP Image -->
-              <div 
-                v-else-if="widget.type === 'image'"
-                :style="{ textAlign: widget.textAlign || 'center' }"
-              >
-                <img 
-                  :src="widget.url" 
-                  :alt="widget.alt || post.title"
-                  :style="{ borderRadius: widget.borderRadius || '8px' }"
-                  class="inline-block max-w-full h-auto shadow-xs"
-                  loading="lazy"
-                />
-              </div>
-
-              <!-- Button -->
-              <div 
-                v-else-if="widget.type === 'button'"
-                :style="{ textAlign: widget.textAlign || 'left' }"
-              >
-                <a 
-                  :href="widget.url || '#'" 
-                  :style="{
-                    backgroundColor: widget.backgroundColor || '#4f46e5',
-                    color: widget.textColor || '#ffffff',
-                    borderRadius: widget.borderRadius || '8px',
-                    padding: '10px 24px',
-                  }"
-                  class="inline-block text-xs font-semibold shadow-xs hover:opacity-90 transition"
-                >
-                  {{ widget.content }}
-                </a>
-              </div>
-
-              <!-- Spacer -->
-              <div 
-                v-else-if="widget.type === 'spacer'"
-                :style="{ height: widget.height || '32px' }"
-                class="w-full"
-              ></div>
-
-              <!-- Divider -->
-              <hr 
-                v-else-if="widget.type === 'divider'"
-                class="my-4 border-t border-slate-300"
-              />
-
-            </div>
+            <BuilderWidgetRenderer
+              v-for="widget in column.widgets"
+              :key="widget.id"
+              :widget="widget"
+              :is-editor="false"
+            />
           </div>
         </div>
       </div>
@@ -227,6 +163,7 @@
 
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import BuilderWidgetRenderer from '@/Components/Builder/BuilderWidgetRenderer.vue';
 
 defineProps({
   post: Object,
