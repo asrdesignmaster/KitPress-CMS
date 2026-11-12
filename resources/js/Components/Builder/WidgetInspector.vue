@@ -401,6 +401,28 @@
           <label class="text-slate-600">Margin Bottom</label>
           <input v-model="selectedWidget.marginBottom" type="text" placeholder="16px" class="w-24 px-2 py-1 border rounded font-mono" />
         </div>
+
+        <!-- Advanced CSS ID & Class (All Widgets) -->
+        <div class="pt-3 border-t border-slate-200 space-y-2.5">
+          <div class="space-y-1">
+            <label class="text-slate-600 font-medium block">CSS ID</label>
+            <input
+              v-model="selectedWidget.customId"
+              type="text"
+              placeholder="e.g. hero-heading"
+              class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-mono"
+            />
+          </div>
+          <div class="space-y-1">
+            <label class="text-slate-600 font-medium block">CSS Classes</label>
+            <input
+              v-model="selectedWidget.customClass"
+              type="text"
+              placeholder="e.g. my-card shadow-lg"
+              class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg font-mono"
+            />
+          </div>
+        </div>
       </div>
 
       <div class="pt-3 border-t border-slate-200">

@@ -1,5 +1,9 @@
 <template>
-  <div :style="{ marginBottom: widget.marginBottom || '0px' }">
+  <div
+    :id="widget.customId || undefined"
+    :class="widget.customClass || ''"
+    :style="{ marginBottom: widget.marginBottom || '0px' }"
+  >
     
     <!-- 1. Heading -->
     <component
