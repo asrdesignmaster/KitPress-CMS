@@ -54,6 +54,22 @@
             </button>
           </div>
 
+          <!-- Right Sidebar Collapse/Expand Toggle -->
+          <button
+            type="button"
+            @click="toggleRightSidebar"
+            :title="rightSidebarCollapsed ? 'Show Right Sidebar' : 'Collapse Right Sidebar for More Space'"
+            class="hidden lg:inline-flex items-center space-x-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+          >
+            <svg v-if="!rightSidebarCollapsed" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+            <svg v-else class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+            <span>{{ rightSidebarCollapsed ? 'Show Sidebar' : 'Expand Editor' }}</span>
+          </button>
+
           <!-- Save / Publish Buttons -->
           <button 
             type="button" 
@@ -78,8 +94,8 @@
       <!-- Main Editor Columns -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- Left 8-9 Cols: Title, Editors & SEO Suite -->
-        <div class="lg:col-span-8 xl:col-span-9 space-y-6">
+        <!-- Left 8-9 Cols (or 12 Cols when right sidebar collapsed): Title, Editors & SEO Suite -->
+        <div :class="rightSidebarCollapsed ? 'lg:col-span-12' : 'lg:col-span-8 xl:col-span-9'" class="space-y-6 transition-all">
           
           <!-- Title & Permalink Input -->
           <div class="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-3">
@@ -125,7 +141,17 @@
               <span class="text-xs font-bold uppercase tracking-wider text-purple-700">
                 Elementor Pro Visual Tree Builder
               </span>
-              <span class="text-[11px] text-slate-400">Sections &bull; Columns &bull; Reactive Widgets</span>
+              <div class="flex items-center space-x-3">
+                <span class="text-[11px] text-slate-400">Sections &bull; Columns &bull; Reactive Widgets</span>
+                <button
+                  type="button"
+                  @click="toggleRightSidebar"
+                  class="hidden lg:inline-flex items-center space-x-1 px-2 py-0.5 text-[11px] font-semibold rounded border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition"
+                >
+                  <span v-if="rightSidebarCollapsed">&larr; Show Right Panel</span>
+                  <span v-else>Collapse Right Panel &rarr;</span>
+                </button>
+              </div>
             </div>
             <VisualBuilder 
               ref="builderRef"
@@ -146,7 +172,7 @@
         </div>
 
         <!-- Right 3-4 Cols: WordPress Sidebar Meta Boxes -->
-        <div class="lg:col-span-4 xl:col-span-3 space-y-5">
+        <div v-show="!rightSidebarCollapsed" class="lg:col-span-4 xl:col-span-3 space-y-5">
           
           <!-- Meta Box 1: Publish Settings -->
           <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
@@ -389,6 +415,16 @@ const tagsInput = ref(props.post?.tags?.map(t => t.name).join(', ') || '');
 const mediaModalOpen = ref(false);
 const mediaTarget = ref('featured'); // 'featured', 'tiptap', 'builder_widget', 'seo_og_image'
 const showRevisionsModal = ref(false);
+const rightSidebarCollapsed = ref(
+  typeof window !== 'undefined' && window.localStorage.getItem('cms_editor_right_sidebar_collapsed') === 'true'
+);
+
+const toggleRightSidebar = () => {
+  rightSidebarCollapsed.value = !rightSidebarCollapsed.value;
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem('cms_editor_right_sidebar_collapsed', String(rightSidebarCollapsed.value));
+  }
+};
 
 const tiptapRef = ref(null);
 const builderRef = ref(null);
