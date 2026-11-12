@@ -47,18 +47,59 @@
       <!-- Tab 1: Snippet & Analysis -->
       <div v-show="activeSeoTab === 'general'" class="space-y-5">
         
-        <!-- Focus Keyword Input -->
-        <div class="space-y-1">
+        <!-- Focus Keywords Input (Primary + Secondary) -->
+        <div class="space-y-2">
           <div class="flex items-center justify-between">
-            <label class="text-xs font-bold text-slate-700">Focus Keyword</label>
-            <span class="text-[11px] text-slate-400">Main phrase to optimize for</span>
+            <label class="text-xs font-bold text-slate-700">Focus Keywords</label>
+            <span class="text-[11px] text-slate-400">Press Enter or comma to add multiple (up to 5)</span>
           </div>
-          <input 
-            v-model="form.seo_focus_keyword" 
-            type="text" 
-            placeholder="e.g. Modern CMS or Laravel Architecture"
-            class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
-          />
+
+          <!-- Keyword Pills -->
+          <div v-if="keywordAnalyses.length > 0" class="flex flex-wrap gap-1.5">
+            <button
+              v-for="(item, idx) in keywordAnalyses"
+              :key="item.keyword"
+              type="button"
+              @click="activeKeywordIndex = idx"
+              :class="activeKeywordIndex === idx ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'"
+              class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full border text-[11px] font-medium transition"
+            >
+              <span v-if="idx === 0" class="text-[9px] uppercase tracking-wider opacity-80 font-bold">Primary:</span>
+              <span>{{ item.keyword }}</span>
+              <span
+                :class="activeKeywordIndex === idx ? 'bg-white/20 text-white' : (item.passed >= 5 ? 'bg-emerald-100 text-emerald-700' : item.passed >= 3 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700')"
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-bold"
+              >
+                {{ item.passed }}/{{ item.total }}
+              </span>
+              <span
+                @click.stop="removeKeyword(idx)"
+                class="ml-0.5 hover:text-rose-300 font-bold cursor-pointer"
+                title="Remove keyword"
+              >&times;</span>
+            </button>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <input 
+              v-model="newKeywordInput"
+              @keydown.enter.prevent="addKeyword"
+              @keydown.,.prevent="addKeyword"
+              @blur="addKeyword"
+              type="text" 
+              :disabled="focusKeywords.length >= 5"
+              placeholder="e.g. Modern CMS, Laravel Architecture"
+              class="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:bg-white transition disabled:opacity-50"
+            />
+            <button
+              type="button"
+              @click="addKeyword"
+              :disabled="!newKeywordInput.trim() || focusKeywords.length >= 5"
+              class="px-3 py-2 text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg transition disabled:opacity-40"
+            >
+              + Add
+            </button>
+          </div>
         </div>
 
         <!-- Google SERP Live Preview Box -->
@@ -263,6 +304,58 @@ const props = defineProps({
 const emit = defineEmits(['open-media', 'score-change']);
 
 const activeSeoTab = ref('general');
+const newKeywordInput = ref('');
+const activeKeywordIndex = ref(0);
+
+const focusKeywords = computed(() => {
+  const raw = String(props.form.seo_focus_keyword || '');
+  const seen = new Set();
+  return raw
+    .split(',')
+    .map((k) => k.trim())
+    .filter((k) => {
+      if (!k) return false;
+      const lower = k.toLowerCase();
+      if (seen.has(lower)) return false;
+      seen.add(lower);
+      return true;
+    })
+    .slice(0, 5);
+});
+
+const syncKeywords = (list) => {
+  props.form.seo_focus_keyword = list.join(', ').slice(0, 255);
+  if (activeKeywordIndex.value >= list.length) {
+    activeKeywordIndex.value = Math.max(0, list.length - 1);
+  }
+};
+
+const addKeyword = () => {
+  const parts = newKeywordInput.value
+    .split(',')
+    .map((k) => k.trim())
+    .filter(Boolean);
+  if (parts.length === 0) return;
+
+  const current = [...focusKeywords.value];
+  const existingLower = new Set(current.map((k) => k.toLowerCase()));
+  for (const part of parts) {
+    if (current.length >= 5) break;
+    if (!existingLower.has(part.toLowerCase())) {
+      current.push(part);
+      existingLower.add(part.toLowerCase());
+    }
+  }
+  syncKeywords(current);
+  newKeywordInput.value = '';
+  activeKeywordIndex.value = current.length - 1;
+};
+
+const removeKeyword = (idx) => {
+  const current = [...focusKeywords.value];
+  current.splice(idx, 1);
+  syncKeywords(current);
+};
 
 const titleLength = computed(() => (props.form.seo_title || props.title || '').length);
 const descLength = computed(() => (props.form.seo_description || '').length);
@@ -291,9 +384,9 @@ const descBarColor = computed(() => {
   return 'bg-amber-400';
 });
 
-// Real-Time SEO Analysis Checklist Computations
-const analysisChecks = computed(() => {
-  const kw = (props.form.seo_focus_keyword || '').trim().toLowerCase();
+// Real-Time SEO Analysis Checklist Computations (supports multiple focus keywords)
+const evaluateKeyword = (rawKw) => {
+  const kw = rawKw.trim().toLowerCase();
   const currentTitle = (props.form.seo_title || props.title || '').toLowerCase();
   const currentSlug = (props.slug || '').toLowerCase();
   const currentDesc = (props.form.seo_description || '').toLowerCase();
@@ -302,27 +395,13 @@ const analysisChecks = computed(() => {
   const words = contentText.split(/\s+/).filter(Boolean);
   const wordCount = words.length;
 
-  if (!kw) {
-    return [
-      { label: 'Focus Keyword Defined', passed: false, warning: true, details: 'Set a focus keyword above to run real-time SEO content evaluations.' },
-      { label: 'Content Word Count', passed: wordCount >= 300, warning: wordCount >= 100, details: `${wordCount} words detected. (300+ recommended)` },
-    ];
-  }
-
-  // 1. Keyword in Title
   const inTitle = currentTitle.includes(kw);
-  // 2. Keyword at start of Title
-  const titleStartsWith = currentTitle.startsWith(kw);
-  // 3. Keyword in Slug
   const slugCleanKw = kw.replace(/[^a-z0-9]+/g, '-');
   const inSlug = currentSlug.includes(slugCleanKw) || currentSlug.includes(kw.replace(/\s+/g, '-'));
-  // 4. Keyword in Meta Description
   const inDesc = currentDesc.includes(kw);
-  // 5. Keyword in Intro (first 100 words)
   const introWords = words.slice(0, 100).join(' ');
   const inIntro = introWords.includes(kw);
 
-  // 6. Keyword Density
   let kwOccurrences = 0;
   if (words.length > 0) {
     const kwRegex = new RegExp('\\b' + kw.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\b', 'gi');
@@ -333,7 +412,7 @@ const analysisChecks = computed(() => {
 
   return [
     {
-      label: 'Focus Keyword in SEO Title',
+      label: `Focus Keyword in SEO Title ("${rawKw}")`,
       passed: inTitle,
       details: inTitle ? 'Keyword appears in the title tag.' : 'Keyword was not detected in SEO title.',
     },
@@ -365,9 +444,42 @@ const analysisChecks = computed(() => {
       details: wordCount >= 300 ? 'Good length for indexation and authority.' : 'Content length is below 300 words.',
     },
   ];
+};
+
+const keywordAnalyses = computed(() => {
+  return focusKeywords.value.map((kw) => {
+    const checks = evaluateKeyword(kw);
+    return {
+      keyword: kw,
+      checks,
+      passed: checks.filter((c) => c.passed).length,
+      total: checks.length,
+    };
+  });
 });
 
-const passedChecksCount = computed(() => analysisChecks.value.filter(c => c.passed).length);
+const analysisChecks = computed(() => {
+  if (keywordAnalyses.value.length === 0) {
+    const contentText = (props.rawContent || '').replace(/<[^>]*>?/gm, ' ').toLowerCase();
+    const wordCount = contentText.split(/\s+/).filter(Boolean).length;
+    return [
+      { label: 'Focus Keyword Defined', passed: false, warning: true, details: 'Add one or more focus keywords above to run real-time SEO content evaluations.' },
+      { label: 'Content Word Count', passed: wordCount >= 300, warning: wordCount >= 100, details: `${wordCount} words detected. (300+ recommended)` },
+    ];
+  }
+
+  const idx = Math.min(activeKeywordIndex.value, keywordAnalyses.value.length - 1);
+  return keywordAnalyses.value[idx].checks;
+});
+
+const primaryChecks = computed(() => {
+  if (keywordAnalyses.value.length > 0) {
+    return keywordAnalyses.value[0].checks;
+  }
+  return analysisChecks.value;
+});
+
+const passedChecksCount = computed(() => primaryChecks.value.filter(c => c.passed).length);
 
 const overallScoreClass = computed(() => {
   const count = passedChecksCount.value;
@@ -386,7 +498,7 @@ const overallScoreTextClass = computed(() => {
 watchEffect(() => {
   emit('score-change', {
     passed: passedChecksCount.value,
-    total: analysisChecks.value.length,
+    total: primaryChecks.value.length,
     dotClass: overallScoreClass.value,
     textClass: overallScoreTextClass.value,
   });
