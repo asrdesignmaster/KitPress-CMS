@@ -44,6 +44,19 @@ class Media extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getSizesAttribute($value): array
+    {
+        $sizes = is_string($value) ? (json_decode($value, true) ?: []) : (is_array($value) ? $value : []);
+
+        foreach ($sizes as $key => $size) {
+            if (! empty($size['path'])) {
+                $sizes[$key]['url'] = Storage::disk($this->disk ?? 'public')->url($size['path']);
+            }
+        }
+
+        return $sizes;
+    }
+
     public function getUrlAttribute(): string
     {
         if (str_starts_with($this->path, 'http://') || str_starts_with($this->path, 'https://')) {

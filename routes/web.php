@@ -79,6 +79,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,editor,a
     });
 });
 
+// Fallback route to serve public storage files when public/storage symlink is absent (e.g., Windows without symlink permissions)
+Route::get('/storage/{path}', function (string $path) {
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    if (! $disk->exists($path)) {
+        abort(404);
+    }
+
+    return $disk->response($path);
+})->where('path', '.*')->name('storage.serve');
+
 /*
 |--------------------------------------------------------------------------
 | Dynamic Content Catch-All (Public Frontend URL Route)
