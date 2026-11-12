@@ -5,7 +5,7 @@
 
       <!-- Modal Panel -->
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block w-full max-w-5xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-xl shadow-2xl sm:align-middle">
+      <div class="relative z-10 inline-block w-full max-w-5xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-xl shadow-2xl sm:align-middle">
         
         <!-- Modal Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
@@ -21,6 +21,7 @@
           <!-- Tabs -->
           <div class="flex items-center space-x-2">
             <button 
+              type="button"
               @click="activeTab = 'library'"
               :class="activeTab === 'library' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200'"
               class="px-3.5 py-1.5 text-xs font-medium rounded-lg transition"
@@ -28,13 +29,14 @@
               Browse Library
             </button>
             <button 
+              type="button"
               @click="activeTab = 'upload'"
               :class="activeTab === 'upload' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200'"
               class="px-3.5 py-1.5 text-xs font-medium rounded-lg transition flex items-center space-x-1"
             >
               <span>+ Upload WebP</span>
             </button>
-            <button @click="closeModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
+            <button type="button" @click="closeModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -172,6 +174,7 @@
 
               <div class="flex items-center space-x-2">
                 <button 
+                  type="button"
                   @click="confirmSelection"
                   class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-lg shadow-xs transition"
                 >
