@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\Admin\ThemeController;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -54,6 +55,7 @@ class HandleInertiaRequests extends Middleware
                 'site_tagline' => Setting::get('site_tagline', 'High-Performance Laravel + Vue CMS'),
                 'lazy_loading' => (bool) Setting::get('lazy_loading', true),
             ],
+            'theme' => fn () => ThemeController::getThemeConfig(),
         ];
     }
 }

@@ -204,6 +204,67 @@
             </div>
             <div v-show="isSidebarCollapsed" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
 
+            <!-- Collapsible Theme Menu -->
+            <div>
+              <button
+                type="button"
+                @click="toggleThemeMenu"
+                title="Theme"
+                :class="[
+                  isActive('/admin/theme') ? 'text-white bg-slate-800/80 font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
+                  isSidebarCollapsed ? 'md:justify-center md:px-0' : 'justify-between'
+                ]"
+                class="w-full flex items-center px-4 py-2 text-xs transition"
+              >
+                <div class="flex items-center space-x-3">
+                  <svg class="w-4 h-4 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                  <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Theme</span>
+                </div>
+                <svg
+                  v-show="!isSidebarCollapsed"
+                  :class="isThemeMenuOpen ? 'rotate-180' : ''"
+                  class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div v-show="isThemeMenuOpen && !isSidebarCollapsed" class="mt-0.5 space-y-0.5 bg-slate-950/40 py-1">
+                <Link
+                  href="/admin/theme/general"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/general') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>General</span>
+                </Link>
+                <Link
+                  href="/admin/theme/header"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/header') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Header Builder</span>
+                </Link>
+                <Link
+                  href="/admin/theme/footer"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/footer') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Footer Builder</span>
+                </Link>
+              </div>
+            </div>
+
             <Link 
               href="/admin/settings/optimization" 
               @click="closeMobileMenu"
@@ -307,6 +368,16 @@ const currentUrl = computed(() => page.url);
 
 const isSidebarCollapsed = ref(false);
 const isMobileMenuOpen = ref(false);
+const isThemeMenuOpen = ref(page.url.startsWith('/admin/theme'));
+
+const toggleThemeMenu = () => {
+  if (isSidebarCollapsed.value) {
+    isSidebarCollapsed.value = false;
+    isThemeMenuOpen.value = true;
+    return;
+  }
+  isThemeMenuOpen.value = !isThemeMenuOpen.value;
+};
 
 onMounted(() => {
   try {
