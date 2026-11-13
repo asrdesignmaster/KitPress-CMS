@@ -183,3 +183,4 @@ const compiledThemeCss = computed(() => {
   return `.public-theme-root h1, .public-theme-root h2, .public-theme-root h3, .public-theme-root h4 { font-family: ${headingFont}; font-weight: ${headingWeight}; }\n${custom}`;
 });
 </script>
+

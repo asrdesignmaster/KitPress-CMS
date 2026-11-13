@@ -189,3 +189,4 @@ class ThemeController extends Controller
         return redirect()->back()->with('success', 'Footer Builder settings saved.');
     }
 }
+

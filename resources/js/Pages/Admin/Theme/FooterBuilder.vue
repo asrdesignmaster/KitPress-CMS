@@ -160,3 +160,4 @@ const save = () => {
   form.post('/admin/theme/footer');
 };
 </script>
+

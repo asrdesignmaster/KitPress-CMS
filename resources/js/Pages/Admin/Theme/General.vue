@@ -283,3 +283,4 @@ const save = () => {
   form.post('/admin/theme/general');
 };
 </script>
+
