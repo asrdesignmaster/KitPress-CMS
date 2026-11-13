@@ -2,16 +2,14 @@
   <div class="min-h-screen bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 antialiased">
     
     <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
-      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-600/30 mb-4">
-        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
+      <div class="inline-flex items-center justify-center mb-4">
+        <KitPressLogo size-class="w-14 h-14 shadow-xl shadow-indigo-600/30 rounded-2xl" />
       </div>
       <h2 class="text-2xl font-bold tracking-tight text-white">
-        Sign in to Modern CMS
+        Sign in to KitPress
       </h2>
       <p class="mt-2 text-xs text-slate-400">
-        High-Performance Laravel + Vue 3 Administration
+        Build Smarter. Publish Faster.
       </p>
     </div>
 
@@ -130,6 +128,7 @@
 
 <script setup>
 import { useForm, Link } from '@inertiajs/vue3';
+import KitPressLogo from '@/Components/KitPressLogo.vue';
 
 const form = useForm({
   email: 'admin@cms.test',

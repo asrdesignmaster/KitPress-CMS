@@ -36,7 +36,7 @@
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         
         <!-- Left 8 Cols: Normal/Hover & Shape Form -->
-        <form @submit.prevent="save" class="xl:col-span-8 space-y-6">
+        <form @submit.prevent="save" class="xl:col-span-9 space-y-6">
           <!-- Normal & Hover State Editors for Selected Variant -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <div
@@ -175,7 +175,7 @@
         </form>
 
         <!-- Right 4 Cols: Sticky Side Preview Panel -->
-        <aside class="xl:col-span-4 xl:sticky xl:top-20 space-y-4">
+        <aside class="xl:col-span-3 xl:sticky xl:top-20 space-y-4">
           <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
             <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-700">
@@ -188,7 +188,7 @@
 
             <component :is="'style'">{{ previewCss }}</component>
 
-            <div class="p-5 space-y-5">
+            <div class="p-5 space-y-4">
               <p class="text-[11px] text-slate-500">
                 Hover over each button below to preview its hover transition live.
               </p>

@@ -13,10 +13,10 @@
           Laravel 11 + Vue 3 + Automated WebP Pipeline
         </span>
         <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          {{ $page.props.settings?.site_name || 'Modern CMS Platform' }}
+          {{ $page.props.settings?.site_name || 'KitPress' }}
         </h1>
         <p class="text-base text-slate-600 leading-relaxed">
-          {{ $page.props.settings?.site_tagline || 'Zero hooks, zero legacy debt. Combining TipTap classic prose editing and Elementor visual tree architecture.' }}
+          {{ $page.props.settings?.site_tagline || 'Build Smarter. Publish Faster.' }}
         </p>
       </div>
     </section>

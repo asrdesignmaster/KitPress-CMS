@@ -264,8 +264,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 5. Global Settings
-        Setting::set('site_name', 'Modern CMS', 'general');
-        Setting::set('site_tagline', 'High-Performance Laravel + Vue CMS with Visual Builder', 'general');
+        Setting::set('site_name', 'KitPress', 'general');
+        Setting::set('site_tagline', 'Build Smarter. Publish Faster.', 'general');
         Setting::set('lazy_loading', true, 'optimization');
         Setting::set('response_compression', true, 'optimization');
         Setting::set('route_caching', false, 'optimization');

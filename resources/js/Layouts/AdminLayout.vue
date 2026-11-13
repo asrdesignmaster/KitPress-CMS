@@ -19,9 +19,7 @@
 
         <!-- Site Title & View Site Link -->
         <Link href="/admin" class="flex items-center space-x-2 text-white font-semibold text-sm hover:text-indigo-400 transition">
-          <svg class="w-5 h-5 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
+          <KitPressLogo size-class="w-6 h-6 shrink-0" />
           <span class="tracking-tight">{{ siteName }}</span>
         </Link>
 
@@ -380,12 +378,13 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { Link, usePage, router } from '@inertiajs/vue3';
+import KitPressLogo from '@/Components/KitPressLogo.vue';
 
 const SIDEBAR_STORAGE_KEY = 'cms_admin_sidebar_collapsed';
 
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
-const siteName = computed(() => page.props.settings?.site_name || 'Modern CMS');
+const siteName = computed(() => page.props.settings?.site_name || 'KitPress');
 const currentUrl = computed(() => page.url);
 
 const isSidebarCollapsed = ref(false);

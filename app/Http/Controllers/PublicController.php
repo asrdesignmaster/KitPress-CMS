@@ -48,8 +48,8 @@ class PublicController extends Controller
             'featured' => $featured,
             'categories' => $categories,
             'seo' => [
-                'title' => Setting::get('site_name', 'Modern CMS') . ' - Fast, Clean Content Platform',
-                'description' => Setting::get('site_tagline', 'High-Performance Laravel + Vue CMS with Visual Tree Builder'),
+                'title' => Setting::get('site_name', 'KitPress') . ' - ' . Setting::get('site_tagline', 'Build Smarter. Publish Faster.'),
+                'description' => Setting::get('site_tagline', 'Build Smarter. Publish Faster.'),
                 'og_image' => null,
                 'robots_index' => true,
                 'robots_follow' => true,

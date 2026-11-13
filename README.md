@@ -1,66 +1,84 @@
-# Modern Custom Laravel + Vue 3 CMS Platform
+<p align="center">
+  <img src="public/favicon.svg" alt="KitPress Logo" width="64" height="64" />
+</p>
 
-A high-performance, lightweight, and modern Content Management System (CMS) built with **Laravel 11**, **Inertia.js**, and **Vue 3**. It replicates the clean administrative UX and workflow of WordPress while eliminating legacy bottlenecks such as dynamic hook pollution (`add_action`, `add_filter`), complex global state, and heavy plugin overhead.
+<h1 align="center">KitPress</h1>
+<p align="center"><strong>Build Smarter. Publish Faster.</strong></p>
+<p align="center">
+  A lightweight, high-performance, and secure modern Content Management System (CMS) built with <strong>Laravel 11</strong>, <strong>Inertia.js</strong>, <strong>Vue 3</strong>, and <strong>Tailwind CSS</strong> — designed as a clean, modular alternative to legacy WordPress.
+</p>
 
 ---
 
-## 🌟 Key Architecture & Features
+## Why KitPress? (The Modern WordPress Alternative)
+
+Traditional WordPress sites often slow down under the weight of legacy PHP hooks (`add_action`, `add_filter`), bloated `wp_options` tables, and dozens of third-party plugins for basic features like SEO, page building, caching, and WebP images — each introducing extra attack surface and maintenance overhead.
+
+**KitPress replaces that entire stack with one clean, unified core:**
+
+| Feature Area | Legacy WordPress | KitPress |
+|---|---|---|
+| **Architecture** | Procedural PHP + global hook soup | Clean **Laravel 11 MVC + Vue 3 SPA** (via Inertia.js) |
+| **Performance** | Heavy theme/plugin overhead on every request | **Lightweight core**, native WebP pipeline, route/config caching & compression |
+| **Security** | Vulnerable third-party plugin ecosystem | **Laravel CSRF, Eloquent ORM, strict validation & built-in RBAC** (no plugin sprawl) |
+| **Page Building** | Requires heavy external plugins (Elementor, etc.) | **Native Visual Tree Builder** + Classic TipTap Editor |
+| **Theme & Design** | Fragmented Customizer + theme lock-in | **Built-in Theme Studio** (Colors, Typography, Buttons, Header & Footer Builders) |
+| **SEO & Sitemaps** | Requires Yoast / RankMath plugins | **Built-in SEO Suite** + `/sitemap.xml` out of the box |
+
+---
+
+## Key Architecture & Features
 
 ### 1. Dual-Mode Content Editor
-* **Mode 1: Classic TipTap Editor:**
-  * Clean distraction-free ProseMirror-based rich text editor (`@tiptap/vue-3`).
-  * Instant WebP media insertion directly into text.
-  * Right-hand sidebar meta boxes for status, custom permalink/slug, categories, tags, and featured images.
-* **Mode 2: Elementor Pro-Style Visual Tree Builder:**
-  * **Layout Hierarchy:** `Section` &rarr; `Columns` (flexible percentage widths: 100%, 50/50, 33/66, 33/33/33) &rarr; `Widgets`.
-  * **Widget Inventory:** Headings (H1–H4), Paragraphs/Text, WebP Images, Call-to-Action Buttons, Spacers, Dividers.
-  * **Live Property Inspector:** Clicking any canvas widget or section instantly opens its reactive inspector panel in the sidebar for live style changes (colors, typography, margins, alignments, attributes).
-  * **Storage:** Clean hierarchical JSON layout trees stored directly in the `builder_json` column.
+* **Classic TipTap Editor:**
+  * Clean, distraction-free ProseMirror-based rich text editor (`@tiptap/vue-3`).
+  * Instant WebP media insertion directly into content.
+  * Sidebar controls for publishing status, custom permalink/slug, categories, tags, and featured images.
+* **Visual Tree Builder (Elementor-Style):**
+  * **Layout Hierarchy:** `Section` &rarr; `Columns` (flexible layouts: `100%`, `50/50`, `33/66`, `33/33/33`, etc.) &rarr; `Widgets`.
+  * **Widget Inventory:** Headings (`H1`–`H4`), Paragraphs/Text, WebP Images, Call-to-Action Buttons, Spacers, and Dividers.
+  * **Live Property Inspector:** Click any section or widget to edit colors, typography, spacing, and alignment live.
+  * **Clean Storage:** Structured JSON layout trees saved cleanly in `builder_json`.
 
-### 2. Automated Media Library & WebP Optimization
-* **Backend Image Interception:** All uploaded images (`.jpg`, `.jpeg`, `.png`, `.gif`) are intercepted by `App\Services\MediaService` (using Intervention Image with GD driver).
-* **Automatic WebP Conversion:** Images are compressed and converted into `.webp` files.
-* **Responsive Resolutions:** Generates Thumbnail (`150x150`), Medium (`max 600px`), Large (`max 1200px`), and Original WebP sets.
-* **Searchable Media Grid & Modal:** Drag-and-drop batch upload, file metadata inspection, alt-text editor, and reusable modal picker across both Classic and Visual Builder editors.
+### 2. Native Theme Studio (`/admin/theme/*`)
+* **General (Colors, Typography & Custom CSS):**
+  * Global CSS variable color palette (`--theme-primary`, `--theme-secondary`, `--theme-bg`, `--theme-surface`, `--theme-text`, `--theme-accent`).
+  * Per-element typography rules for **Paragraph (`p`)** and **Headings (`h1`–`h4`)** with Webfont selection (Bunny Fonts), color picker, font size (`px` / `em` / `rem`), weight, and line height — synced across the public site, rich editor, and live previews.
+  * Sticky right-side **Live Theme Preview** and Custom CSS editor.
+* **Buttons Builder:**
+  * Configure global button shape (border radius, padding, font weight) and **Primary / Secondary / Outline** variants with Normal & Hover states, solid or gradient backgrounds, and theme color swatches.
+* **Header Builder:**
+  * Supports **Transparent Header**, **Sticky Header**, custom logo image/text, navigation links, CTA button, and **3 Header Layout Styles** (Classic, Centered Menu, Full-Width Menu Bar below logo with customizable colors).
+* **Footer Builder:**
+  * Default **Brand Column** (Company Logo + Rich Paragraph Editor), up to 4 custom link columns, customizable colors, and copyright notice.
 
-### 3. Built-In SEO Suite (Yoast Pro Style)
-* **Per-Page SEO Controls:**
-  * Focus keyword input field.
-  * SEO Title and Meta Description custom editors with live character-count progress bars.
-  * Google SERP desktop and mobile snippet live preview.
-  * Open Graph (OG) and Twitter Card settings (custom title, description, and social share image).
-  * XML Sitemap & Robots Index control toggles (`Index` / `NoIndex`, `Follow` / `NoFollow`).
-* **Real-Time SEO Content Analysis Checklist:**
-  * Keyword in SEO Title & starting position.
-  * Keyword in Page URL slug.
-  * Keyword in Meta Description.
-  * Keyword in introductory content (first 100 words).
-  * Real-time keyword density calculation (% and count).
-  * Content word count evaluation.
+### 3. Automated Media Library & WebP Pipeline
+* **Server-Side Image Interception:** Uploaded `.jpg`, `.jpeg`, `.png`, and `.gif` files are processed automatically by `App\Services\MediaService` (Intervention Image + GD).
+* **Automatic WebP Conversion:** Generates optimized `.webp` files in **Thumbnail (`150x150`)**, **Medium (`max 600px`)**, **Large (`max 1200px`)**, and **Original** sizes.
+* **Reusable Media Modal:** Drag-and-drop batch uploads, search, alt-text editing, and instant selection across editors and Theme Builders.
 
-### 4. Global Site Optimization & Cache Center
-* Located at **Admin &rarr; Optimization Panel** (`/admin/settings/optimization`):
-  * **Asset Caching & Compression:** Route caching toggle, config caching toggle, and HTTP response compression.
-  * **Image Lazy Loading:** Global toggle to enforce native lazy loading across all WebP images.
-  * **Database Cleanup:** One-click tools to purge post revisions, orphan media, and transient debug logs.
-  * **Instant Cache Invalidation:** One-click clear for application cache, view templates, and routing lookup tables.
+### 4. Built-In SEO Suite
+* **Per-Post / Per-Page SEO:** Focus keywords, custom SEO Title & Meta Description with character-count progress bars, and live Desktop/Mobile Google SERP previews.
+* **Social & Indexing Controls:** Open Graph (OG) and Twitter Card fields, plus `Index/NoIndex` and `Follow/NoFollow` toggles.
+* **Real-Time Content Analysis:** Checks keyword placement in title, slug, meta description, intro text, keyword density, and word count.
 
-### 5. Role-Based Access Control (RBAC)
-* Explicit middleware and policies for:
-  * **Admin:** Full system control, optimization panel, taxonomies, all content.
-  * **Editor:** Manages all posts, pages, categories, tags, and media library.
-  * **Author:** Creates, drafts, and updates their own posts and media.
+### 5. Global Optimization & Cache Center (`/admin/settings/optimization`)
+* Configure Site Name, Tagline, and Homepage Display (Latest Posts or Static Page).
+* Toggle **Route Caching**, **Config Caching**, **HTTP Compression**, and **Image Lazy Loading**.
+* One-click **Database Cleanup** (purge old post revisions and orphan media) and **Cache Invalidation**.
 
-### 6. Future-Proof E-Commerce Architecture
-* Dedicated modular namespace `App\Models\Commerce\` with ready migrations for:
-  * `commerce_products` (SKU, price, sale price, inventory, builder layout)
-  * `commerce_categories` (hierarchical taxonomy)
-  * `commerce_variants` (SKU, pricing, attributes JSON)
-  * `commerce_orders` & `commerce_order_items`
+### 6. Role-Based Access Control (RBAC) & Security
+* **Admin:** Full system control, Theme Studio, Optimization Center, taxonomies, and all content.
+* **Editor:** Manage all posts, pages, categories, tags, and media.
+* **Author:** Create, draft, and manage their own posts and media.
+* Backed by Laravel's built-in CSRF protection, encrypted sessions, password hashing, and parameterized Eloquent queries.
+
+### 7. Modular E-Commerce Ready Foundation
+* Dedicated `App\Models\Commerce\` namespace with schema support for `commerce_products`, `commerce_categories`, `commerce_variants`, `commerce_orders`, and `commerce_order_items`.
 
 ---
 
-## 🚀 Default Demo Credentials
+## Default Demo Credentials
 
 | Role | Email | Password |
 |---|---|---|
@@ -70,18 +88,25 @@ A high-performance, lightweight, and modern Content Management System (CMS) buil
 
 ---
 
-## 🛠️ Development & Running Commands
+## Quick Start & Development Commands
 
 ```bash
-# Start Laravel Backend Development Server
+# 1. Install PHP & Node dependencies
+composer install
+npm install
+
+# 2. Configure environment & database
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+
+# 3. Start Laravel backend & Vite frontend
 php artisan serve
-
-# Build frontend assets with Vite
-npm run build
-
-# Or run Vite HMR dev server
 npm run dev
 
-# Run Feature Test Suite
+# Build production frontend assets
+npm run build
+
+# Run feature test suite
 php artisan test
 ```

@@ -42,7 +42,7 @@
     </div>
 
     <!-- Body -->
-    <div class="p-5 space-y-5">
+    <div class="p-5 space-y-4">
       
       <!-- Tab 1: Snippet & Analysis -->
       <div v-show="activeSeoTab === 'general'" class="space-y-5">

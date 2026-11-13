@@ -1,8 +1,10 @@
 <template>
   <div
     :class="isFullscreen ? 'fixed inset-4 z-50 flex flex-col shadow-2xl' : 'relative'"
-    class="bg-white rounded-xl border border-slate-300 overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition"
+    class="rich-paragraph-editor bg-white rounded-xl border border-slate-300 overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition"
   >
+    <link v-if="bunnyFontsHref" rel="stylesheet" :href="bunnyFontsHref" />
+    <component :is="'style'">{{ editorTypographyCss }}</component>
     <!-- Compact Rich Text Toolbar (matches Paragraph dropdown + B I U + Lists + Link + Fullscreen + Code) -->
     <div class="flex flex-wrap items-center gap-1 px-2.5 py-1.5 bg-slate-900 text-slate-200 border-b border-slate-700 select-none text-xs">
       <!-- Block Style Select -->
@@ -13,6 +15,7 @@
         class="px-2 py-1 bg-slate-800 text-slate-100 border border-slate-600 rounded text-xs focus:outline-hidden disabled:opacity-40"
       >
         <option value="paragraph">Paragraph</option>
+        <option value="h1">Heading 1</option>
         <option value="h2">Heading 2</option>
         <option value="h3">Heading 3</option>
         <option value="h4">Heading 4</option>
@@ -150,10 +153,24 @@
 
 <script setup>
 import { ref, computed, watch, onBeforeUnmount } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import { Mark } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
+import { getTypographyFontsHref, compileTypographyCss } from '@/utils/themeFonts';
+
+const page = usePage();
+const bunnyFontsHref = computed(() => getTypographyFontsHref(page.props.theme?.general?.typography || {}));
+const editorTypographyCss = computed(() => {
+  const typo = page.props.theme?.general?.typography || {};
+  const colors = page.props.theme?.general?.colors || {};
+  const rules = compileTypographyCss('.rich-paragraph-editor .ProseMirror', typo, colors);
+  return `${rules}
+.rich-paragraph-editor .ProseMirror:focus { outline: none; }
+.rich-paragraph-editor .ProseMirror ul { list-style: disc; padding-left: 1.25rem; }
+.rich-paragraph-editor .ProseMirror ol { list-style: decimal; padding-left: 1.25rem; }`;
+});
 
 const props = defineProps({
   modelValue: {
@@ -204,6 +221,7 @@ watch(
 
 const currentBlockType = computed(() => {
   if (!editor.value) return 'paragraph';
+  if (editor.value.isActive('heading', { level: 1 })) return 'h1';
   if (editor.value.isActive('heading', { level: 2 })) return 'h2';
   if (editor.value.isActive('heading', { level: 3 })) return 'h3';
   if (editor.value.isActive('heading', { level: 4 })) return 'h4';
@@ -243,3 +261,4 @@ onBeforeUnmount(() => {
   editor.value?.destroy();
 });
 </script>
+
