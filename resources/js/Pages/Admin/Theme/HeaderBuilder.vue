@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <div class="space-y-6 max-w-6xl">
+    <div class="space-y-6 max-w-full">
       <!-- Header -->
       <div class="pb-4 border-b border-slate-200">
         <div class="flex items-center space-x-2">
