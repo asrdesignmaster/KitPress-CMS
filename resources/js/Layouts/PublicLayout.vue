@@ -10,21 +10,31 @@
     <!-- Dynamic Header from Theme Header Builder -->
     <header
       :class="[
-        headerConfig.transparent
+        isTransparentHeader
           ? (headerConfig.sticky ? 'fixed top-0 left-0 right-0 z-30' : 'absolute top-0 left-0 right-0 z-30')
           : (headerConfig.sticky ? 'sticky top-0 z-30 border-b border-slate-200/80 shadow-2xs' : 'relative z-30 border-b border-slate-200/80 shadow-2xs')
       ]"
       :style="{
-        backgroundColor: headerConfig.transparent ? 'transparent' : headerConfig.bg_color,
+        backgroundColor: isTransparentHeader ? 'transparent' : headerConfig.bg_color,
         color: headerConfig.text_color,
-        '--header-link-color': headerConfig.nav_link_color || (headerConfig.layout_style === 'style_3' ? headerConfig.menu_bar_text : headerConfig.text_color),
+        '--header-link-color': isTransparentHeader
+          ? (headerConfig.transparent_nav_link_color || '#ffffff')
+          : (headerConfig.nav_link_color || (headerConfig.layout_style === 'style_3' ? headerConfig.menu_bar_text : headerConfig.text_color)),
         '--header-link-hover-color': headerConfig.nav_link_hover_color || generalConfig.colors.primary || '#4f46e5',
         '--header-link-active-color': headerConfig.nav_link_active_color || headerConfig.nav_link_hover_color || generalConfig.colors.primary || '#4f46e5',
       }"
     >
       <!-- Top Bar (Logo, optional Center Menu for Style 2, Right Menu/CTA) -->
       <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-        <Link href="/" class="flex items-center space-x-2 font-bold text-lg tracking-tight shrink-0" :style="{ color: headerConfig.logo_text_color || headerConfig.text_color }">
+        <Link
+          href="/"
+          class="flex items-center space-x-2 font-bold text-lg tracking-tight shrink-0"
+          :style="{
+            color: isTransparentHeader
+              ? (headerConfig.transparent_logo_text_color || '#ffffff')
+              : (headerConfig.logo_text_color || headerConfig.text_color)
+          }"
+        >
           <img
             v-if="headerConfig.logo_image"
             :src="headerConfig.logo_image"
@@ -223,6 +233,8 @@ const headerConfig = computed(() => ({
   transparent: false,
   logo_text: '',
   logo_text_color: '',
+  transparent_logo_text_color: '#ffffff',
+  transparent_nav_link_color: '#ffffff',
   logo_image: '',
   show_logo_icon: true,
   sticky: true,
@@ -240,6 +252,16 @@ const headerConfig = computed(() => ({
   cta_url: '/admin',
   ...(page.props.theme?.header || {}),
 }));
+
+const isHomePage = computed(() => {
+  if (typeof page.props.isHome === 'boolean') {
+    return page.props.isHome;
+  }
+  const path = (page.url || '/').split('?')[0].replace(/\/+$/, '') || '/';
+  return path === '/';
+});
+
+const isTransparentHeader = computed(() => Boolean(headerConfig.value.transparent) && isHomePage.value);
 
 const footerConfig = computed(() => ({
   brand_enabled: true,

@@ -28,7 +28,7 @@
             :style="{
               backgroundColor: form.transparent ? 'transparent' : form.bg_color,
               color: form.text_color,
-              '--header-link-color': form.nav_link_color || form.text_color,
+              '--header-link-color': form.transparent ? (form.transparent_nav_link_color || '#ffffff') : (form.nav_link_color || form.text_color),
               '--header-link-hover-color': form.nav_link_hover_color || '#4f46e5',
               '--header-link-active-color': form.nav_link_active_color || form.nav_link_hover_color || '#4f46e5',
             }"
@@ -38,7 +38,7 @@
             <div class="h-16 px-6 flex items-center justify-between gap-4">
               <div
                 class="flex items-center space-x-2 font-bold text-base shrink-0"
-                :style="{ color: form.logo_text_color || form.text_color }"
+                :style="{ color: form.transparent ? (form.transparent_logo_text_color || '#ffffff') : (form.logo_text_color || form.text_color) }"
               >
                 <img v-if="form.logo_image" :src="form.logo_image" alt="Logo" class="h-8 w-auto object-contain" />
                 <KitPressLogo v-else-if="form.show_logo_icon" size-class="w-6 h-6 shrink-0" />
@@ -151,7 +151,7 @@
             <div class="flex flex-wrap items-center gap-3 pt-1">
               <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.transparent" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
-                <span class="font-semibold text-slate-700">Transparent Header</span>
+                <span class="font-semibold text-slate-700">Transparent Header <span class="text-[10px] font-normal text-slate-400">(Home page only)</span></span>
               </label>
               <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.sticky" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
@@ -161,6 +161,17 @@
                 <input v-model="form.show_logo_icon" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
                 <span class="font-semibold text-slate-700">Show Default Brand Icon</span>
               </label>
+            </div>
+
+            <!-- Transparent Header Colors (Home Page Only) -->
+            <div v-if="form.transparent" class="bg-indigo-50/60 border border-indigo-200/80 rounded-xl p-4 space-y-3">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-700">
+                Transparent Header Colors (Home Page Only)
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ThemeColorPicker v-model="form.transparent_logo_text_color" label="Logo Text (Transparent)" compact />
+                <ThemeColorPicker v-model="form.transparent_nav_link_color" label="Menu Link (Transparent)" compact />
+              </div>
             </div>
 
             <!-- Style 3 Menu Bar Colors -->
@@ -363,6 +374,8 @@ const form = useForm({
   transparent: Boolean(props.header?.transparent),
   logo_text: props.header?.logo_text || '',
   logo_text_color: props.header?.logo_text_color || props.header?.text_color || '#0f172a',
+  transparent_logo_text_color: props.header?.transparent_logo_text_color || '#ffffff',
+  transparent_nav_link_color: props.header?.transparent_nav_link_color || '#ffffff',
   logo_image: props.header?.logo_image || '',
   show_logo_icon: props.header?.show_logo_icon !== undefined ? Boolean(props.header.show_logo_icon) : true,
   sticky: props.header?.sticky !== undefined ? Boolean(props.header.sticky) : true,
