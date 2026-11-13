@@ -202,10 +202,6 @@ const previewTypographyCss = computed(() =>
   )
 );
 
-const props = defineProps({
-  footer: Object,
-});
-
 const mediaModalOpen = ref(false);
 
 const form = useForm({
