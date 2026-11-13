@@ -245,6 +245,15 @@
                   <span>General</span>
                 </Link>
                 <Link
+                  href="/admin/theme/buttons"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/buttons') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Buttons</span>
+                </Link>
+                <Link
                   href="/admin/theme/header"
                   @click="closeMobileMenu"
                   :class="isActive('/admin/theme/header') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"

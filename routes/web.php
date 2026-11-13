@@ -81,6 +81,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,editor,a
         // Theme Settings & Builders (Admin only)
         Route::get('/theme/general', [ThemeController::class, 'general'])->name('theme.general');
         Route::post('/theme/general', [ThemeController::class, 'updateGeneral'])->name('theme.general.update');
+        Route::get('/theme/buttons', [ThemeController::class, 'buttons'])->name('theme.buttons');
+        Route::post('/theme/buttons', [ThemeController::class, 'updateButtons'])->name('theme.buttons.update');
         Route::get('/theme/header', [ThemeController::class, 'header'])->name('theme.header');
         Route::post('/theme/header', [ThemeController::class, 'updateHeader'])->name('theme.header.update');
         Route::get('/theme/footer', [ThemeController::class, 'footer'])->name('theme.footer');

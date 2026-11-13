@@ -1,0 +1,279 @@
+<template>
+  <AdminLayout>
+    <div class="space-y-6 max-w-5xl">
+      <!-- Header -->
+      <div class="pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="p-1.5 bg-indigo-100 text-indigo-700 rounded-lg">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+              </svg>
+            </span>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Theme &rsaquo; Buttons</h1>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">
+            Configure Primary, Secondary, and Accent button styles for Normal and Hover states with Solid or 2-Color Gradient backgrounds.
+          </p>
+        </div>
+
+        <!-- Variant Selector Tabs -->
+        <div class="inline-flex p-1 bg-slate-100 border border-slate-200 rounded-lg text-xs">
+          <button
+            v-for="v in variantTabs"
+            :key="v.key"
+            type="button"
+            @click="activeVariant = v.key"
+            :class="activeVariant === v.key ? 'bg-white text-indigo-700 font-bold shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+            class="px-3 py-1.5 rounded-md transition"
+          >
+            {{ v.label }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Interactive Hover Preview -->
+      <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            Live Interactive Preview (Hover over buttons to test Hover State)
+          </span>
+          <span class="text-[11px] text-slate-400 font-mono">.theme-btn-{{ activeVariant }}</span>
+        </div>
+
+        <component :is="'style'">{{ previewCss }}</component>
+
+        <div class="p-6 rounded-xl bg-slate-50 border border-slate-200 flex flex-wrap items-center gap-4">
+          <button type="button" class="theme-preview-btn-primary">
+            Primary Button
+          </button>
+          <button type="button" class="theme-preview-btn-secondary">
+            Secondary Button
+          </button>
+          <button type="button" class="theme-preview-btn-accent">
+            Accent / Outline Button
+          </button>
+        </div>
+      </div>
+
+      <form @submit.prevent="save" class="space-y-6">
+        <!-- Normal & Hover State Editors for Selected Variant -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div
+            v-for="stateName in ['normal', 'hover']"
+            :key="stateName"
+            class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4 text-xs"
+          >
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <h2 class="text-sm font-bold text-slate-800 capitalize">
+                {{ activeVariant }} &mdash; {{ stateName }} State
+              </h2>
+              <span
+                :class="stateName === 'normal' ? 'bg-slate-100 text-slate-700' : 'bg-indigo-100 text-indigo-700'"
+                class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+              >
+                {{ stateName }}
+              </span>
+            </div>
+
+            <!-- Background Type: Solid vs 2-Color Gradient -->
+            <div class="space-y-1.5">
+              <label class="font-semibold text-slate-700 block">Background Fill Type</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  @click="currentVariant[stateName].bg_type = 'solid'"
+                  :class="currentVariant[stateName].bg_type === 'solid' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-bold' : 'border-slate-200 bg-white text-slate-600'"
+                  class="py-2 px-3 rounded-lg border text-center transition"
+                >
+                  Solid Color
+                </button>
+                <button
+                  type="button"
+                  @click="currentVariant[stateName].bg_type = 'gradient'"
+                  :class="currentVariant[stateName].bg_type === 'gradient' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-bold' : 'border-slate-200 bg-white text-slate-600'"
+                  class="py-2 px-3 rounded-lg border text-center transition"
+                >
+                  2-Color Gradient
+                </button>
+              </div>
+            </div>
+
+            <!-- Solid Color Picker -->
+            <div v-if="currentVariant[stateName].bg_type === 'solid'" class="space-y-1">
+              <label class="font-semibold text-slate-700 block">Background Color</label>
+              <div class="flex items-center space-x-2">
+                <input
+                  v-model="currentVariant[stateName].bg_color"
+                  type="color"
+                  class="w-9 h-9 rounded border border-slate-300 cursor-pointer"
+                />
+                <input
+                  v-model="currentVariant[stateName].bg_color"
+                  type="text"
+                  placeholder="#4f46e5 or transparent"
+                  class="flex-1 px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono"
+                />
+              </div>
+            </div>
+
+            <!-- 2-Color Gradient Pickers -->
+            <div v-else class="space-y-3 p-3 rounded-lg bg-slate-50 border border-slate-200">
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="font-semibold text-slate-700 block">Color 1 (Start)</label>
+                  <div class="flex items-center space-x-1.5">
+                    <input v-model="currentVariant[stateName].grad_start" type="color" class="w-8 h-8 rounded border cursor-pointer" />
+                    <input v-model="currentVariant[stateName].grad_start" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono bg-white" />
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <label class="font-semibold text-slate-700 block">Color 2 (End)</label>
+                  <div class="flex items-center space-x-1.5">
+                    <input v-model="currentVariant[stateName].grad_end" type="color" class="w-8 h-8 rounded border cursor-pointer" />
+                    <input v-model="currentVariant[stateName].grad_end" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono bg-white" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-semibold text-slate-700 block">Gradient Direction</label>
+                <select v-model="currentVariant[stateName].grad_angle" class="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg bg-white">
+                  <option value="90deg">Horizontal (90deg &rarr;)</option>
+                  <option value="135deg">Diagonal (135deg &searr;)</option>
+                  <option value="180deg">Vertical (180deg &darr;)</option>
+                  <option value="45deg">Diagonal Up (45deg &nearr;)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Text & Border Colors -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1">
+                <label class="font-semibold text-slate-700 block">Text Color</label>
+                <div class="flex items-center space-x-1.5">
+                  <input v-model="currentVariant[stateName].text_color" type="color" class="w-8 h-8 rounded border cursor-pointer" />
+                  <input v-model="currentVariant[stateName].text_color" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono" />
+                </div>
+              </div>
+              <div class="space-y-1">
+                <label class="font-semibold text-slate-700 block">Border Color</label>
+                <div class="flex items-center space-x-1.5">
+                  <input v-model="currentVariant[stateName].border_color" type="color" class="w-8 h-8 rounded border cursor-pointer" />
+                  <input v-model="currentVariant[stateName].border_color" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shared Button Shape & Spacing -->
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
+          <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Global Button Shape &amp; Spacing</h2>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-700 block">Border Radius</label>
+              <input v-model="form.shape.border_radius" type="text" placeholder="8px" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono bg-slate-50" />
+            </div>
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-700 block">Padding X</label>
+              <input v-model="form.shape.padding_x" type="text" placeholder="18px" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono bg-slate-50" />
+            </div>
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-700 block">Padding Y</label>
+              <input v-model="form.shape.padding_y" type="text" placeholder="9px" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono bg-slate-50" />
+            </div>
+            <div class="space-y-1">
+              <label class="font-semibold text-slate-700 block">Font Weight</label>
+              <select v-model="form.shape.font_weight" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50">
+                <option value="500">500 (Medium)</option>
+                <option value="600">600 (SemiBold)</option>
+                <option value="700">700 (Bold)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            :disabled="form.processing"
+            class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-xs transition disabled:opacity-50"
+          >
+            {{ form.processing ? 'Saving...' : 'Save Button Styles' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+
+const props = defineProps({
+  buttons: Object,
+});
+
+const activeVariant = ref('primary');
+const variantTabs = [
+  { key: 'primary', label: 'Primary Button' },
+  { key: 'secondary', label: 'Secondary Button' },
+  { key: 'accent', label: 'Accent / Outline' },
+];
+
+const form = useForm({
+  shape: {
+    border_radius: props.buttons?.shape?.border_radius || '8px',
+    padding_x: props.buttons?.shape?.padding_x || '18px',
+    padding_y: props.buttons?.shape?.padding_y || '9px',
+    font_weight: props.buttons?.shape?.font_weight || '600',
+  },
+  variants: JSON.parse(JSON.stringify(props.buttons?.variants || {})),
+});
+
+const currentVariant = computed(() => form.variants[activeVariant.value]);
+
+const stateBg = (s) =>
+  s.bg_type === 'gradient'
+    ? `linear-gradient(${s.grad_angle || '135deg'}, ${s.grad_start}, ${s.grad_end})`
+    : s.bg_color;
+
+const previewCss = computed(() => {
+  const { border_radius, padding_x, padding_y, font_weight } = form.shape;
+  return ['primary', 'secondary', 'accent']
+    .map((key) => {
+      const v = form.variants[key];
+      if (!v) return '';
+      return `
+        .theme-preview-btn-${key} {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: ${border_radius};
+          padding: ${padding_y} ${padding_x};
+          font-weight: ${font_weight};
+          font-size: 13px;
+          border: 1px solid ${v.normal.border_color};
+          background: ${stateBg(v.normal)};
+          color: ${v.normal.text_color};
+          transition: all 0.2s ease;
+          cursor: pointer;
+        }
+        .theme-preview-btn-${key}:hover {
+          border-color: ${v.hover.border_color};
+          background: ${stateBg(v.hover)};
+          color: ${v.hover.text_color};
+        }
+      `;
+    })
+    .join('\n');
+});
+
+const save = () => {
+  form.post('/admin/theme/buttons');
+};
+</script>

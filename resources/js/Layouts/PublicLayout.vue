@@ -58,8 +58,7 @@
           <Link
             v-if="headerConfig.cta_enabled && headerConfig.cta_text"
             :href="headerConfig.cta_url || '/admin'"
-            :style="{ backgroundColor: generalConfig.colors.primary }"
-            class="px-3.5 py-1.5 text-xs font-semibold text-white rounded-lg shadow-xs hover:opacity-90 transition whitespace-nowrap"
+            class="theme-btn-primary text-xs shadow-xs whitespace-nowrap"
           >
             {{ headerConfig.cta_text }}
           </Link>
@@ -175,12 +174,54 @@ const rootThemeStyles = computed(() => ({
   lineHeight: generalConfig.value.typography.line_height,
 }));
 
+const buttonsConfig = computed(() => page.props.theme?.buttons || null);
+
+const compiledButtonsCss = computed(() => {
+  const cfg = buttonsConfig.value;
+  if (!cfg || !cfg.variants) return '';
+  const shape = cfg.shape || {};
+  const radius = shape.border_radius || '8px';
+  const px = shape.padding_x || '18px';
+  const py = shape.padding_y || '9px';
+  const weight = shape.font_weight || '600';
+
+  const stateBg = (s) =>
+    s?.bg_type === 'gradient'
+      ? `linear-gradient(${s.grad_angle || '135deg'}, ${s.grad_start}, ${s.grad_end})`
+      : (s?.bg_color || 'transparent');
+
+  return Object.entries(cfg.variants)
+    .map(([key, v]) => {
+      if (!v?.normal || !v?.hover) return '';
+      return `
+        .public-theme-root .theme-btn-${key} {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: ${radius};
+          padding: ${py} ${px};
+          font-weight: ${weight};
+          border: 1px solid ${v.normal.border_color};
+          background: ${stateBg(v.normal)};
+          color: ${v.normal.text_color};
+          transition: all 0.2s ease;
+        }
+        .public-theme-root .theme-btn-${key}:hover {
+          border-color: ${v.hover.border_color};
+          background: ${stateBg(v.hover)};
+          color: ${v.hover.text_color};
+        }
+      `;
+    })
+    .join('\n');
+});
+
 const compiledThemeCss = computed(() => {
   const headingFont = generalConfig.value.typography.heading_font;
   const headingWeight = generalConfig.value.typography.heading_weight;
   const custom = generalConfig.value.custom_css || '';
 
-  return `.public-theme-root h1, .public-theme-root h2, .public-theme-root h3, .public-theme-root h4 { font-family: ${headingFont}; font-weight: ${headingWeight}; }\n${custom}`;
+  return `.public-theme-root h1, .public-theme-root h2, .public-theme-root h3, .public-theme-root h4 { font-family: ${headingFont}; font-weight: ${headingWeight}; }\n${compiledButtonsCss.value}\n${custom}`;
 });
 </script>
 

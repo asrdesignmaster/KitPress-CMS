@@ -34,6 +34,80 @@ class ThemeController extends Controller
         ];
     }
 
+    public static function defaultButtons(): array
+    {
+        return [
+            'shape' => [
+                'border_radius' => '8px',
+                'padding_x' => '18px',
+                'padding_y' => '9px',
+                'font_weight' => '600',
+            ],
+            'variants' => [
+                'primary' => [
+                    'normal' => [
+                        'bg_type' => 'solid',
+                        'bg_color' => '#4f46e5',
+                        'grad_start' => '#4f46e5',
+                        'grad_end' => '#7c3aed',
+                        'grad_angle' => '135deg',
+                        'text_color' => '#ffffff',
+                        'border_color' => '#4f46e5',
+                    ],
+                    'hover' => [
+                        'bg_type' => 'gradient',
+                        'bg_color' => '#4338ca',
+                        'grad_start' => '#4338ca',
+                        'grad_end' => '#6d28d9',
+                        'grad_angle' => '135deg',
+                        'text_color' => '#ffffff',
+                        'border_color' => '#4338ca',
+                    ],
+                ],
+                'secondary' => [
+                    'normal' => [
+                        'bg_type' => 'solid',
+                        'bg_color' => '#0f172a',
+                        'grad_start' => '#0f172a',
+                        'grad_end' => '#334155',
+                        'grad_angle' => '135deg',
+                        'text_color' => '#ffffff',
+                        'border_color' => '#0f172a',
+                    ],
+                    'hover' => [
+                        'bg_type' => 'solid',
+                        'bg_color' => '#1e293b',
+                        'grad_start' => '#1e293b',
+                        'grad_end' => '#475569',
+                        'grad_angle' => '135deg',
+                        'text_color' => '#ffffff',
+                        'border_color' => '#1e293b',
+                    ],
+                ],
+                'accent' => [
+                    'normal' => [
+                        'bg_type' => 'solid',
+                        'bg_color' => 'transparent',
+                        'grad_start' => '#ec4899',
+                        'grad_end' => '#f43f5e',
+                        'grad_angle' => '135deg',
+                        'text_color' => '#4f46e5',
+                        'border_color' => '#4f46e5',
+                    ],
+                    'hover' => [
+                        'bg_type' => 'gradient',
+                        'bg_color' => '#4f46e5',
+                        'grad_start' => '#4f46e5',
+                        'grad_end' => '#06b6d4',
+                        'grad_angle' => '135deg',
+                        'text_color' => '#ffffff',
+                        'border_color' => '#4f46e5',
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public static function defaultHeader(): array
     {
         return [
@@ -81,16 +155,34 @@ class ThemeController extends Controller
     public static function getThemeConfig(): array
     {
         $general = Setting::get('theme_general', []);
+        $buttons = Setting::get('theme_buttons', []);
         $header = Setting::get('theme_header', []);
         $footer = Setting::get('theme_footer', []);
 
         $defaultGeneral = static::defaultGeneral();
+        $defaultButtons = static::defaultButtons();
+
+        $mergedVariants = $defaultButtons['variants'];
+        if (is_array($buttons['variants'] ?? null)) {
+            foreach ($mergedVariants as $variantKey => $variantDefaults) {
+                if (is_array($buttons['variants'][$variantKey] ?? null)) {
+                    $mergedVariants[$variantKey] = [
+                        'normal' => array_merge($variantDefaults['normal'], is_array($buttons['variants'][$variantKey]['normal'] ?? null) ? $buttons['variants'][$variantKey]['normal'] : []),
+                        'hover' => array_merge($variantDefaults['hover'], is_array($buttons['variants'][$variantKey]['hover'] ?? null) ? $buttons['variants'][$variantKey]['hover'] : []),
+                    ];
+                }
+            }
+        }
 
         return [
             'general' => [
                 'colors' => array_merge($defaultGeneral['colors'], is_array($general['colors'] ?? null) ? $general['colors'] : []),
                 'typography' => array_merge($defaultGeneral['typography'], is_array($general['typography'] ?? null) ? $general['typography'] : []),
                 'custom_css' => (string) ($general['custom_css'] ?? ''),
+            ],
+            'buttons' => [
+                'shape' => array_merge($defaultButtons['shape'], is_array($buttons['shape'] ?? null) ? $buttons['shape'] : []),
+                'variants' => $mergedVariants,
             ],
             'header' => array_merge(static::defaultHeader(), is_array($header) ? $header : []),
             'footer' => array_merge(static::defaultFooter(), is_array($footer) ? $footer : []),
@@ -126,6 +218,45 @@ class ThemeController extends Controller
         Setting::set('theme_general', $validated, 'theme');
 
         return redirect()->back()->with('success', 'Theme General settings (Colors, Typography & Custom CSS) saved.');
+    }
+
+    public function buttons(): Response
+    {
+        return Inertia::render('Admin/Theme/Buttons', [
+            'buttons' => static::getThemeConfig()['buttons'],
+        ]);
+    }
+
+    public function updateButtons(Request $request): RedirectResponse
+    {
+        $stateRules = fn (string $prefix) => [
+            "{$prefix}.bg_type" => ['required', 'in:solid,gradient'],
+            "{$prefix}.bg_color" => ['required', 'string', 'max:30'],
+            "{$prefix}.grad_start" => ['required', 'string', 'max:30'],
+            "{$prefix}.grad_end" => ['required', 'string', 'max:30'],
+            "{$prefix}.grad_angle" => ['required', 'string', 'max:20'],
+            "{$prefix}.text_color" => ['required', 'string', 'max:30'],
+            "{$prefix}.border_color" => ['required', 'string', 'max:30'],
+        ];
+
+        $rules = [
+            'shape' => ['required', 'array'],
+            'shape.border_radius' => ['required', 'string', 'max:20'],
+            'shape.padding_x' => ['required', 'string', 'max:20'],
+            'shape.padding_y' => ['required', 'string', 'max:20'],
+            'shape.font_weight' => ['required', 'string', 'max:10'],
+            'variants' => ['required', 'array'],
+        ];
+
+        foreach (['primary', 'secondary', 'accent'] as $variant) {
+            $rules["variants.{$variant}"] = ['required', 'array'];
+            $rules = array_merge($rules, $stateRules("variants.{$variant}.normal"), $stateRules("variants.{$variant}.hover"));
+        }
+
+        $validated = $request->validate($rules);
+        Setting::set('theme_buttons', $validated, 'theme');
+
+        return redirect()->back()->with('success', 'Theme Button styles saved.');
     }
 
     public function header(): Response
