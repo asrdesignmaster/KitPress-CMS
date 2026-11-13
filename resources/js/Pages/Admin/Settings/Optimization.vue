@@ -11,93 +11,150 @@
             </svg>
           </span>
           <h1 class="text-2xl font-bold text-slate-900 tracking-tight">
-            Site Optimization & Performance Center
+            Settings &rsaquo; {{ currentTab?.label }}
           </h1>
         </div>
         <p class="text-xs text-slate-500 mt-1">
-          Configure response compression, route and config caching, lazy loading, and one-click database cleanups.
+          Configure general site identity, homepage reading settings, response compression, caching, and database cleanups.
         </p>
       </div>
 
-      <!-- Settings Form -->
-      <form @submit.prevent="saveSettings" class="space-y-6">
+      <!-- 2-Column Layout: Left Tabs Sidebar + Right Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left Vertical Tabs Sidebar -->
+        <aside class="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 space-y-1">
+          <button
+            v-for="tab in tabs"
+            :key="tab.id"
+            type="button"
+            @click="activeTab = tab.id"
+            :class="activeTab === tab.id ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'"
+            class="w-full flex items-start space-x-3 px-3 py-2.5 rounded-lg text-left text-xs transition"
+          >
+            <svg
+              v-if="tab.id === 'general'"
+              class="w-4 h-4 shrink-0 mt-0.5"
+              :class="activeTab === tab.id ? 'text-indigo-600' : 'text-slate-400'"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <svg
+              v-else
+              class="w-4 h-4 shrink-0 mt-0.5"
+              :class="activeTab === tab.id ? 'text-indigo-600' : 'text-slate-400'"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <div class="min-w-0">
+              <div class="truncate">{{ tab.label }}</div>
+              <div class="text-[11px] text-slate-400 font-normal truncate">{{ tab.description }}</div>
+            </div>
+          </button>
+        </aside>
+
+        <!-- Right Tab Content -->
+        <div class="lg:col-span-9 space-y-6">
+          <!-- Settings Form -->
+          <form @submit.prevent="saveSettings" class="space-y-6">
         
-        <!-- General Identity Card -->
-        <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
-          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">
-            Site Identity
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div class="space-y-1">
-              <label class="font-semibold text-slate-700 block">Site Name</label>
-              <input v-model="form.site_name" type="text" class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-slate-900" />
-            </div>
-            <div class="space-y-1">
-              <label class="font-semibold text-slate-700 block">Tagline / Motto</label>
-              <input v-model="form.site_tagline" type="text" class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-slate-900" />
+        <!-- TAB 1: GENERAL -->
+        <div v-show="activeTab === 'general'" class="space-y-6">
+          <!-- General Identity Card -->
+          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              Site Identity
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div class="space-y-1">
+                <label class="font-semibold text-slate-700 block">Site Name</label>
+                <input v-model="form.site_name" type="text" class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-slate-900" />
+              </div>
+              <div class="space-y-1">
+                <label class="font-semibold text-slate-700 block">Tagline / Motto</label>
+                <input v-model="form.site_tagline" type="text" class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-slate-900" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Homepage Reading Settings (WordPress Style) -->
-        <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
-          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">
-            Homepage Displays (Reading Settings)
-          </h3>
-          <div class="space-y-3 text-xs">
-            <label class="flex items-start space-x-3 cursor-pointer">
-              <input
-                v-model="form.homepage_display"
-                type="radio"
-                value="latest_posts"
-                class="mt-0.5 text-indigo-600 focus:ring-indigo-500"
-              />
-              <div>
-                <span class="font-bold text-slate-800 block">Your latest posts</span>
-                <span class="text-slate-500 text-[11px]">Displays the default blog feed and featured articles on the homepage (/).</span>
-              </div>
-            </label>
-
-            <label class="flex items-start space-x-3 cursor-pointer">
-              <input
-                v-model="form.homepage_display"
-                type="radio"
-                value="static_page"
-                class="mt-0.5 text-indigo-600 focus:ring-indigo-500"
-              />
-              <div class="flex-1 space-y-2">
+          <!-- Homepage Reading Settings (WordPress Style) -->
+          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              Homepage Displays (Reading Settings)
+            </h3>
+            <div class="space-y-3 text-xs">
+              <label class="flex items-start space-x-3 cursor-pointer">
+                <input
+                  v-model="form.homepage_display"
+                  type="radio"
+                  value="latest_posts"
+                  class="mt-0.5 text-indigo-600 focus:ring-indigo-500"
+                />
                 <div>
-                  <span class="font-bold text-slate-800 block">A static page or post</span>
-                  <span class="text-slate-500 text-[11px]">Choose any published Page or Post (including Visual Builder layouts) as your default homepage.</span>
+                  <span class="font-bold text-slate-800 block">Your latest posts</span>
+                  <span class="text-slate-500 text-[11px]">Displays the default blog feed and featured articles on the homepage (/).</span>
                 </div>
+              </label>
 
-                <div v-if="form.homepage_display === 'static_page'" class="max-w-md pt-1">
-                  <select
-                    v-model="form.homepage_post_id"
-                    class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-slate-900 font-medium"
-                  >
-                    <option :value="null">-- Select a Published Page or Post --</option>
-                    <optgroup v-if="publishedPages.length" label="Published Pages">
-                      <option v-for="p in publishedPages" :key="'page-' + p.id" :value="p.id">
-                        {{ p.title }} (/{{ p.slug }})
-                      </option>
-                    </optgroup>
-                    <optgroup v-if="publishedPosts.length" label="Published Posts">
-                      <option v-for="p in publishedPosts" :key="'post-' + p.id" :value="p.id">
-                        {{ p.title }} (/{{ p.slug }})
-                      </option>
-                    </optgroup>
-                  </select>
-                  <p v-if="!publishedPages.length && !publishedPosts.length" class="text-[11px] text-amber-600 mt-1">
-                    No published pages or posts found. Publish a page or post first to set it as the homepage.
-                  </p>
+              <label class="flex items-start space-x-3 cursor-pointer">
+                <input
+                  v-model="form.homepage_display"
+                  type="radio"
+                  value="static_page"
+                  class="mt-0.5 text-indigo-600 focus:ring-indigo-500"
+                />
+                <div class="flex-1 space-y-2">
+                  <div>
+                    <span class="font-bold text-slate-800 block">A static page or post</span>
+                    <span class="text-slate-500 text-[11px]">Choose any published Page or Post (including Visual Builder layouts) as your default homepage.</span>
+                  </div>
+
+                  <div v-if="form.homepage_display === 'static_page'" class="max-w-md pt-1">
+                    <select
+                      v-model="form.homepage_post_id"
+                      class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-slate-900 font-medium"
+                    >
+                      <option :value="null">-- Select a Published Page or Post --</option>
+                      <optgroup v-if="publishedPages.length" label="Published Pages">
+                        <option v-for="p in publishedPages" :key="'page-' + p.id" :value="p.id">
+                          {{ p.title }} (/{{ p.slug }})
+                        </option>
+                      </optgroup>
+                      <optgroup v-if="publishedPosts.length" label="Published Posts">
+                        <option v-for="p in publishedPosts" :key="'post-' + p.id" :value="p.id">
+                          {{ p.title }} (/{{ p.slug }})
+                        </option>
+                      </optgroup>
+                    </select>
+                    <p v-if="!publishedPages.length && !publishedPosts.length" class="text-[11px] text-amber-600 mt-1">
+                      No published pages or posts found. Publish a page or post first to set it as the homepage.
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </label>
+              </label>
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                :disabled="form.processing"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-xs shadow-xs transition"
+              >
+                Save General Settings
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Asset Caching & Performance Card -->
+        <!-- TAB 2: SITE OPTIMIZATION (Form Section) -->
+        <div v-show="activeTab === 'optimization'" class="space-y-6">
+          <!-- Asset Caching & Performance Card -->
         <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
           <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between">
             <span>Asset Caching & Compression Controls</span>
@@ -184,9 +241,12 @@
             </button>
           </div>
         </div>
+        </div>
 
       </form>
 
+      <!-- TAB 2: SITE OPTIMIZATION (Cleanup & Cache Tools) -->
+      <div v-show="activeTab === 'optimization'" class="space-y-6">
       <!-- Database Cleanup Section -->
       <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
         <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider text-rose-700">
@@ -271,14 +331,27 @@
           </button>
         </div>
       </div>
+      </div>
+        </div>
+      </div>
 
     </div>
   </AdminLayout>
 </template>
 
 <script setup>
+import { computed, ref } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+
+const tabs = [
+  { id: 'general', label: 'General', description: 'Site identity & reading' },
+  { id: 'optimization', label: 'Site Optimization', description: 'Caching, compression & cleanup' },
+];
+
+const initialTab = new URLSearchParams(window.location.search).get('tab');
+const activeTab = ref(tabs.some(t => t.id === initialTab) ? initialTab : 'general');
+const currentTab = computed(() => tabs.find(t => t.id === activeTab.value) || tabs[0]);
 
 const props = defineProps({
   settings: Object,
