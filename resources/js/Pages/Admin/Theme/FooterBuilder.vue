@@ -29,7 +29,7 @@
             <div v-if="form.brand_enabled" class="space-y-3">
               <div class="flex items-center space-x-2 font-bold text-sm">
                 <img v-if="form.brand_logo" :src="form.brand_logo" alt="Company Logo" class="h-8 w-auto object-contain" />
-                <span v-else>{{ form.brand_name || $page.props.settings?.site_name || 'Modern CMS' }}</span>
+                <span v-else>{{ form.brand_name || $page.props.settings?.site_name || 'KitPress' }}</span>
               </div>
               <div v-if="form.brand_description" class="footer-brand-preview max-w-none opacity-90" v-html="form.brand_description"></div>
             </div>
@@ -44,7 +44,7 @@
           </div>
 
           <div class="pt-4 border-t border-current/15 text-xs flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>&copy; <span v-if="form.show_year">{{ new Date().getFullYear() }}</span> {{ $page.props.settings?.site_name || 'Modern CMS' }}. {{ form.copyright_text }}</span>
+            <span>&copy; <span v-if="form.show_year">{{ new Date().getFullYear() }}</span> {{ $page.props.settings?.site_name || 'KitPress' }}. {{ form.copyright_text }}</span>
           </div>
         </div>
       </div>

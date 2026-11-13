@@ -28,16 +28,7 @@
             :alt="headerConfig.logo_text || siteName"
             class="h-8 w-auto object-contain"
           />
-          <svg
-            v-else-if="headerConfig.show_logo_icon"
-            class="w-6 h-6"
-            :style="{ color: generalConfig.colors.primary }"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
+          <KitPressLogo v-else-if="headerConfig.show_logo_icon" size-class="w-7 h-7 shrink-0" />
           <span>{{ headerConfig.logo_text || siteName }}</span>
         </Link>
 
@@ -197,10 +188,11 @@
 <script setup>
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import KitPressLogo from '@/Components/KitPressLogo.vue';
 import { getTypographyFontsHref, compileTypographyCss } from '@/utils/themeFonts';
 
 const page = usePage();
-const siteName = computed(() => page.props.settings?.site_name || 'Modern CMS');
+const siteName = computed(() => page.props.settings?.site_name || 'KitPress');
 
 const generalConfig = computed(() => ({
   colors: {

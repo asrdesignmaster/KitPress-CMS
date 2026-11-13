@@ -182,7 +182,7 @@ class ThemeController extends Controller
             'brand_description' => '<p>Building fast, modern web experiences with clean architecture.</p>',
             'bg_color' => '#ffffff',
             'text_color' => '#64748b',
-            'copyright_text' => 'High-Performance Laravel + Vue CMS.',
+            'copyright_text' => 'Build Smarter. Publish Faster.',
             'show_year' => true,
             'columns' => [
                 [

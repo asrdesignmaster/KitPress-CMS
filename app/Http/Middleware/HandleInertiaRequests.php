@@ -51,8 +51,8 @@ class HandleInertiaRequests extends Middleware
                 'info' => fn () => $request->session()->get('info'),
             ],
             'settings' => fn () => [
-                'site_name' => Setting::get('site_name', 'Modern CMS'),
-                'site_tagline' => Setting::get('site_tagline', 'High-Performance Laravel + Vue CMS'),
+                'site_name' => Setting::get('site_name', 'KitPress'),
+                'site_tagline' => Setting::get('site_tagline', 'Build Smarter. Publish Faster.'),
                 'lazy_loading' => (bool) Setting::get('lazy_loading', true),
             ],
             'theme' => fn () => ThemeController::getThemeConfig(),

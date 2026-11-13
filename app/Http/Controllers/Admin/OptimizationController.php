@@ -24,8 +24,8 @@ class OptimizationController extends Controller
             'config_caching' => (bool) Setting::get('config_caching', false),
             'lazy_loading' => (bool) Setting::get('lazy_loading', true),
             'response_compression' => (bool) Setting::get('response_compression', true),
-            'site_name' => (string) Setting::get('site_name', 'Modern CMS'),
-            'site_tagline' => (string) Setting::get('site_tagline', 'Lightweight Laravel + Vue CMS Platform'),
+            'site_name' => (string) Setting::get('site_name', 'KitPress'),
+            'site_tagline' => (string) Setting::get('site_tagline', 'Build Smarter. Publish Faster.'),
             'homepage_display' => (string) (Setting::get('homepage_display', 'latest_posts') ?: 'latest_posts'),
             'homepage_post_id' => Setting::get('homepage_post_id') ? (int) Setting::get('homepage_post_id') : null,
         ];

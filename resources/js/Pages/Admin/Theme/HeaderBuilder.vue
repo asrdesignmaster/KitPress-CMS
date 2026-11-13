@@ -35,10 +35,8 @@
             <div class="h-16 px-6 flex items-center justify-between gap-4">
               <div class="flex items-center space-x-2 font-bold text-base shrink-0">
                 <img v-if="form.logo_image" :src="form.logo_image" alt="Logo" class="h-8 w-auto object-contain" />
-                <svg v-else-if="form.show_logo_icon" class="w-6 h-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                <span>{{ form.logo_text || $page.props.settings?.site_name || 'Modern CMS' }}</span>
+                <KitPressLogo v-else-if="form.show_logo_icon" size-class="w-6 h-6 shrink-0" />
+                <span>{{ form.logo_text || $page.props.settings?.site_name || 'KitPress' }}</span>
               </div>
 
               <!-- Style 2 Centered Nav -->
@@ -311,6 +309,7 @@ import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import MediaModal from '@/Components/MediaModal.vue';
 import ThemeColorPicker from '@/Components/ThemeColorPicker.vue';
+import KitPressLogo from '@/Components/KitPressLogo.vue';
 
 const props = defineProps({
   header: Object,
