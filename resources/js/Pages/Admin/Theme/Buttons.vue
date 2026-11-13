@@ -100,40 +100,25 @@
             </div>
 
             <!-- Solid Color Picker -->
-            <div v-if="currentVariant[stateName].bg_type === 'solid'" class="space-y-1">
-              <label class="font-semibold text-slate-700 block">Background Color</label>
-              <div class="flex items-center space-x-2">
-                <input
-                  v-model="currentVariant[stateName].bg_color"
-                  type="color"
-                  class="w-9 h-9 rounded border border-slate-300 cursor-pointer"
-                />
-                <input
-                  v-model="currentVariant[stateName].bg_color"
-                  type="text"
-                  placeholder="#4f46e5 or transparent"
-                  class="flex-1 px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono"
-                />
-              </div>
-            </div>
+            <ThemeColorPicker
+              v-if="currentVariant[stateName].bg_type === 'solid'"
+              v-model="currentVariant[stateName].bg_color"
+              label="Background Color"
+              placeholder="#4f46e5 or transparent"
+              :allow-transparent="true"
+            />
 
             <!-- 2-Color Gradient Pickers -->
             <div v-else class="space-y-3 p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                  <label class="font-semibold text-slate-700 block">Color 1 (Start)</label>
-                  <div class="flex items-center space-x-1.5">
-                    <input v-model="currentVariant[stateName].grad_start" type="color" class="w-8 h-8 rounded border cursor-pointer" />
-                    <input v-model="currentVariant[stateName].grad_start" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono bg-white" />
-                  </div>
-                </div>
-                <div class="space-y-1">
-                  <label class="font-semibold text-slate-700 block">Color 2 (End)</label>
-                  <div class="flex items-center space-x-1.5">
-                    <input v-model="currentVariant[stateName].grad_end" type="color" class="w-8 h-8 rounded border cursor-pointer" />
-                    <input v-model="currentVariant[stateName].grad_end" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono bg-white" />
-                  </div>
-                </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <ThemeColorPicker
+                  v-model="currentVariant[stateName].grad_start"
+                  label="Color 1 (Start)"
+                />
+                <ThemeColorPicker
+                  v-model="currentVariant[stateName].grad_end"
+                  label="Color 2 (End)"
+                />
               </div>
 
               <div class="space-y-1">
@@ -148,21 +133,16 @@
             </div>
 
             <!-- Text & Border Colors -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1">
-                <label class="font-semibold text-slate-700 block">Text Color</label>
-                <div class="flex items-center space-x-1.5">
-                  <input v-model="currentVariant[stateName].text_color" type="color" class="w-8 h-8 rounded border cursor-pointer" />
-                  <input v-model="currentVariant[stateName].text_color" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono" />
-                </div>
-              </div>
-              <div class="space-y-1">
-                <label class="font-semibold text-slate-700 block">Border Color</label>
-                <div class="flex items-center space-x-1.5">
-                  <input v-model="currentVariant[stateName].border_color" type="color" class="w-8 h-8 rounded border cursor-pointer" />
-                  <input v-model="currentVariant[stateName].border_color" type="text" class="w-full px-2 py-1 border border-slate-300 rounded font-mono" />
-                </div>
-              </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <ThemeColorPicker
+                v-model="currentVariant[stateName].text_color"
+                label="Text Color"
+              />
+              <ThemeColorPicker
+                v-model="currentVariant[stateName].border_color"
+                label="Border Color"
+                :allow-transparent="true"
+              />
             </div>
           </div>
         </div>
@@ -213,6 +193,7 @@
 import { ref, computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import ThemeColorPicker from '@/Components/ThemeColorPicker.vue';
 
 const props = defineProps({
   buttons: Object,
@@ -277,3 +258,4 @@ const save = () => {
   form.post('/admin/theme/buttons');
 };
 </script>
+
