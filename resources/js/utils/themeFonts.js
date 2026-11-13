@@ -66,3 +66,23 @@ export function resolveElementStyle(tag, typography = {}, colors = {}) {
   };
 }
 
+export function getTypographyFontsHref(typography = {}) {
+  const selected = [
+    typography?.body_font,
+    typography?.heading_font,
+    ...Object.values(typography?.elements || {}).map((el) => el?.font_family),
+  ];
+  return getBunnyFontsHref(selected);
+}
+
+export function compileTypographyCss(scopeSelector, typography = {}, colors = {}) {
+  return ['p', 'h1', 'h2', 'h3', 'h4']
+    .map((tag) => {
+      const style = resolveElementStyle(tag, typography, colors);
+      const explicitColor = typography?.elements?.[tag]?.color;
+      const colorRule = explicitColor ? `color: ${explicitColor};` : '';
+      return `${scopeSelector} ${tag} { font-family: ${style.fontFamily}; font-size: ${style.fontSize}; font-weight: ${style.fontWeight}; line-height: ${style.lineHeight}; ${colorRule} }`;
+    })
+    .join('\n');
+}
+

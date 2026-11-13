@@ -158,7 +158,7 @@
             </Link>
             <div
               v-if="footerConfig.brand_description"
-              class="prose prose-xs max-w-none text-xs opacity-85"
+              class="max-w-none opacity-90"
               v-html="footerConfig.brand_description"
             ></div>
           </div>
@@ -197,7 +197,7 @@
 <script setup>
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { getBunnyFontsHref, resolveElementStyle } from '@/utils/themeFonts';
+import { getTypographyFontsHref, compileTypographyCss } from '@/utils/themeFonts';
 
 const page = usePage();
 const siteName = computed(() => page.props.settings?.site_name || 'Modern CMS');
@@ -313,30 +313,14 @@ const compiledButtonsCss = computed(() => {
     .join('\n');
 });
 
-const bunnyFontsHref = computed(() => {
-  const typo = generalConfig.value.typography || {};
-  const selected = [
-    typo.body_font,
-    typo.heading_font,
-    ...Object.values(typo.elements || {}).map((el) => el?.font_family),
-  ];
-  return getBunnyFontsHref(selected);
-});
+const bunnyFontsHref = computed(() => getTypographyFontsHref(generalConfig.value.typography || {}));
 
 const compiledThemeCss = computed(() => {
   const typo = generalConfig.value.typography || {};
   const colors = generalConfig.value.colors || {};
   const custom = generalConfig.value.custom_css || '';
 
-  const elementRules = ['p', 'h1', 'h2', 'h3', 'h4']
-    .map((tag) => {
-      const style = resolveElementStyle(tag, typo, colors);
-      const explicitColor = typo.elements?.[tag]?.color;
-      const colorRule = explicitColor ? `color: ${explicitColor};` : '';
-      return `.public-theme-root ${tag} { font-family: ${style.fontFamily}; font-size: ${style.fontSize}; font-weight: ${style.fontWeight}; line-height: ${style.lineHeight}; ${colorRule} }`;
-    })
-    .join('\n');
-
+  const elementRules = compileTypographyCss('.public-theme-root', typo, colors);
   return `${elementRules}\n${compiledButtonsCss.value}\n${custom}`;
 });
 </script>

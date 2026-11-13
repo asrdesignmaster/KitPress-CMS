@@ -1,5 +1,7 @@
 <template>
   <AdminLayout>
+    <link v-if="bunnyFontsHref" rel="stylesheet" :href="bunnyFontsHref" />
+    <component :is="'style'">{{ previewTypographyCss }}</component>
     <div class="space-y-6 max-w-full">
       <!-- Header -->
       <div class="pb-4 border-b border-slate-200">
@@ -29,7 +31,7 @@
                 <img v-if="form.brand_logo" :src="form.brand_logo" alt="Company Logo" class="h-8 w-auto object-contain" />
                 <span v-else>{{ form.brand_name || $page.props.settings?.site_name || 'Modern CMS' }}</span>
               </div>
-              <div v-if="form.brand_description" class="prose prose-xs max-w-none text-xs opacity-85" v-html="form.brand_description"></div>
+              <div v-if="form.brand_description" class="footer-brand-preview max-w-none opacity-90" v-html="form.brand_description"></div>
             </div>
 
             <!-- Link Columns -->
@@ -179,11 +181,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import MediaModal from '@/Components/MediaModal.vue';
 import RichParagraphEditor from '@/Components/RichParagraphEditor.vue';
+import { getTypographyFontsHref, compileTypographyCss } from '@/utils/themeFonts';
+
+const props = defineProps({
+  footer: Object,
+});
+
+const page = usePage();
+const bunnyFontsHref = computed(() => getTypographyFontsHref(page.props.theme?.general?.typography || {}));
+const previewTypographyCss = computed(() =>
+  compileTypographyCss(
+    '.footer-brand-preview',
+    page.props.theme?.general?.typography || {},
+    page.props.theme?.general?.colors || {}
+  )
+);
 
 const props = defineProps({
   footer: Object,
