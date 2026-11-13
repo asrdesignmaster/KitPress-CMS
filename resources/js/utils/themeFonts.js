@@ -65,3 +65,4 @@ export function resolveElementStyle(tag, typography = {}, colors = {}) {
     lineHeight: el.line_height || (isParagraph ? typography.line_height || '1.6' : '1.25'),
   };
 }
+
