@@ -34,8 +34,12 @@ class ThemeController extends Controller
         ];
     }
 
-    public static function defaultButtons(): array
+    public static function defaultButtons(array $colors = []): array
     {
+        $primary = $colors['primary'] ?? '#4f46e5';
+        $secondary = $colors['secondary'] ?? '#0f172a';
+        $accent = $colors['accent'] ?? '#6366f1';
+
         return [
             'shape' => [
                 'border_radius' => '8px',
@@ -47,61 +51,61 @@ class ThemeController extends Controller
                 'primary' => [
                     'normal' => [
                         'bg_type' => 'solid',
-                        'bg_color' => '#4f46e5',
-                        'grad_start' => '#4f46e5',
-                        'grad_end' => '#7c3aed',
+                        'bg_color' => $primary,
+                        'grad_start' => $primary,
+                        'grad_end' => $accent,
                         'grad_angle' => '135deg',
                         'text_color' => '#ffffff',
-                        'border_color' => '#4f46e5',
+                        'border_color' => $primary,
                     ],
                     'hover' => [
-                        'bg_type' => 'gradient',
-                        'bg_color' => '#4338ca',
-                        'grad_start' => '#4338ca',
-                        'grad_end' => '#6d28d9',
+                        'bg_type' => 'solid',
+                        'bg_color' => $accent,
+                        'grad_start' => $primary,
+                        'grad_end' => $secondary,
                         'grad_angle' => '135deg',
                         'text_color' => '#ffffff',
-                        'border_color' => '#4338ca',
+                        'border_color' => $accent,
                     ],
                 ],
                 'secondary' => [
                     'normal' => [
                         'bg_type' => 'solid',
-                        'bg_color' => '#0f172a',
-                        'grad_start' => '#0f172a',
-                        'grad_end' => '#334155',
+                        'bg_color' => $secondary,
+                        'grad_start' => $secondary,
+                        'grad_end' => $primary,
                         'grad_angle' => '135deg',
                         'text_color' => '#ffffff',
-                        'border_color' => '#0f172a',
+                        'border_color' => $secondary,
                     ],
                     'hover' => [
                         'bg_type' => 'solid',
-                        'bg_color' => '#1e293b',
-                        'grad_start' => '#1e293b',
-                        'grad_end' => '#475569',
+                        'bg_color' => $primary,
+                        'grad_start' => $secondary,
+                        'grad_end' => $accent,
                         'grad_angle' => '135deg',
                         'text_color' => '#ffffff',
-                        'border_color' => '#1e293b',
+                        'border_color' => $primary,
                     ],
                 ],
                 'accent' => [
                     'normal' => [
                         'bg_type' => 'solid',
                         'bg_color' => 'transparent',
-                        'grad_start' => '#ec4899',
-                        'grad_end' => '#f43f5e',
+                        'grad_start' => $accent,
+                        'grad_end' => $primary,
                         'grad_angle' => '135deg',
-                        'text_color' => '#4f46e5',
-                        'border_color' => '#4f46e5',
+                        'text_color' => $accent,
+                        'border_color' => $accent,
                     ],
                     'hover' => [
-                        'bg_type' => 'gradient',
-                        'bg_color' => '#4f46e5',
-                        'grad_start' => '#4f46e5',
-                        'grad_end' => '#06b6d4',
+                        'bg_type' => 'solid',
+                        'bg_color' => $accent,
+                        'grad_start' => $accent,
+                        'grad_end' => $primary,
                         'grad_angle' => '135deg',
                         'text_color' => '#ffffff',
-                        'border_color' => '#4f46e5',
+                        'border_color' => $accent,
                     ],
                 ],
             ],
@@ -160,7 +164,8 @@ class ThemeController extends Controller
         $footer = Setting::get('theme_footer', []);
 
         $defaultGeneral = static::defaultGeneral();
-        $defaultButtons = static::defaultButtons();
+        $resolvedColors = array_merge($defaultGeneral['colors'], is_array($general['colors'] ?? null) ? $general['colors'] : []);
+        $defaultButtons = static::defaultButtons($resolvedColors);
 
         $mergedVariants = $defaultButtons['variants'];
         if (is_array($buttons['variants'] ?? null)) {
