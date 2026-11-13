@@ -12,7 +12,7 @@
           <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Theme &rsaquo; Footer Builder</h1>
         </div>
         <p class="text-xs text-slate-500 mt-1">
-          Build your site footer columns, navigation links, colors, and copyright notice.
+          Build your site footer with a default company logo &amp; description column, custom link columns, colors, and copyright notice.
         </p>
       </div>
 
@@ -22,7 +22,17 @@
           Live Footer Preview
         </div>
         <div class="p-6 space-y-6 border-t border-slate-200/60" :style="{ backgroundColor: form.bg_color, color: form.text_color }">
-          <div v-if="form.columns.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <!-- Default Brand Column -->
+            <div v-if="form.brand_enabled" class="space-y-3">
+              <div class="flex items-center space-x-2 font-bold text-sm">
+                <img v-if="form.brand_logo" :src="form.brand_logo" alt="Company Logo" class="h-8 w-auto object-contain" />
+                <span v-else>{{ form.brand_name || $page.props.settings?.site_name || 'Modern CMS' }}</span>
+              </div>
+              <div v-if="form.brand_description" class="prose prose-xs max-w-none text-xs opacity-85" v-html="form.brand_description"></div>
+            </div>
+
+            <!-- Link Columns -->
             <div v-for="(col, cIdx) in form.columns" :key="cIdx" class="space-y-2">
               <h4 class="text-xs font-bold uppercase tracking-wider">{{ col.title || 'Column' }}</h4>
               <ul class="space-y-1 text-xs opacity-80">
@@ -30,6 +40,7 @@
               </ul>
             </div>
           </div>
+
           <div class="pt-4 border-t border-current/15 text-xs flex flex-col sm:flex-row items-center justify-between gap-2">
             <span>&copy; <span v-if="form.show_year">{{ new Date().getFullYear() }}</span> {{ $page.props.settings?.site_name || 'Modern CMS' }}. {{ form.copyright_text }}</span>
           </div>
@@ -37,6 +48,44 @@
       </div>
 
       <form @submit.prevent="save" class="space-y-6">
+        <!-- Default Brand Column (Company Logo + Rich Text Paragraph) -->
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="text-sm font-bold text-slate-800">Default Brand Column (Logo &amp; Paragraph)</h2>
+              <p class="text-[11px] text-slate-500">First column of your footer displaying your company logo and formatted description.</p>
+            </div>
+            <label class="flex items-center space-x-2 cursor-pointer">
+              <input v-model="form.brand_enabled" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
+              <span class="font-semibold text-slate-700">Enable Column</span>
+            </label>
+          </div>
+
+          <div v-if="form.brand_enabled" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="font-semibold text-slate-700 block">Company Logo URL</label>
+                <div class="flex items-center space-x-2">
+                  <input v-model="form.brand_logo" type="text" placeholder="/media-files/..." class="flex-1 px-3 py-2 border border-slate-300 rounded-lg bg-slate-50" />
+                  <button type="button" @click="mediaModalOpen = true" class="px-3 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg font-semibold hover:bg-indigo-100">
+                    Browse
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-semibold text-slate-700 block">Company Name (fallback if no logo)</label>
+                <input v-model="form.brand_name" type="text" placeholder="Uses Site Name if empty" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50" />
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="font-semibold text-slate-700 block">Paragraph Text (below logo)</label>
+              <RichParagraphEditor v-model="form.brand_description" />
+            </div>
+          </div>
+        </div>
+
         <!-- Appearance & Copyright -->
         <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
           <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Style &amp; Copyright</h2>
@@ -124,18 +173,29 @@
         </div>
       </form>
     </div>
+
+    <MediaModal :is-open="mediaModalOpen" @close="mediaModalOpen = false" @select="onMediaSelect" />
   </AdminLayout>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import MediaModal from '@/Components/MediaModal.vue';
+import RichParagraphEditor from '@/Components/RichParagraphEditor.vue';
 
 const props = defineProps({
   footer: Object,
 });
 
+const mediaModalOpen = ref(false);
+
 const form = useForm({
+  brand_enabled: props.footer?.brand_enabled !== undefined ? Boolean(props.footer.brand_enabled) : true,
+  brand_logo: props.footer?.brand_logo || '',
+  brand_name: props.footer?.brand_name || '',
+  brand_description: props.footer?.brand_description || '<p>Building fast, modern web experiences with clean architecture.</p>',
   bg_color: props.footer?.bg_color || '#ffffff',
   text_color: props.footer?.text_color || '#64748b',
   copyright_text: props.footer?.copyright_text || 'High-Performance Laravel + Vue CMS.',
@@ -156,8 +216,11 @@ const addColumn = () => {
   });
 };
 
+const onMediaSelect = (mediaItem) => {
+  form.brand_logo = mediaItem.sizes?.medium?.url || mediaItem.url;
+};
+
 const save = () => {
   form.post('/admin/theme/footer');
 };
 </script>
-

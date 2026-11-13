@@ -140,7 +140,28 @@
       class="border-t border-slate-200/80 py-10 text-xs mt-12"
     >
       <div class="max-w-6xl mx-auto px-4 space-y-8">
-        <div v-if="footerConfig.columns && footerConfig.columns.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div
+          v-if="footerConfig.brand_enabled || (footerConfig.columns && footerConfig.columns.length)"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8"
+        >
+          <!-- Default Brand Column -->
+          <div v-if="footerConfig.brand_enabled" class="space-y-3">
+            <Link href="/" class="inline-flex items-center space-x-2 font-bold text-sm">
+              <img
+                v-if="footerConfig.brand_logo"
+                :src="footerConfig.brand_logo"
+                :alt="footerConfig.brand_name || siteName"
+                class="h-8 w-auto object-contain"
+              />
+              <span v-else>{{ footerConfig.brand_name || siteName }}</span>
+            </Link>
+            <div
+              v-if="footerConfig.brand_description"
+              class="prose prose-xs max-w-none text-xs opacity-85"
+              v-html="footerConfig.brand_description"
+            ></div>
+          </div>
+
           <div v-for="(col, cIdx) in footerConfig.columns" :key="cIdx" class="space-y-3">
             <h4 class="text-xs font-bold uppercase tracking-wider">{{ col.title }}</h4>
             <ul class="space-y-2 opacity-85">
@@ -220,6 +241,10 @@ const headerConfig = computed(() => ({
 }));
 
 const footerConfig = computed(() => ({
+  brand_enabled: true,
+  brand_logo: '',
+  brand_name: '',
+  brand_description: '',
   bg_color: '#ffffff',
   text_color: '#64748b',
   copyright_text: 'High-Performance Laravel + Vue CMS.',

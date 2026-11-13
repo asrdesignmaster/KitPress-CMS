@@ -139,6 +139,10 @@ class ThemeController extends Controller
     public static function defaultFooter(): array
     {
         return [
+            'brand_enabled' => true,
+            'brand_logo' => '',
+            'brand_name' => '',
+            'brand_description' => '<p>Building fast, modern web experiences with clean architecture.</p>',
             'bg_color' => '#ffffff',
             'text_color' => '#64748b',
             'copyright_text' => 'High-Performance Laravel + Vue CMS.',
@@ -318,6 +322,10 @@ class ThemeController extends Controller
     public function updateFooter(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'brand_enabled' => ['boolean'],
+            'brand_logo' => ['nullable', 'string', 'max:500'],
+            'brand_name' => ['nullable', 'string', 'max:100'],
+            'brand_description' => ['nullable', 'string', 'max:5000'],
             'bg_color' => ['required', 'string', 'max:30'],
             'text_color' => ['required', 'string', 'max:30'],
             'copyright_text' => ['nullable', 'string', 'max:255'],
