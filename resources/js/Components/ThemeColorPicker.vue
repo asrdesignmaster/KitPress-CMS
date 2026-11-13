@@ -18,23 +18,32 @@
     </div>
 
     <!-- Defined Theme Color Swatches -->
-    <div class="flex flex-wrap items-center gap-1 pt-0.5">
+    <div :class="compact ? 'flex items-center gap-1.5 pt-0.5' : 'flex flex-wrap items-center gap-1 pt-0.5'">
       <button
         v-for="swatch in swatches"
         :key="swatch.key"
         type="button"
         @click="$emit('update:modelValue', swatch.value)"
         :title="`${swatch.label}: ${swatch.value}`"
-        :class="isSelected(swatch.value) ? 'ring-2 ring-indigo-600 ring-offset-1 border-indigo-600 font-bold text-slate-900' : 'border-slate-200 text-slate-600 hover:border-slate-400'"
-        class="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded border bg-white text-[10px] transition"
+        :class="[
+          compact
+            ? (isSelected(swatch.value) ? 'ring-2 ring-indigo-600 ring-offset-1 border-indigo-600' : 'border-slate-300 hover:scale-110')
+            : (isSelected(swatch.value) ? 'ring-2 ring-indigo-600 ring-offset-1 border-indigo-600 font-bold text-slate-900' : 'border-slate-200 text-slate-600 hover:border-slate-400'),
+          compact ? 'w-4 h-4 rounded-full border transition shrink-0' : 'inline-flex items-center space-x-1 px-1.5 py-0.5 rounded border bg-white text-[10px] transition'
+        ]"
+        :style="compact ? (swatch.value === 'transparent'
+          ? { backgroundImage: 'linear-gradient(45deg, #cbd5e1 25%, transparent 25%), linear-gradient(-45deg, #cbd5e1 25%, transparent 25%)', backgroundSize: '6px 6px' }
+          : { backgroundColor: swatch.value }) : undefined"
       >
-        <span
-          class="w-2.5 h-2.5 rounded-full border border-slate-300 shrink-0"
-          :style="swatch.value === 'transparent'
-            ? { backgroundImage: 'linear-gradient(45deg, #cbd5e1 25%, transparent 25%), linear-gradient(-45deg, #cbd5e1 25%, transparent 25%)', backgroundSize: '6px 6px' }
-            : { backgroundColor: swatch.value }"
-        ></span>
-        <span>{{ swatch.label }}</span>
+        <template v-if="!compact">
+          <span
+            class="w-2.5 h-2.5 rounded-full border border-slate-300 shrink-0"
+            :style="swatch.value === 'transparent'
+              ? { backgroundImage: 'linear-gradient(45deg, #cbd5e1 25%, transparent 25%), linear-gradient(-45deg, #cbd5e1 25%, transparent 25%)', backgroundSize: '6px 6px' }
+              : { backgroundColor: swatch.value }"
+          ></span>
+          <span>{{ swatch.label }}</span>
+        </template>
       </button>
     </div>
   </div>
@@ -58,6 +67,10 @@ const props = defineProps({
     default: '#4f46e5',
   },
   allowTransparent: {
+    type: Boolean,
+    default: false,
+  },
+  compact: {
     type: Boolean,
     default: false,
   },

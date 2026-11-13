@@ -106,9 +106,10 @@
         <!-- Left 7 Cols: Controls -->
         <form @submit.prevent="save" class="xl:col-span-7 space-y-6">
           <!-- Brand & Style -->
-          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
+          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-5 text-xs">
             <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Branding &amp; Appearance</h2>
 
+            <!-- Brand Identity -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-1">
                 <label class="font-semibold text-slate-700 block">Logo Text (optional override)</label>
@@ -124,26 +125,39 @@
                   </button>
                 </div>
               </div>
+            </div>
 
-              <ThemeColorPicker v-model="form.bg_color" label="Header Background Color" />
-              <ThemeColorPicker v-model="form.text_color" label="Header Text Color" />
-              <ThemeColorPicker v-model="form.logo_text_color" label="Logo Text Color" />
-              <ThemeColorPicker v-model="form.nav_link_color" label="Menu Link Color (Normal)" />
-              <ThemeColorPicker v-model="form.nav_link_hover_color" label="Menu Link Color (Hover)" />
-              <ThemeColorPicker v-model="form.nav_link_active_color" label="Menu Link Color (Active)" />
+            <!-- Header & Logo Colors -->
+            <div class="bg-slate-50/70 border border-slate-200/80 rounded-xl p-4 space-y-3">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Header &amp; Logo Colors</div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <ThemeColorPicker v-model="form.bg_color" label="Background" compact />
+                <ThemeColorPicker v-model="form.text_color" label="Header Text" compact />
+                <ThemeColorPicker v-model="form.logo_text_color" label="Logo Text" compact />
+              </div>
+            </div>
+
+            <!-- Menu Link Colors -->
+            <div class="bg-slate-50/70 border border-slate-200/80 rounded-xl p-4 space-y-3">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Menu Link Colors</div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <ThemeColorPicker v-model="form.nav_link_color" label="Normal" compact />
+                <ThemeColorPicker v-model="form.nav_link_hover_color" label="Hover" compact />
+                <ThemeColorPicker v-model="form.nav_link_active_color" label="Active" compact />
+              </div>
             </div>
 
             <!-- Transparent, Sticky & Brand Icon Toggles -->
-            <div class="flex flex-wrap items-center gap-6 pt-2 border-t border-slate-100">
-              <label class="flex items-center space-x-2 cursor-pointer">
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.transparent" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
                 <span class="font-semibold text-slate-700">Transparent Header</span>
               </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
+              <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.sticky" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
                 <span class="font-semibold text-slate-700">Sticky Header on Scroll</span>
               </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
+              <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.show_logo_icon" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
                 <span class="font-semibold text-slate-700">Show Default Brand Icon</span>
               </label>
