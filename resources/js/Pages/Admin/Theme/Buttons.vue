@@ -86,18 +86,21 @@
                 label="Background Color"
                 placeholder="#4f46e5 or transparent"
                 :allow-transparent="true"
+                compact
               />
 
               <!-- 2-Color Gradient Pickers -->
               <div v-else class="space-y-3 p-3 rounded-lg bg-slate-50 border border-slate-200">
-                <div class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <ThemeColorPicker
                     v-model="currentVariant[stateName].grad_start"
                     label="Color 1 (Start)"
+                    compact
                   />
                   <ThemeColorPicker
                     v-model="currentVariant[stateName].grad_end"
                     label="Color 2 (End)"
+                    compact
                   />
                 </div>
 
@@ -113,15 +116,17 @@
               </div>
 
               <!-- Text & Border Colors -->
-              <div class="space-y-3 pt-1 border-t border-slate-100">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
                 <ThemeColorPicker
                   v-model="currentVariant[stateName].text_color"
                   label="Text Color"
+                  compact
                 />
                 <ThemeColorPicker
                   v-model="currentVariant[stateName].border_color"
                   label="Border Color"
                   :allow-transparent="true"
+                  compact
                 />
               </div>
             </div>
