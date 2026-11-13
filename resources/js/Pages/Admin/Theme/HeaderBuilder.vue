@@ -16,7 +16,74 @@
         </p>
       </div>
 
-      <!-- Main Grid: Left Controls + Right Styles & Preview Panel -->
+      <!-- Live Header Preview (Top Full-Width) -->
+      <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
+        <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-500">
+          <span>Live Header Preview</span>
+          <span v-if="form.transparent" class="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Transparent</span>
+        </div>
+
+        <div :class="form.transparent ? 'bg-gradient-to-r from-slate-800 to-indigo-900 pt-2 pb-6' : 'bg-slate-100'">
+          <div
+            :style="{
+              backgroundColor: form.transparent ? 'transparent' : form.bg_color,
+              color: form.text_color,
+            }"
+            :class="form.transparent ? '' : 'border-b border-slate-200/70'"
+          >
+            <!-- Top Bar -->
+            <div class="h-16 px-6 flex items-center justify-between gap-4">
+              <div class="flex items-center space-x-2 font-bold text-base shrink-0">
+                <img v-if="form.logo_image" :src="form.logo_image" alt="Logo" class="h-8 w-auto object-contain" />
+                <svg v-else-if="form.show_logo_icon" class="w-6 h-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <span>{{ form.logo_text || $page.props.settings?.site_name || 'Modern CMS' }}</span>
+              </div>
+
+              <!-- Style 2 Centered Nav -->
+              <div v-if="form.layout_style === 'style_2'" class="flex-1 flex items-center justify-center space-x-5 text-xs font-semibold overflow-hidden">
+                <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85 truncate">
+                  {{ link.label || 'Link' }}
+                </span>
+              </div>
+
+              <!-- Right Side -->
+              <div class="flex items-center space-x-4 text-xs font-semibold shrink-0">
+                <template v-if="form.layout_style === 'style_1'">
+                  <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85">
+                    {{ link.label || 'Link' }}
+                  </span>
+                </template>
+                <span
+                  v-if="form.cta_enabled && form.cta_text"
+                  class="px-3 py-1.5 rounded-lg text-white bg-indigo-600"
+                >
+                  {{ form.cta_text }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Style 3 Full-Width Menu Bar Below -->
+            <div
+              v-if="form.layout_style === 'style_3'"
+              :style="{
+                backgroundColor: form.menu_bar_bg,
+                borderTopColor: form.menu_bar_border,
+                borderBottomColor: form.menu_bar_border,
+                color: form.menu_bar_text,
+              }"
+              class="w-full px-6 py-2.5 border-t border-b flex items-center justify-center space-x-6 text-xs font-semibold"
+            >
+              <span v-for="(link, idx) in form.nav_links" :key="idx">
+                {{ link.label || 'Link' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Grid: Left Controls + Right Styles Panel -->
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         
         <!-- Left 7 Cols: Controls -->
@@ -227,73 +294,6 @@
                   </div>
                 </div>
               </button>
-            </div>
-          </div>
-
-          <!-- Live Header Preview -->
-          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
-            <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              <span>Live Header Preview</span>
-              <span v-if="form.transparent" class="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Transparent</span>
-            </div>
-
-            <div :class="form.transparent ? 'bg-gradient-to-r from-slate-800 to-indigo-900 pt-2 pb-6' : 'bg-slate-100'">
-              <div
-                :style="{
-                  backgroundColor: form.transparent ? 'transparent' : form.bg_color,
-                  color: form.text_color,
-                }"
-                :class="form.transparent ? '' : 'border-b border-slate-200/70'"
-              >
-                <!-- Top Bar -->
-                <div class="h-14 px-4 flex items-center justify-between gap-2">
-                  <div class="flex items-center space-x-1.5 font-bold text-sm shrink-0">
-                    <img v-if="form.logo_image" :src="form.logo_image" alt="Logo" class="h-6 w-auto object-contain" />
-                    <svg v-else-if="form.show_logo_icon" class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    <span>{{ form.logo_text || $page.props.settings?.site_name || 'Modern CMS' }}</span>
-                  </div>
-
-                  <!-- Style 2 Centered Nav -->
-                  <div v-if="form.layout_style === 'style_2'" class="flex-1 flex items-center justify-center space-x-3 text-[11px] font-semibold overflow-hidden">
-                    <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85 truncate">
-                      {{ link.label || 'Link' }}
-                    </span>
-                  </div>
-
-                  <!-- Right Side -->
-                  <div class="flex items-center space-x-3 text-[11px] font-semibold shrink-0">
-                    <template v-if="form.layout_style === 'style_1'">
-                      <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85">
-                        {{ link.label || 'Link' }}
-                      </span>
-                    </template>
-                    <span
-                      v-if="form.cta_enabled && form.cta_text"
-                      class="px-2.5 py-1 rounded-md text-white bg-indigo-600"
-                    >
-                      {{ form.cta_text }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Style 3 Full-Width Menu Bar Below -->
-                <div
-                  v-if="form.layout_style === 'style_3'"
-                  :style="{
-                    backgroundColor: form.menu_bar_bg,
-                    borderTopColor: form.menu_bar_border,
-                    borderBottomColor: form.menu_bar_border,
-                    color: form.menu_bar_text,
-                  }"
-                  class="w-full px-4 py-2 border-t border-b flex items-center justify-center space-x-4 text-[11px] font-semibold"
-                >
-                  <span v-for="(link, idx) in form.nav_links" :key="idx">
-                    {{ link.label || 'Link' }}
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </aside>
