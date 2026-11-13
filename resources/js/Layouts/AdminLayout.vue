@@ -332,7 +332,7 @@
       <!-- Main Content Area -->
       <main
         :class="isSidebarCollapsed ? 'md:ml-16' : 'md:ml-60'"
-        class="flex-1 ml-0 p-6 overflow-x-hidden min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
+        class="flex-1 ml-0 p-6 overflow-x-clip min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
       >
         <!-- Slot Content -->
         <slot />
