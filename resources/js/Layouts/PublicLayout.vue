@@ -3,7 +3,8 @@
     class="min-h-screen flex flex-col antialiased public-theme-root"
     :style="rootThemeStyles"
   >
-    <!-- Inject Theme Custom CSS & Heading Typography -->
+    <!-- Inject Selected Webfonts, Theme Typography, Buttons & Custom CSS -->
+    <link v-if="bunnyFontsHref" rel="stylesheet" :href="bunnyFontsHref" />
     <component :is="'style'" v-if="compiledThemeCss">{{ compiledThemeCss }}</component>
 
     <!-- Dynamic Header from Theme Header Builder -->
@@ -196,6 +197,7 @@
 <script setup>
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { getBunnyFontsHref, resolveElementStyle } from '@/utils/themeFonts';
 
 const page = usePage();
 const siteName = computed(() => page.props.settings?.site_name || 'Modern CMS');
@@ -311,12 +313,31 @@ const compiledButtonsCss = computed(() => {
     .join('\n');
 });
 
+const bunnyFontsHref = computed(() => {
+  const typo = generalConfig.value.typography || {};
+  const selected = [
+    typo.body_font,
+    typo.heading_font,
+    ...Object.values(typo.elements || {}).map((el) => el?.font_family),
+  ];
+  return getBunnyFontsHref(selected);
+});
+
 const compiledThemeCss = computed(() => {
-  const headingFont = generalConfig.value.typography.heading_font;
-  const headingWeight = generalConfig.value.typography.heading_weight;
+  const typo = generalConfig.value.typography || {};
+  const colors = generalConfig.value.colors || {};
   const custom = generalConfig.value.custom_css || '';
 
-  return `.public-theme-root h1, .public-theme-root h2, .public-theme-root h3, .public-theme-root h4 { font-family: ${headingFont}; font-weight: ${headingWeight}; }\n${compiledButtonsCss.value}\n${custom}`;
+  const elementRules = ['p', 'h1', 'h2', 'h3', 'h4']
+    .map((tag) => {
+      const style = resolveElementStyle(tag, typo, colors);
+      const explicitColor = typo.elements?.[tag]?.color;
+      const colorRule = explicitColor ? `color: ${explicitColor};` : '';
+      return `.public-theme-root ${tag} { font-family: ${style.fontFamily}; font-size: ${style.fontSize}; font-weight: ${style.fontWeight}; line-height: ${style.lineHeight}; ${colorRule} }`;
+    })
+    .join('\n');
+
+  return `${elementRules}\n${compiledButtonsCss.value}\n${custom}`;
 });
 </script>
 

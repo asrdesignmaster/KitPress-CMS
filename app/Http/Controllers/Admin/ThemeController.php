@@ -29,6 +29,43 @@ class ThemeController extends Controller
                 'base_size' => '16px',
                 'heading_weight' => '700',
                 'line_height' => '1.6',
+                'elements' => [
+                    'p' => [
+                        'font_family' => 'default',
+                        'color' => '',
+                        'font_size' => '16px',
+                        'font_weight' => 'default',
+                        'line_height' => '1.6',
+                    ],
+                    'h1' => [
+                        'font_family' => 'default',
+                        'color' => '',
+                        'font_size' => '2.5em',
+                        'font_weight' => '800',
+                        'line_height' => '1.2',
+                    ],
+                    'h2' => [
+                        'font_family' => 'default',
+                        'color' => '',
+                        'font_size' => '2em',
+                        'font_weight' => '700',
+                        'line_height' => '1.25',
+                    ],
+                    'h3' => [
+                        'font_family' => 'default',
+                        'color' => '',
+                        'font_size' => '1.5em',
+                        'font_weight' => '700',
+                        'line_height' => '1.3',
+                    ],
+                    'h4' => [
+                        'font_family' => 'default',
+                        'color' => '',
+                        'font_size' => '1.25em',
+                        'font_weight' => '600',
+                        'line_height' => '1.35',
+                    ],
+                ],
             ],
             'custom_css' => '',
         ];
@@ -188,10 +225,21 @@ class ThemeController extends Controller
             }
         }
 
+        $mergedTypography = array_merge($defaultGeneral['typography'], is_array($general['typography'] ?? null) ? $general['typography'] : []);
+        $mergedElements = $defaultGeneral['typography']['elements'];
+        if (is_array($general['typography']['elements'] ?? null)) {
+            foreach ($mergedElements as $tag => $elementDefaults) {
+                if (is_array($general['typography']['elements'][$tag] ?? null)) {
+                    $mergedElements[$tag] = array_merge($elementDefaults, $general['typography']['elements'][$tag]);
+                }
+            }
+        }
+        $mergedTypography['elements'] = $mergedElements;
+
         return [
             'general' => [
                 'colors' => array_merge($defaultGeneral['colors'], is_array($general['colors'] ?? null) ? $general['colors'] : []),
-                'typography' => array_merge($defaultGeneral['typography'], is_array($general['typography'] ?? null) ? $general['typography'] : []),
+                'typography' => $mergedTypography,
                 'custom_css' => (string) ($general['custom_css'] ?? ''),
             ],
             'buttons' => [
@@ -226,6 +274,12 @@ class ThemeController extends Controller
             'typography.base_size' => ['required', 'string', 'max:20'],
             'typography.heading_weight' => ['required', 'string', 'max:10'],
             'typography.line_height' => ['required', 'string', 'max:10'],
+            'typography.elements' => ['nullable', 'array'],
+            'typography.elements.*.font_family' => ['nullable', 'string', 'max:150'],
+            'typography.elements.*.color' => ['nullable', 'string', 'max:30'],
+            'typography.elements.*.font_size' => ['nullable', 'string', 'max:20'],
+            'typography.elements.*.font_weight' => ['nullable', 'string', 'max:20'],
+            'typography.elements.*.line_height' => ['nullable', 'string', 'max:20'],
             'custom_css' => ['nullable', 'string', 'max:20000'],
         ]);
 
