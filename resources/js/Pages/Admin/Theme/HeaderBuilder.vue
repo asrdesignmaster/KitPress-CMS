@@ -28,12 +28,18 @@
             :style="{
               backgroundColor: form.transparent ? 'transparent' : form.bg_color,
               color: form.text_color,
+              '--header-link-color': form.nav_link_color || form.text_color,
+              '--header-link-hover-color': form.nav_link_hover_color || '#4f46e5',
+              '--header-link-active-color': form.nav_link_active_color || form.nav_link_hover_color || '#4f46e5',
             }"
             :class="form.transparent ? '' : 'border-b border-slate-200/70'"
           >
             <!-- Top Bar -->
             <div class="h-16 px-6 flex items-center justify-between gap-4">
-              <div class="flex items-center space-x-2 font-bold text-base shrink-0">
+              <div
+                class="flex items-center space-x-2 font-bold text-base shrink-0"
+                :style="{ color: form.logo_text_color || form.text_color }"
+              >
                 <img v-if="form.logo_image" :src="form.logo_image" alt="Logo" class="h-8 w-auto object-contain" />
                 <KitPressLogo v-else-if="form.show_logo_icon" size-class="w-6 h-6 shrink-0" />
                 <span>{{ form.logo_text || $page.props.settings?.site_name || 'KitPress' }}</span>
@@ -41,7 +47,11 @@
 
               <!-- Style 2 Centered Nav -->
               <div v-if="form.layout_style === 'style_2'" class="flex-1 flex items-center justify-center space-x-5 text-xs font-semibold overflow-hidden">
-                <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85 truncate">
+                <span
+                  v-for="(link, idx) in form.nav_links"
+                  :key="idx"
+                  :class="['preview-nav-link truncate cursor-pointer', idx === 0 ? 'is-active' : '']"
+                >
                   {{ link.label || 'Link' }}
                 </span>
               </div>
@@ -49,7 +59,11 @@
               <!-- Right Side -->
               <div class="flex items-center space-x-4 text-xs font-semibold shrink-0">
                 <template v-if="form.layout_style === 'style_1'">
-                  <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85">
+                  <span
+                    v-for="(link, idx) in form.nav_links"
+                    :key="idx"
+                    :class="['preview-nav-link cursor-pointer', idx === 0 ? 'is-active' : '']"
+                  >
                     {{ link.label || 'Link' }}
                   </span>
                 </template>
@@ -70,10 +84,15 @@
                 borderTopColor: form.menu_bar_border,
                 borderBottomColor: form.menu_bar_border,
                 color: form.menu_bar_text,
+                '--header-link-color': form.nav_link_color || form.menu_bar_text,
               }"
               class="w-full px-6 py-2.5 border-t border-b flex items-center justify-center space-x-6 text-xs font-semibold"
             >
-              <span v-for="(link, idx) in form.nav_links" :key="idx">
+              <span
+                v-for="(link, idx) in form.nav_links"
+                :key="idx"
+                :class="['preview-nav-link cursor-pointer', idx === 0 ? 'is-active' : '']"
+              >
                 {{ link.label || 'Link' }}
               </span>
             </div>
@@ -108,6 +127,10 @@
 
               <ThemeColorPicker v-model="form.bg_color" label="Header Background Color" />
               <ThemeColorPicker v-model="form.text_color" label="Header Text Color" />
+              <ThemeColorPicker v-model="form.logo_text_color" label="Logo Text Color" />
+              <ThemeColorPicker v-model="form.nav_link_color" label="Menu Link Color (Normal)" />
+              <ThemeColorPicker v-model="form.nav_link_hover_color" label="Menu Link Color (Hover)" />
+              <ThemeColorPicker v-model="form.nav_link_active_color" label="Menu Link Color (Active)" />
             </div>
 
             <!-- Transparent, Sticky & Brand Icon Toggles -->
@@ -325,11 +348,15 @@ const form = useForm({
   layout_style: props.header?.layout_style || 'style_1',
   transparent: Boolean(props.header?.transparent),
   logo_text: props.header?.logo_text || '',
+  logo_text_color: props.header?.logo_text_color || props.header?.text_color || '#0f172a',
   logo_image: props.header?.logo_image || '',
   show_logo_icon: props.header?.show_logo_icon !== undefined ? Boolean(props.header.show_logo_icon) : true,
   sticky: props.header?.sticky !== undefined ? Boolean(props.header.sticky) : true,
   bg_color: props.header?.bg_color || '#ffffff',
   text_color: props.header?.text_color || '#0f172a',
+  nav_link_color: props.header?.nav_link_color || props.header?.text_color || '#334155',
+  nav_link_hover_color: props.header?.nav_link_hover_color || '#4f46e5',
+  nav_link_active_color: props.header?.nav_link_active_color || props.header?.nav_link_hover_color || '#4f46e5',
   menu_bar_bg: props.header?.menu_bar_bg || '#f8fafc',
   menu_bar_border: props.header?.menu_bar_border || '#e2e8f0',
   menu_bar_text: props.header?.menu_bar_text || '#1e293b',
@@ -367,3 +394,18 @@ const save = () => {
   form.post('/admin/theme/header');
 };
 </script>
+
+<style scoped>
+.preview-nav-link {
+  color: var(--header-link-color);
+  transition: color 0.15s ease;
+}
+
+.preview-nav-link:hover {
+  color: var(--header-link-hover-color);
+}
+
+.preview-nav-link.is-active {
+  color: var(--header-link-active-color);
+}
+</style>

@@ -17,11 +17,14 @@
       :style="{
         backgroundColor: headerConfig.transparent ? 'transparent' : headerConfig.bg_color,
         color: headerConfig.text_color,
+        '--header-link-color': headerConfig.nav_link_color || (headerConfig.layout_style === 'style_3' ? headerConfig.menu_bar_text : headerConfig.text_color),
+        '--header-link-hover-color': headerConfig.nav_link_hover_color || generalConfig.colors.primary || '#4f46e5',
+        '--header-link-active-color': headerConfig.nav_link_active_color || headerConfig.nav_link_hover_color || generalConfig.colors.primary || '#4f46e5',
       }"
     >
       <!-- Top Bar (Logo, optional Center Menu for Style 2, Right Menu/CTA) -->
       <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-        <Link href="/" class="flex items-center space-x-2 font-bold text-lg tracking-tight shrink-0" :style="{ color: headerConfig.text_color }">
+        <Link href="/" class="flex items-center space-x-2 font-bold text-lg tracking-tight shrink-0" :style="{ color: headerConfig.logo_text_color || headerConfig.text_color }">
           <img
             v-if="headerConfig.logo_image"
             :src="headerConfig.logo_image"
@@ -40,14 +43,14 @@
               :href="link.url"
               :target="link.new_tab ? '_blank' : undefined"
               :rel="link.new_tab ? 'noopener noreferrer' : undefined"
-              class="text-xs font-semibold opacity-80 hover:opacity-100 transition whitespace-nowrap"
+              class="header-nav-link text-xs font-semibold whitespace-nowrap"
             >
               {{ link.label }}
             </a>
             <Link
               v-else
               :href="link.url || '/'"
-              class="text-xs font-semibold opacity-80 hover:opacity-100 transition whitespace-nowrap"
+              :class="['header-nav-link text-xs font-semibold whitespace-nowrap', isNavLinkActive(link.url) ? 'is-active' : '']"
             >
               {{ link.label }}
             </Link>
@@ -63,14 +66,14 @@
                 :href="link.url"
                 :target="link.new_tab ? '_blank' : undefined"
                 :rel="link.new_tab ? 'noopener noreferrer' : undefined"
-                class="text-xs font-semibold opacity-80 hover:opacity-100 transition whitespace-nowrap"
+                class="header-nav-link text-xs font-semibold whitespace-nowrap"
               >
                 {{ link.label }}
               </a>
               <Link
                 v-else
                 :href="link.url || '/'"
-                class="text-xs font-semibold opacity-80 hover:opacity-100 transition whitespace-nowrap"
+                :class="['header-nav-link text-xs font-semibold whitespace-nowrap', isNavLinkActive(link.url) ? 'is-active' : '']"
               >
                 {{ link.label }}
               </Link>
@@ -107,14 +110,14 @@
               :href="link.url"
               :target="link.new_tab ? '_blank' : undefined"
               :rel="link.new_tab ? 'noopener noreferrer' : undefined"
-              class="text-xs font-semibold opacity-85 hover:opacity-100 transition whitespace-nowrap"
+              class="header-nav-link text-xs font-semibold whitespace-nowrap"
             >
               {{ link.label }}
             </a>
             <Link
               v-else
               :href="link.url || '/'"
-              class="text-xs font-semibold opacity-85 hover:opacity-100 transition whitespace-nowrap"
+              :class="['header-nav-link text-xs font-semibold whitespace-nowrap', isNavLinkActive(link.url) ? 'is-active' : '']"
             >
               {{ link.label }}
             </Link>
@@ -219,11 +222,15 @@ const headerConfig = computed(() => ({
   layout_style: 'style_1',
   transparent: false,
   logo_text: '',
+  logo_text_color: '',
   logo_image: '',
   show_logo_icon: true,
   sticky: true,
   bg_color: '#ffffff',
   text_color: '#0f172a',
+  nav_link_color: '',
+  nav_link_hover_color: '',
+  nav_link_active_color: '',
   menu_bar_bg: '#f8fafc',
   menu_bar_border: '#e2e8f0',
   menu_bar_text: '#1e293b',
@@ -307,6 +314,14 @@ const compiledButtonsCss = computed(() => {
 
 const bunnyFontsHref = computed(() => getTypographyFontsHref(generalConfig.value.typography || {}));
 
+const isNavLinkActive = (url) => {
+  if (!url || url.startsWith('http')) return false;
+  const currentPath = (page.url || '/').split('?')[0].replace(/\/+$/, '') || '/';
+  const linkPath = url.split('?')[0].replace(/\/+$/, '') || '/';
+  if (linkPath === '/') return currentPath === '/';
+  return currentPath === linkPath || currentPath.startsWith(linkPath + '/');
+};
+
 const compiledThemeCss = computed(() => {
   const typo = generalConfig.value.typography || {};
   const colors = generalConfig.value.colors || {};
@@ -316,4 +331,20 @@ const compiledThemeCss = computed(() => {
   return `${elementRules}\n${compiledButtonsCss.value}\n${custom}`;
 });
 </script>
+
+<style scoped>
+.header-nav-link {
+  color: var(--header-link-color);
+  transition: color 0.15s ease;
+}
+
+.header-nav-link:hover {
+  color: var(--header-link-hover-color);
+}
+
+.header-nav-link.is-active {
+  color: var(--header-link-active-color);
+  font-weight: 700;
+}
+</style>
 
