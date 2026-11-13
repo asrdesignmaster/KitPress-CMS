@@ -1,37 +1,10 @@
 <template>
-  <div class="min-h-screen bg-slate-50 flex flex-col antialiased text-slate-800">
+  <PublicLayout>
     <Head>
       <title>{{ seo.title }}</title>
       <meta name="description" :content="seo.description" />
       <meta name="robots" :content="seo.robots_index ? 'index,follow' : 'noindex,nofollow'" />
     </Head>
-
-    <!-- Public Navigation Bar -->
-    <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
-      <div class="max-w-6xl mx-auto px-4 h-full flex items-center justify-between">
-        <Link href="/" class="flex items-center space-x-2 text-indigo-600 font-bold text-lg tracking-tight">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-          <span class="text-slate-900">{{ $page.props.settings?.site_name || 'Modern CMS' }}</span>
-        </Link>
-
-        <div class="flex items-center space-x-4">
-          <Link href="/about" class="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition">
-            Visual Builder Page
-          </Link>
-          <Link href="/building-a-zero-overhead-modern-cms" class="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition">
-            TipTap Post
-          </Link>
-          <Link 
-            href="/admin" 
-            class="px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-xs transition"
-          >
-            Admin Dashboard &rarr;
-          </Link>
-        </div>
-      </div>
-    </header>
 
     <!-- Hero Header -->
     <section class="py-16 bg-linear-to-b from-white to-slate-50 border-b border-slate-200 text-center px-4">
@@ -145,23 +118,12 @@
       </div>
 
     </main>
-
-    <!-- Public Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
-      <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p>&copy; {{ new Date().getFullYear() }} {{ $page.props.settings?.site_name || 'Modern CMS' }}. Built with Laravel 11 & Vue 3.</p>
-        <div class="flex items-center space-x-4">
-          <a href="/sitemap.xml" target="_blank" class="hover:text-indigo-600">XML Sitemap</a>
-          <a href="/robots.txt" target="_blank" class="hover:text-indigo-600">Robots.txt</a>
-          <Link href="/admin" class="hover:text-indigo-600 font-semibold">Admin Panel</Link>
-        </div>
-      </div>
-    </footer>
-  </div>
+  </PublicLayout>
 </template>
 
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import PublicLayout from '@/Layouts/PublicLayout.vue';
 
 defineProps({
   posts: Object,

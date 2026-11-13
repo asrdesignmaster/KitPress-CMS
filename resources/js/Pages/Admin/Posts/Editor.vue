@@ -54,6 +54,22 @@
             </button>
           </div>
 
+          <!-- Right Sidebar Collapse/Expand Toggle -->
+          <button
+            type="button"
+            @click="toggleRightSidebar"
+            :title="rightSidebarCollapsed ? 'Show Right Sidebar' : 'Collapse Right Sidebar for More Space'"
+            class="hidden lg:inline-flex items-center space-x-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+          >
+            <svg v-if="!rightSidebarCollapsed" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+            <svg v-else class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+            <span>{{ rightSidebarCollapsed ? 'Show Sidebar' : 'Expand Editor' }}</span>
+          </button>
+
           <!-- Save / Publish Buttons -->
           <button 
             type="button" 
@@ -65,7 +81,8 @@
           </button>
 
           <button 
-            type="submit" 
+            type="button" 
+            @click="publishWithStatus('published')"
             :disabled="form.processing"
             class="px-4 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-xs transition"
           >
@@ -78,19 +95,31 @@
       <!-- Main Editor Columns -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- Left 8-9 Cols: Title, Editors & SEO Suite -->
-        <div class="lg:col-span-8 xl:col-span-9 space-y-6">
+        <!-- Left 8-9 Cols (or 12 Cols when right sidebar collapsed): Title, Editors & SEO Suite -->
+        <div :class="rightSidebarCollapsed ? 'lg:col-span-12' : 'lg:col-span-8 xl:col-span-9'" class="space-y-6 transition-all">
           
           <!-- Title & Permalink Input -->
           <div class="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-3">
-            <input 
-              v-model="form.title" 
-              @input="onTitleInput"
-              type="text" 
-              placeholder="Add Title..." 
-              required
-              class="w-full text-2xl font-bold tracking-tight text-slate-900 border-0 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:ring-0 focus:outline-hidden py-1 px-0 transition placeholder-slate-400"
-            />
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <input 
+                v-model="form.title" 
+                @input="onTitleInput"
+                type="text" 
+                placeholder="Add Title..." 
+                required
+                class="flex-1 min-w-0 text-2xl font-bold tracking-tight text-slate-900 border-0 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:ring-0 focus:outline-hidden py-1 px-0 transition placeholder-slate-400"
+              />
+
+              <a
+                href="#seo-suite-box"
+                class="shrink-0 inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 transition text-xs font-bold tracking-wide"
+                title="Jump to SEO Suite"
+              >
+                <span class="w-2.5 h-2.5 rounded-full" :class="seoScore.dotClass"></span>
+                <span class="text-slate-500">SCORE:</span>
+                <span :class="seoScore.textClass">{{ seoScore.passed }}/{{ seoScore.total }} PASSED</span>
+              </a>
+            </div>
 
             <!-- Slug editor -->
             <div class="flex items-center space-x-2 text-xs text-slate-500">
@@ -98,6 +127,7 @@
               <span class="text-slate-400">yourdomain.com/</span>
               <input 
                 v-model="form.slug" 
+                @blur="onSlugBlur"
                 type="text" 
                 class="px-2 py-0.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded text-slate-800 w-64 focus:bg-white focus:outline-hidden focus:border-indigo-400"
               />
@@ -125,7 +155,17 @@
               <span class="text-xs font-bold uppercase tracking-wider text-purple-700">
                 Elementor Pro Visual Tree Builder
               </span>
-              <span class="text-[11px] text-slate-400">Sections &bull; Columns &bull; Reactive Widgets</span>
+              <div class="flex items-center space-x-3">
+                <span class="text-[11px] text-slate-400">Sections &bull; Columns &bull; Reactive Widgets</span>
+                <button
+                  type="button"
+                  @click="toggleRightSidebar"
+                  class="hidden lg:inline-flex items-center space-x-1 px-2 py-0.5 text-[11px] font-semibold rounded border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition"
+                >
+                  <span v-if="rightSidebarCollapsed">&larr; Show Right Panel</span>
+                  <span v-else>Collapse Right Panel &rarr;</span>
+                </button>
+              </div>
             </div>
             <VisualBuilder 
               ref="builderRef"
@@ -135,18 +175,21 @@
           </div>
 
           <!-- Advanced SEO Suite Box (Requirement D) -->
-          <SeoSuiteBox 
-            :form="form"
-            :title="form.title"
-            :slug="form.slug"
-            :raw-content="extractedContentText"
-            @open-media="openMediaModal('seo_og_image')"
-          />
+          <div id="seo-suite-box">
+            <SeoSuiteBox 
+              :form="form"
+              :title="form.title"
+              :slug="form.slug"
+              :raw-content="extractedContentText"
+              @open-media="openMediaModal('seo_og_image')"
+              @score-change="(s) => seoScore = s"
+            />
+          </div>
 
         </div>
 
         <!-- Right 3-4 Cols: WordPress Sidebar Meta Boxes -->
-        <div class="lg:col-span-4 xl:col-span-3 space-y-5">
+        <div v-show="!rightSidebarCollapsed" class="lg:col-span-4 xl:col-span-3 space-y-5">
           
           <!-- Meta Box 1: Publish Settings -->
           <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
@@ -389,18 +432,38 @@ const tagsInput = ref(props.post?.tags?.map(t => t.name).join(', ') || '');
 const mediaModalOpen = ref(false);
 const mediaTarget = ref('featured'); // 'featured', 'tiptap', 'builder_widget', 'seo_og_image'
 const showRevisionsModal = ref(false);
+const seoScore = ref({ passed: 0, total: 6, dotClass: 'bg-rose-500', textClass: 'text-rose-600' });
+const rightSidebarCollapsed = ref(
+  typeof window !== 'undefined' && window.localStorage.getItem('cms_editor_right_sidebar_collapsed') === 'true'
+);
+
+const toggleRightSidebar = () => {
+  rightSidebarCollapsed.value = !rightSidebarCollapsed.value;
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem('cms_editor_right_sidebar_collapsed', String(rightSidebarCollapsed.value));
+  }
+};
 
 const tiptapRef = ref(null);
 const builderRef = ref(null);
 
+const slugify = (value) => {
+  return String(value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 const onTitleInput = () => {
   if (!isEditing.value || !form.slug) {
-    form.slug = form.title
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    form.slug = slugify(form.title);
   }
+};
+
+const onSlugBlur = () => {
+  form.slug = slugify(form.slug || form.title);
 };
 
 const updateTagsFromInput = () => {
@@ -436,13 +499,30 @@ const extractedContentText = computed(() => {
   if (form.editor_type === 'classic') {
     return form.classic_content;
   }
-  // Extract text nodes from builder JSON
+  // Extract text nodes from builder JSON across all Pro widgets
   let text = '';
   if (Array.isArray(form.builder_json)) {
     form.builder_json.forEach(sec => {
       sec.columns?.forEach(col => {
         col.widgets?.forEach(w => {
           if (w.content) text += ' ' + w.content;
+          if (w.title) text += ' ' + w.title;
+          if (w.subtitle) text += ' ' + w.subtitle;
+          if (w.description) text += ' ' + w.description;
+          if (w.quote) text += ' ' + w.quote;
+          if (Array.isArray(w.features)) text += ' ' + w.features.join(' ');
+          if (Array.isArray(w.items)) {
+            w.items.forEach(item => {
+              if (item.title) text += ' ' + item.title;
+              if (item.content) text += ' ' + item.content;
+            });
+          }
+          if (Array.isArray(w.slides)) {
+            w.slides.forEach(slide => {
+              if (slide.title) text += ' ' + slide.title;
+              if (slide.subtitle) text += ' ' + slide.subtitle;
+            });
+          }
         });
       });
     });
@@ -456,6 +536,7 @@ const publishWithStatus = (newStatus) => {
 };
 
 const savePost = () => {
+  onSlugBlur();
   updateTagsFromInput();
   if (isEditing.value) {
     form.put(`/admin/posts/${props.post.id}`);

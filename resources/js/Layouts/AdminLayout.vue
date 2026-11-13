@@ -204,6 +204,76 @@
             </div>
             <div v-show="isSidebarCollapsed" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
 
+            <!-- Collapsible Theme Menu -->
+            <div>
+              <button
+                type="button"
+                @click="toggleThemeMenu"
+                title="Theme"
+                :class="[
+                  isActive('/admin/theme') ? 'text-white bg-slate-800/80 font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
+                  isSidebarCollapsed ? 'md:justify-center md:px-0' : 'justify-between'
+                ]"
+                class="w-full flex items-center px-4 py-2 text-xs transition"
+              >
+                <div class="flex items-center space-x-3">
+                  <svg class="w-4 h-4 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                  <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Theme</span>
+                </div>
+                <svg
+                  v-show="!isSidebarCollapsed"
+                  :class="isThemeMenuOpen ? 'rotate-180' : ''"
+                  class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div v-show="isThemeMenuOpen && !isSidebarCollapsed" class="mt-0.5 space-y-0.5 bg-slate-950/40 py-1">
+                <Link
+                  href="/admin/theme/general"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/general') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>General</span>
+                </Link>
+                <Link
+                  href="/admin/theme/buttons"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/buttons') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Buttons</span>
+                </Link>
+                <Link
+                  href="/admin/theme/header"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/header') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Header Builder</span>
+                </Link>
+                <Link
+                  href="/admin/theme/footer"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/footer') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Footer Builder</span>
+                </Link>
+              </div>
+            </div>
+
             <Link 
               href="/admin/settings/optimization" 
               @click="closeMobileMenu"
@@ -266,36 +336,49 @@
         :class="isSidebarCollapsed ? 'md:ml-16' : 'md:ml-60'"
         class="flex-1 ml-0 p-6 overflow-x-hidden min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
       >
-        
-        <!-- Flash Notifications -->
-        <div v-if="$page.props.flash.success" class="mb-4 p-3.5 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-lg shadow-xs flex items-center justify-between">
-          <div class="flex items-center space-x-2 text-emerald-800 text-xs font-medium">
-            <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>{{ $page.props.flash.success }}</span>
-          </div>
-        </div>
-
-        <div v-if="$page.props.flash.error" class="mb-4 p-3.5 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg shadow-xs flex items-center justify-between">
-          <div class="flex items-center space-x-2 text-rose-800 text-xs font-medium">
-            <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{{ $page.props.flash.error }}</span>
-          </div>
-        </div>
-
         <!-- Slot Content -->
         <slot />
       </main>
+    </div>
+
+    <!-- Bottom-Right Toast Notifications -->
+    <div class="fixed bottom-5 right-5 z-50 space-y-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0">
+      <div
+        v-if="toastSuccess"
+        class="pointer-events-auto p-3.5 bg-white border-l-4 border-emerald-500 rounded-lg shadow-xl border border-slate-200 flex items-center justify-between gap-3"
+      >
+        <div class="flex items-center space-x-2.5 text-emerald-800 text-xs font-semibold">
+          <span class="p-1 bg-emerald-100 text-emerald-600 rounded-full shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </span>
+          <span>{{ toastSuccess }}</span>
+        </div>
+        <button type="button" @click="toastSuccess = ''" class="text-slate-400 hover:text-slate-600 text-sm leading-none">&times;</button>
+      </div>
+
+      <div
+        v-if="toastError"
+        class="pointer-events-auto p-3.5 bg-white border-l-4 border-rose-500 rounded-lg shadow-xl border border-slate-200 flex items-center justify-between gap-3"
+      >
+        <div class="flex items-center space-x-2.5 text-rose-800 text-xs font-semibold">
+          <span class="p-1 bg-rose-100 text-rose-600 rounded-full shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+          <span>{{ toastError }}</span>
+        </div>
+        <button type="button" @click="toastError = ''" class="text-slate-400 hover:text-slate-600 text-sm leading-none">&times;</button>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { Link, usePage, router } from '@inertiajs/vue3';
 
 const SIDEBAR_STORAGE_KEY = 'cms_admin_sidebar_collapsed';
@@ -307,6 +390,36 @@ const currentUrl = computed(() => page.url);
 
 const isSidebarCollapsed = ref(false);
 const isMobileMenuOpen = ref(false);
+const isThemeMenuOpen = ref(page.url.startsWith('/admin/theme'));
+const toastSuccess = ref('');
+const toastError = ref('');
+let toastTimer = null;
+
+watch(
+  () => page.props.flash,
+  (flash) => {
+    if (flash?.success) {
+      toastSuccess.value = flash.success;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toastSuccess.value = ''; }, 4500);
+    }
+    if (flash?.error) {
+      toastError.value = flash.error;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toastError.value = ''; }, 5000);
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+const toggleThemeMenu = () => {
+  if (isSidebarCollapsed.value) {
+    isSidebarCollapsed.value = false;
+    isThemeMenuOpen.value = true;
+    return;
+  }
+  isThemeMenuOpen.value = !isThemeMenuOpen.value;
+};
 
 onMounted(() => {
   try {

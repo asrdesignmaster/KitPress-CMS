@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <div class="space-y-6 max-w-5xl">
+    <div class="space-y-6 max-w-full">
       
       <!-- Header -->
       <div class="pb-4 border-b border-slate-200">
@@ -36,6 +36,64 @@
               <label class="font-semibold text-slate-700 block">Tagline / Motto</label>
               <input v-model="form.site_tagline" type="text" class="w-full px-3 py-2 border rounded-lg bg-slate-50 text-slate-900" />
             </div>
+          </div>
+        </div>
+
+        <!-- Homepage Reading Settings (WordPress Style) -->
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            Homepage Displays (Reading Settings)
+          </h3>
+          <div class="space-y-3 text-xs">
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input
+                v-model="form.homepage_display"
+                type="radio"
+                value="latest_posts"
+                class="mt-0.5 text-indigo-600 focus:ring-indigo-500"
+              />
+              <div>
+                <span class="font-bold text-slate-800 block">Your latest posts</span>
+                <span class="text-slate-500 text-[11px]">Displays the default blog feed and featured articles on the homepage (/).</span>
+              </div>
+            </label>
+
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input
+                v-model="form.homepage_display"
+                type="radio"
+                value="static_page"
+                class="mt-0.5 text-indigo-600 focus:ring-indigo-500"
+              />
+              <div class="flex-1 space-y-2">
+                <div>
+                  <span class="font-bold text-slate-800 block">A static page or post</span>
+                  <span class="text-slate-500 text-[11px]">Choose any published Page or Post (including Visual Builder layouts) as your default homepage.</span>
+                </div>
+
+                <div v-if="form.homepage_display === 'static_page'" class="max-w-md pt-1">
+                  <select
+                    v-model="form.homepage_post_id"
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-slate-900 font-medium"
+                  >
+                    <option :value="null">-- Select a Published Page or Post --</option>
+                    <optgroup v-if="publishedPages.length" label="Published Pages">
+                      <option v-for="p in publishedPages" :key="'page-' + p.id" :value="p.id">
+                        {{ p.title }} (/{{ p.slug }})
+                      </option>
+                    </optgroup>
+                    <optgroup v-if="publishedPosts.length" label="Published Posts">
+                      <option v-for="p in publishedPosts" :key="'post-' + p.id" :value="p.id">
+                        {{ p.title }} (/{{ p.slug }})
+                      </option>
+                    </optgroup>
+                  </select>
+                  <p v-if="!publishedPages.length && !publishedPosts.length" class="text-[11px] text-amber-600 mt-1">
+                    No published pages or posts found. Publish a page or post first to set it as the homepage.
+                  </p>
+                </div>
+              </div>
+            </label>
           </div>
         </div>
 
@@ -225,11 +283,21 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 const props = defineProps({
   settings: Object,
   stats: Object,
+  publishedPages: {
+    type: Array,
+    default: () => [],
+  },
+  publishedPosts: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const form = useForm({
   site_name: props.settings?.site_name || '',
   site_tagline: props.settings?.site_tagline || '',
+  homepage_display: props.settings?.homepage_display || 'latest_posts',
+  homepage_post_id: props.settings?.homepage_post_id || null,
   lazy_loading: props.settings?.lazy_loading !== undefined ? Boolean(props.settings.lazy_loading) : true,
   response_compression: props.settings?.response_compression !== undefined ? Boolean(props.settings.response_compression) : true,
   route_caching: props.settings?.route_caching !== undefined ? Boolean(props.settings.route_caching) : false,

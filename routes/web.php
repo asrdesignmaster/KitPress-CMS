@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\OptimizationController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\ThemeController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
@@ -76,8 +77,28 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,editor,a
         Route::post('/settings/optimization/purge-orphans', [OptimizationController::class, 'purgeOrphans'])->name('settings.optimization.purge-orphans');
         Route::post('/settings/optimization/purge-logs', [OptimizationController::class, 'purgeLogs'])->name('settings.optimization.purge-logs');
         Route::post('/settings/optimization/clear-cache', [OptimizationController::class, 'clearCache'])->name('settings.optimization.clear-cache');
+
+        // Theme Settings & Builders (Admin only)
+        Route::get('/theme/general', [ThemeController::class, 'general'])->name('theme.general');
+        Route::post('/theme/general', [ThemeController::class, 'updateGeneral'])->name('theme.general.update');
+        Route::get('/theme/buttons', [ThemeController::class, 'buttons'])->name('theme.buttons');
+        Route::post('/theme/buttons', [ThemeController::class, 'updateButtons'])->name('theme.buttons.update');
+        Route::get('/theme/header', [ThemeController::class, 'header'])->name('theme.header');
+        Route::post('/theme/header', [ThemeController::class, 'updateHeader'])->name('theme.header.update');
+        Route::get('/theme/footer', [ThemeController::class, 'footer'])->name('theme.footer');
+        Route::post('/theme/footer', [ThemeController::class, 'updateFooter'])->name('theme.footer.update');
     });
 });
+
+// Serve public storage files directly (avoids Laravel 11's signed storage.local collision and works without Windows symlinks)
+Route::get('/media-files/{path}', function (string $path) {
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    if (! $disk->exists($path)) {
+        abort(404);
+    }
+
+    return $disk->response($path);
+})->where('path', '.*')->name('media.serve');
 
 /*
 |--------------------------------------------------------------------------
