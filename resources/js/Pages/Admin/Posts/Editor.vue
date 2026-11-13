@@ -81,7 +81,8 @@
           </button>
 
           <button 
-            type="submit" 
+            type="button" 
+            @click="publishWithStatus('published')"
             :disabled="form.processing"
             class="px-4 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-xs transition"
           >

@@ -8,11 +8,18 @@
 
     <!-- Dynamic Header from Theme Header Builder -->
     <header
-      :class="headerConfig.sticky ? 'sticky top-0 z-30' : 'relative z-30'"
-      :style="{ backgroundColor: headerConfig.bg_color, color: headerConfig.text_color }"
-      class="h-16 border-b border-slate-200/80 shadow-2xs"
+      :class="[
+        headerConfig.transparent
+          ? (headerConfig.sticky ? 'fixed top-0 left-0 right-0 z-30' : 'absolute top-0 left-0 right-0 z-30')
+          : (headerConfig.sticky ? 'sticky top-0 z-30 border-b border-slate-200/80 shadow-2xs' : 'relative z-30 border-b border-slate-200/80 shadow-2xs')
+      ]"
+      :style="{
+        backgroundColor: headerConfig.transparent ? 'transparent' : headerConfig.bg_color,
+        color: headerConfig.text_color,
+      }"
     >
-      <div class="max-w-6xl mx-auto px-4 h-full flex items-center justify-between gap-4">
+      <!-- Top Bar (Logo, optional Center Menu for Style 2, Right Menu/CTA) -->
+      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <Link href="/" class="flex items-center space-x-2 font-bold text-lg tracking-tight shrink-0" :style="{ color: headerConfig.text_color }">
           <img
             v-if="headerConfig.logo_image"
@@ -33,7 +40,8 @@
           <span>{{ headerConfig.logo_text || siteName }}</span>
         </Link>
 
-        <nav class="flex items-center space-x-4 overflow-x-auto">
+        <!-- Style 2: Centered Menu -->
+        <nav v-if="headerConfig.layout_style === 'style_2'" class="flex-1 flex items-center justify-center space-x-5 overflow-x-auto">
           <template v-for="(link, idx) in headerConfig.nav_links" :key="idx">
             <a
               v-if="link.new_tab || (link.url && link.url.startsWith('http'))"
@@ -52,6 +60,30 @@
               {{ link.label }}
             </Link>
           </template>
+        </nav>
+
+        <!-- Right Nav (Style 1) + Header Extra + CTA -->
+        <div class="flex items-center space-x-4 shrink-0">
+          <nav v-if="headerConfig.layout_style === 'style_1'" class="flex items-center space-x-4 overflow-x-auto">
+            <template v-for="(link, idx) in headerConfig.nav_links" :key="idx">
+              <a
+                v-if="link.new_tab || (link.url && link.url.startsWith('http'))"
+                :href="link.url"
+                :target="link.new_tab ? '_blank' : undefined"
+                :rel="link.new_tab ? 'noopener noreferrer' : undefined"
+                class="text-xs font-semibold opacity-80 hover:opacity-100 transition whitespace-nowrap"
+              >
+                {{ link.label }}
+              </a>
+              <Link
+                v-else
+                :href="link.url || '/'"
+                class="text-xs font-semibold opacity-80 hover:opacity-100 transition whitespace-nowrap"
+              >
+                {{ link.label }}
+              </Link>
+            </template>
+          </nav>
 
           <slot name="header-extra" />
 
@@ -62,6 +94,39 @@
           >
             {{ headerConfig.cta_text }}
           </Link>
+        </div>
+      </div>
+
+      <!-- Style 3: Full-Width Menu Bar Below Logo/Name -->
+      <div
+        v-if="headerConfig.layout_style === 'style_3'"
+        :style="{
+          backgroundColor: headerConfig.menu_bar_bg,
+          borderTopColor: headerConfig.menu_bar_border,
+          borderBottomColor: headerConfig.menu_bar_border,
+          color: headerConfig.menu_bar_text,
+        }"
+        class="w-full border-t border-b"
+      >
+        <nav class="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-center space-x-6 overflow-x-auto">
+          <template v-for="(link, idx) in headerConfig.nav_links" :key="idx">
+            <a
+              v-if="link.new_tab || (link.url && link.url.startsWith('http'))"
+              :href="link.url"
+              :target="link.new_tab ? '_blank' : undefined"
+              :rel="link.new_tab ? 'noopener noreferrer' : undefined"
+              class="text-xs font-semibold opacity-85 hover:opacity-100 transition whitespace-nowrap"
+            >
+              {{ link.label }}
+            </a>
+            <Link
+              v-else
+              :href="link.url || '/'"
+              class="text-xs font-semibold opacity-85 hover:opacity-100 transition whitespace-nowrap"
+            >
+              {{ link.label }}
+            </Link>
+          </template>
         </nav>
       </div>
     </header>
@@ -136,12 +201,17 @@ const generalConfig = computed(() => ({
 }));
 
 const headerConfig = computed(() => ({
+  layout_style: 'style_1',
+  transparent: false,
   logo_text: '',
   logo_image: '',
   show_logo_icon: true,
   sticky: true,
   bg_color: '#ffffff',
   text_color: '#0f172a',
+  menu_bar_bg: '#f8fafc',
+  menu_bar_border: '#e2e8f0',
+  menu_bar_text: '#1e293b',
   nav_links: [],
   cta_enabled: true,
   cta_text: 'Admin Dashboard',

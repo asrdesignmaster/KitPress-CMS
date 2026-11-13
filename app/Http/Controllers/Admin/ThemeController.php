@@ -115,12 +115,17 @@ class ThemeController extends Controller
     public static function defaultHeader(): array
     {
         return [
+            'layout_style' => 'style_1',
+            'transparent' => false,
             'logo_text' => '',
             'logo_image' => '',
             'show_logo_icon' => true,
             'sticky' => true,
             'bg_color' => '#ffffff',
             'text_color' => '#0f172a',
+            'menu_bar_bg' => '#f8fafc',
+            'menu_bar_border' => '#e2e8f0',
+            'menu_bar_text' => '#1e293b',
             'nav_links' => [
                 ['label' => 'Home', 'url' => '/', 'new_tab' => false],
                 ['label' => 'About', 'url' => '/about', 'new_tab' => false],
@@ -277,12 +282,17 @@ class ThemeController extends Controller
     public function updateHeader(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'layout_style' => ['required', 'in:style_1,style_2,style_3'],
+            'transparent' => ['boolean'],
             'logo_text' => ['nullable', 'string', 'max:100'],
             'logo_image' => ['nullable', 'string', 'max:500'],
             'show_logo_icon' => ['boolean'],
             'sticky' => ['boolean'],
             'bg_color' => ['required', 'string', 'max:30'],
             'text_color' => ['required', 'string', 'max:30'],
+            'menu_bar_bg' => ['required', 'string', 'max:30'],
+            'menu_bar_border' => ['required', 'string', 'max:30'],
+            'menu_bar_text' => ['required', 'string', 'max:30'],
             'nav_links' => ['nullable', 'array'],
             'nav_links.*.label' => ['required', 'string', 'max:80'],
             'nav_links.*.url' => ['required', 'string', 'max:255'],
