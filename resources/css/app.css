@@ -1,3 +1,17 @@
+/*!
+Theme Name: KitPress CMS
+Theme URI: https://github.com/asrdesignmaster/KitPress-CMS
+Author: Altamash Sajid Rashid Shaikh
+Author URI: https://github.com/asrdesignmaster
+Description: KitPress CMS is a fast, modern, and modular Laravel + Vue 3 CMS platform featuring a visual page builder, TipTap rich text editor, dynamic header & footer builders, global typography and color system, automated WebP media optimization, and SEO controls.
+Version: 0.1.0
+Requires PHP: 8.2
+License: MIT License
+License URI: https://opensource.org/licenses/MIT
+Text Domain: kitpress-cms
+Tags: laravel, vue3, inertiajs, tailwindcss, visual-builder, tiptap, header-builder, footer-builder, custom-colors, custom-typography, seo-friendly, webp-pipeline
+*/
+
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

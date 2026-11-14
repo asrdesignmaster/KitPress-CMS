@@ -4,6 +4,12 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 11:29 — Added Theme Metadata Header to app.css
+- **Summary**: Added KitPress CMS theme/project metadata header block (Name, URI, Author, Description, Version, License, Tags) at the top of `resources/css/app.css`.
+- **Files**:
+  - `resources/css/app.css` — prepended KitPress CMS theme metadata comment block
+- **Verification**: Not run (comment-only addition).
+
 ### 2026-11-14 11:14 — Footer Builder Left-Sidebar Tabs & Contact/Social Icons Section
 - **Summary**: Reorganized Footer Builder below the Live Footer Preview into a left-sidebar tabbed layout (`Brand column`, `Links column`, `Contact & social icons`, `Copyright`, `Style`) matching the Settings page, and added full Contact & Social Icons support to the backend, live preview, and frontend footer.
 - **Files**:
