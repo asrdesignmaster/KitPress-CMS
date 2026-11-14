@@ -65,6 +65,9 @@
 
           <div class="pt-4 border-t border-current/15 text-xs flex flex-col sm:flex-row items-center justify-between gap-2">
             <span>&copy; <span v-if="form.show_year">{{ new Date().getFullYear() }}</span> {{ $page.props.settings?.site_name || 'KitPress' }}. {{ form.copyright_text }}</span>
+            <span v-if="form.show_powered_by" class="text-[11px] opacity-75">
+              Powered by <span class="font-semibold">KitPress</span>
+            </span>
           </div>
         </div>
       </div>
@@ -263,10 +266,17 @@
               <input v-model="form.copyright_text" type="text" placeholder="All rights reserved." class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50" />
             </div>
 
-            <label class="flex items-center space-x-2 cursor-pointer pt-1">
-              <input v-model="form.show_year" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
-              <span class="font-semibold text-slate-700">Automatically show current year (&copy; {{ new Date().getFullYear() }})</span>
-            </label>
+            <div class="space-y-2.5 pt-1">
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input v-model="form.show_year" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
+                <span class="font-semibold text-slate-700">Automatically show current year (&copy; {{ new Date().getFullYear() }})</span>
+              </label>
+
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input v-model="form.show_powered_by" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
+                <span class="font-semibold text-slate-700">Show &ldquo;Powered by KitPress&rdquo; attribution</span>
+              </label>
+            </div>
           </div>
 
           <!-- TAB 5: STYLE -->
@@ -344,6 +354,7 @@ const form = useForm({
   text_color: props.footer?.text_color || '#64748b',
   copyright_text: props.footer?.copyright_text || 'High-Performance Laravel + Vue CMS.',
   show_year: props.footer?.show_year !== undefined ? Boolean(props.footer.show_year) : true,
+  show_powered_by: props.footer?.show_powered_by !== undefined ? Boolean(props.footer.show_powered_by) : true,
   contact_enabled: props.footer?.contact_enabled !== undefined ? Boolean(props.footer.contact_enabled) : false,
   contact_title: props.footer?.contact_title || 'Contact Us',
   contact_email: props.footer?.contact_email || '',

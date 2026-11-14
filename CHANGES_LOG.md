@@ -4,6 +4,26 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 11:34 — Added Powered By & Version Footer to Admin Dashboard Layout
+- **Summary**: Added a persistent bottom footer to the admin dashboard layout displaying "Powered by KitPress CMS" and "Version 0.1.0".
+- **Files**:
+  - `resources/js/Layouts/AdminLayout.vue` — converted `<main>` to `flex flex-col` and added the admin footer bar
+- **Verification**: Not run (Vite dev server active).
+
+### 2026-11-14 11:32 — Embedded KitPress CMS Signature Across App
+- **Summary**: Added KitPress CMS branding and signature across HTML meta generator tag, HTTP `X-Powered-By` response header, Composer/NPM package metadata, Admin sidebar footer, and toggleable public footer attribution.
+- **Files**:
+  - `app/Http/Middleware/KitPressSignature.php` — added middleware setting `X-Powered-By: KitPress CMS`
+  - `bootstrap/app.php` — registered `KitPressSignature` in the `web` middleware group
+  - `resources/views/app.blade.php` — added `<meta name="generator" content="KitPress CMS 0.1.0">`
+  - `composer.json` — updated package name, description, keywords, homepage, and author metadata
+  - `package.json` — added package name, version `0.1.0`, description, author, license, and homepage
+  - `resources/js/Layouts/AdminLayout.vue` — added `KitPress CMS v0.1.0` to the admin sidebar footer
+  - `app/Http/Controllers/Admin/ThemeController.php` — added `show_powered_by` default and validation to footer config
+  - `resources/js/Pages/Admin/Theme/FooterBuilder.vue` — added `Show "Powered by KitPress" attribution` toggle in Copyright tab and live preview
+  - `resources/js/Layouts/PublicLayout.vue` — rendered optional `Powered by KitPress` link in the public footer copyright bar
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 11:29 — Added Theme Metadata Header to app.css
 - **Summary**: Added KitPress CMS theme/project metadata header block (Name, URI, Author, Description, Version, License, Tags) at the top of `resources/css/app.css`.
 - **Files**:

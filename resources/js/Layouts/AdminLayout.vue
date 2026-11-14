@@ -326,8 +326,9 @@
             </svg>
           </button>
 
-          <div v-show="!isSidebarCompact" class="p-3 border-t border-slate-800/70 text-[11px] text-slate-500 text-center whitespace-nowrap">
-            Laravel v{{ $page.props.server_info?.laravel_version || '11' }} &bull; Vue 3
+          <div v-show="!isSidebarCompact" class="p-3 border-t border-slate-800/70 text-[11px] text-slate-500 text-center whitespace-nowrap space-y-0.5">
+            <div class="font-semibold text-slate-400">KitPress CMS v0.1.0</div>
+            <div>Laravel v{{ $page.props.server_info?.laravel_version || '11' }} &bull; Vue 3</div>
           </div>
         </div>
       </aside>
@@ -335,10 +336,23 @@
       <!-- Main Content Area -->
       <main
         :class="isSidebarCollapsed ? 'md:ml-16' : 'md:ml-60'"
-        class="flex-1 ml-0 p-6 overflow-x-clip min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
+        class="flex-1 flex flex-col ml-0 p-6 overflow-x-clip min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
       >
         <!-- Slot Content -->
-        <slot />
+        <div class="flex-1">
+          <slot />
+        </div>
+
+        <!-- Admin Dashboard Footer -->
+        <footer class="mt-8 pt-4 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+          <span>
+            Powered by
+            <a href="https://github.com/asrdesignmaster/KitPress-CMS" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-600 hover:text-indigo-600 transition">
+              KitPress CMS
+            </a>
+          </span>
+          <span class="font-mono text-slate-500">Version 0.1.0</span>
+        </footer>
       </main>
     </div>
 

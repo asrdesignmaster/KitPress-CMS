@@ -214,6 +214,10 @@
           <p>
             &copy; <span v-if="footerConfig.show_year">{{ new Date().getFullYear() }}</span> {{ siteName }}.
             {{ footerConfig.copyright_text }}
+            <span v-if="footerConfig.show_powered_by" class="opacity-75">
+              &bull; Powered by
+              <a href="https://github.com/asrdesignmaster/KitPress-CMS" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline">KitPress</a>
+            </span>
           </p>
           <div class="flex items-center space-x-4">
             <Link href="/" class="hover:underline">Home</Link>
@@ -301,6 +305,7 @@ const footerConfig = computed(() => ({
   text_color: '#64748b',
   copyright_text: 'High-Performance Laravel + Vue CMS.',
   show_year: true,
+  show_powered_by: true,
   contact_enabled: false,
   contact_title: 'Contact Us',
   contact_email: '',
