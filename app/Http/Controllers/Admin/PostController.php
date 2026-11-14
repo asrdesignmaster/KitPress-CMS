@@ -68,12 +68,17 @@ class PostController extends Controller
             'draft' => (clone $baseCounts)->where('status', 'draft')->count(),
         ];
 
+        $homepagePostId = \App\Models\Setting::get('homepage_display', 'latest_posts') === 'static_page'
+            ? (int) \App\Models\Setting::get('homepage_post_id')
+            : null;
+
         return Inertia::render('Admin/Posts/Index', [
             'posts' => $posts,
             'filters' => $request->only(['search', 'status', 'category_id', 'type']),
             'categories' => $categories,
             'counts' => $counts,
             'type' => $type,
+            'homepagePostId' => $homepagePostId ?: null,
         ]);
     }
 

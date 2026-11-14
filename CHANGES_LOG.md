@@ -4,6 +4,19 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 13:06 — Renamed Homepage Reading Option Label to "Blog"
+- **Summary**: Updated the default homepage display radio option label from "Your latest posts" to "Blog" in Settings.
+- **Files**:
+  - `resources/js/Pages/Admin/Settings/Optimization.vue` — changed label text to `Blog`
+- **Verification**: Not run (Vite dev server active).
+
+### 2026-11-14 13:04 — Show Home Page Badge on Selected Homepage in Pages/Posts List
+- **Summary**: Added a "Home Page" badge next to the title in the admin Pages/Posts table when a static page or post is selected as the site homepage in Settings.
+- **Files**:
+  - `app/Http/Controllers/Admin/PostController.php` — passed `homepagePostId` to `Admin/Posts/Index` when `homepage_display` is `static_page`
+  - `resources/js/Pages/Admin/Posts/Index.vue` — rendered `Home Page` badge beside the matching post/page title
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 12:11 — Default First Widget Category Open, Others Collapsed
 - **Summary**: Updated Visual Builder widget categories so only the first category (`Basic`) is expanded by default while all other categories start collapsed.
 - **Files**:
