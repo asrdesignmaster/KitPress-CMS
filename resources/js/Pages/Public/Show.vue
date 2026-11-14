@@ -35,13 +35,13 @@
     <!-- Mode 2: Visual Builder Layout Tree Rendering (Elementor Pro style) -->
     <div v-if="post.editor_type === 'builder'" class="flex-1">
       <div 
-        v-for="section in post.builder_json" 
+        v-for="(section, sIdx) in post.builder_json" 
         :key="section.id"
         :style="{
           backgroundColor: section.backgroundColor || '#ffffff',
           backgroundImage: section.backgroundGradient || 'none',
           color: section.textColor || '#1e293b',
-          paddingTop: section.paddingTop || '48px',
+          paddingTop: getSectionPaddingTop(section, sIdx),
           paddingBottom: section.paddingBottom || '48px',
         }"
       >
@@ -132,7 +132,8 @@
 </template>
 
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import BuilderWidgetRenderer from '@/Components/Builder/BuilderWidgetRenderer.vue';
 
@@ -141,5 +142,23 @@ defineProps({
   recent: Array,
   seo: Object,
 });
+
+const page = usePage();
+const isTransparentHomeHeader = computed(() => {
+  const header = page.props.theme?.header || {};
+  return Boolean(page.props.isHome) && Boolean(header.transparent);
+});
+
+const transparentHeaderHeight = computed(() =>
+  page.props.theme?.header?.layout_style === 'style_3' ? '112px' : '64px'
+);
+
+const getSectionPaddingTop = (section, idx) => {
+  const base = section.paddingTop || '48px';
+  if (idx === 0 && isTransparentHomeHeader.value) {
+    return `calc(${base} + ${transparentHeaderHeight.value})`;
+  }
+  return base;
+};
 </script>
 

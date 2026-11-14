@@ -24,7 +24,7 @@ class PublicController extends Controller
                 ->first();
 
             if ($frontPost) {
-                return $this->renderSinglePost($frontPost, url('/'));
+                return $this->renderSinglePost($frontPost, url('/'), true);
             }
         }
 
@@ -44,6 +44,7 @@ class PublicController extends Controller
         $categories = Category::withCount(['posts' => fn ($q) => $q->published()])->get();
 
         return Inertia::render('Public/Home', [
+            'isHome' => true,
             'posts' => $posts,
             'featured' => $featured,
             'categories' => $categories,
@@ -67,7 +68,7 @@ class PublicController extends Controller
         return $this->renderSinglePost($post, url($post->slug));
     }
 
-    private function renderSinglePost(Post $post, string $canonical): Response
+    private function renderSinglePost(Post $post, string $canonical, bool $isHome = false): Response
     {
         $recentPosts = Post::published()
             ->where('id', '!=', $post->id)
@@ -88,6 +89,7 @@ class PublicController extends Controller
         ];
 
         return Inertia::render('Public/Show', [
+            'isHome' => $isHome,
             'post' => $post,
             'recent' => $recentPosts,
             'seo' => $seo,

@@ -75,11 +75,14 @@
 
       <!-- Fixed Left Navigation Bar -->
       <aside
+        @mouseenter="isSidebarHovered = true"
+        @mouseleave="isSidebarHovered = false"
         :class="[
-          isSidebarCollapsed ? 'md:w-16' : 'md:w-60',
+          isSidebarCompact ? 'md:w-16' : 'md:w-60',
+          isSidebarCollapsed && isSidebarHovered ? 'md:shadow-2xl md:z-40' : 'z-30',
           isMobileMenuOpen ? 'translate-x-0 w-60' : '-translate-x-full md:translate-x-0',
         ]"
-        class="bg-slate-900 text-slate-300 shrink-0 border-r border-slate-800 flex flex-col justify-between fixed bottom-0 top-12 left-0 overflow-y-auto overflow-x-hidden z-30 transition-all duration-200 ease-in-out"
+        class="bg-slate-900 text-slate-300 shrink-0 border-r border-slate-800 flex flex-col justify-between fixed bottom-0 top-12 left-0 overflow-y-auto overflow-x-hidden transition-all duration-200 ease-in-out"
       >
         <div class="py-4 space-y-1">
           
@@ -90,22 +93,22 @@
             title="Dashboard"
             :class="[
               isActive('/admin') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-              isSidebarCollapsed ? 'md:justify-center md:px-0' : ''
+              isSidebarCompact ? 'md:justify-center md:px-0' : ''
             ]"
             class="flex items-center space-x-3 px-4 py-2.5 text-xs transition"
           >
             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Dashboard</span>
+            <span v-show="!isSidebarCompact" class="whitespace-nowrap">Dashboard</span>
           </Link>
 
           <!-- Posts Menu -->
           <div class="pt-2">
-            <div v-show="!isSidebarCollapsed" class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+            <div v-show="!isSidebarCompact" class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
               Content
             </div>
-            <div v-show="isSidebarCollapsed" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
+            <div v-show="isSidebarCompact" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
 
             <Link 
               href="/admin/posts?type=post" 
@@ -113,14 +116,14 @@
               title="Posts"
               :class="[
                 isActive('/admin/posts?type=post') || (isRoute('admin.posts.index') && currentUrl.includes('type=post')) ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-                isSidebarCollapsed ? 'md:justify-center md:px-0' : ''
+                isSidebarCompact ? 'md:justify-center md:px-0' : ''
               ]"
               class="flex items-center space-x-3 px-4 py-2 text-xs transition"
             >
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
               </svg>
-              <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Posts</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Posts</span>
             </Link>
 
             <Link 
@@ -129,14 +132,14 @@
               title="Pages"
               :class="[
                 currentUrl.includes('type=page') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-                isSidebarCollapsed ? 'md:justify-center md:px-0' : ''
+                isSidebarCompact ? 'md:justify-center md:px-0' : ''
               ]"
               class="flex items-center space-x-3 px-4 py-2 text-xs transition"
             >
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Pages</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Pages</span>
             </Link>
 
             <Link 
@@ -145,23 +148,23 @@
               title="Media Library"
               :class="[
                 isActive('/admin/media') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-                isSidebarCollapsed ? 'md:justify-center md:px-0' : ''
+                isSidebarCompact ? 'md:justify-center md:px-0' : ''
               ]"
               class="flex items-center space-x-3 px-4 py-2 text-xs transition"
             >
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Media Library</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Media Library</span>
             </Link>
           </div>
 
           <!-- Taxonomies (Admin & Editor only) -->
           <div v-if="user?.role !== 'author'" class="pt-2">
-            <div v-show="!isSidebarCollapsed" class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+            <div v-show="!isSidebarCompact" class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
               Organization
             </div>
-            <div v-show="isSidebarCollapsed" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
+            <div v-show="isSidebarCompact" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
 
             <Link 
               href="/admin/categories" 
@@ -169,14 +172,14 @@
               title="Categories"
               :class="[
                 isActive('/admin/categories') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-                isSidebarCollapsed ? 'md:justify-center md:px-0' : ''
+                isSidebarCompact ? 'md:justify-center md:px-0' : ''
               ]"
               class="flex items-center space-x-3 px-4 py-2 text-xs transition"
             >
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
-              <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Categories</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Categories</span>
             </Link>
             <Link 
               href="/admin/tags" 
@@ -184,23 +187,23 @@
               title="Tags"
               :class="[
                 isActive('/admin/tags') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-                isSidebarCollapsed ? 'md:justify-center md:px-0' : ''
+                isSidebarCompact ? 'md:justify-center md:px-0' : ''
               ]"
               class="flex items-center space-x-3 px-4 py-2 text-xs transition"
             >
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
               </svg>
-              <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Tags</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Tags</span>
             </Link>
           </div>
 
           <!-- Site Settings & Optimization (Admin only) -->
           <div v-if="user?.role === 'admin'" class="pt-2">
-            <div v-show="!isSidebarCollapsed" class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+            <div v-show="!isSidebarCompact" class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
               System
             </div>
-            <div v-show="isSidebarCollapsed" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
+            <div v-show="isSidebarCompact" class="hidden md:block mx-3 my-1 border-t border-slate-800"></div>
 
             <!-- Collapsible Theme Menu -->
             <div>
@@ -210,7 +213,7 @@
                 title="Theme"
                 :class="[
                   isActive('/admin/theme') ? 'text-white bg-slate-800/80 font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-                  isSidebarCollapsed ? 'md:justify-center md:px-0' : 'justify-between'
+                  isSidebarCompact ? 'md:justify-center md:px-0' : 'justify-between'
                 ]"
                 class="w-full flex items-center px-4 py-2 text-xs transition"
               >
@@ -218,10 +221,10 @@
                   <svg class="w-4 h-4 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                   </svg>
-                  <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Theme</span>
+                  <span v-show="!isSidebarCompact" class="whitespace-nowrap">Theme</span>
                 </div>
                 <svg
-                  v-show="!isSidebarCollapsed"
+                  v-show="!isSidebarCompact"
                   :class="isThemeMenuOpen ? 'rotate-180' : ''"
                   class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
                   fill="none"
@@ -232,7 +235,7 @@
                 </svg>
               </button>
 
-              <div v-show="isThemeMenuOpen && !isSidebarCollapsed" class="mt-0.5 space-y-0.5 bg-slate-950/40 py-1">
+              <div v-show="isThemeMenuOpen && !isSidebarCompact" class="mt-0.5 space-y-0.5 bg-slate-950/40 py-1">
                 <Link
                   href="/admin/theme/general"
                   @click="closeMobileMenu"
@@ -278,19 +281,19 @@
               title="Optimization Panel"
               :class="[
                 isActive('/admin/settings/optimization') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
-                isSidebarCollapsed ? 'md:justify-center md:px-0' : ''
+                isSidebarCompact ? 'md:justify-center md:px-0' : ''
               ]"
               class="flex items-center space-x-3 px-4 py-2 text-xs transition"
             >
               <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <span v-show="!isSidebarCollapsed" class="whitespace-nowrap">Optimization Panel</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Optimization Panel</span>
             </Link>
           </div>
 
           <!-- Future-Proof E-Commerce Integration (Requirement F) -->
-          <div v-show="!isSidebarCollapsed" class="pt-4 border-t border-slate-800/80">
+          <div v-show="!isSidebarCompact" class="pt-4 border-t border-slate-800/80">
             <div class="px-4 py-1 flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-indigo-400">
               <span>Commerce Ready</span>
               <span class="px-1.5 py-0.2 bg-indigo-900/60 text-indigo-300 rounded text-[9px]">Modular</span>
@@ -307,11 +310,11 @@
           <button
             type="button"
             @click="toggleDesktopCollapse"
-            :class="isSidebarCollapsed ? 'justify-center px-0' : 'px-4 justify-between'"
+            :class="isSidebarCompact ? 'justify-center px-0' : 'px-4 justify-between'"
             class="hidden md:flex w-full items-center py-2.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800 transition"
             :title="isSidebarCollapsed ? 'Expand menu' : 'Collapse menu'"
           >
-            <span v-show="!isSidebarCollapsed" class="whitespace-nowrap font-medium">Collapse menu</span>
+            <span v-show="!isSidebarCompact" class="whitespace-nowrap font-medium">Collapse menu</span>
             <svg
               :class="isSidebarCollapsed ? 'rotate-180' : ''"
               class="w-4 h-4 shrink-0 transition-transform duration-200"
@@ -323,7 +326,7 @@
             </svg>
           </button>
 
-          <div v-show="!isSidebarCollapsed" class="p-3 border-t border-slate-800/70 text-[11px] text-slate-500 text-center whitespace-nowrap">
+          <div v-show="!isSidebarCompact" class="p-3 border-t border-slate-800/70 text-[11px] text-slate-500 text-center whitespace-nowrap">
             Laravel v{{ $page.props.server_info?.laravel_version || '11' }} &bull; Vue 3
           </div>
         </div>
@@ -332,7 +335,7 @@
       <!-- Main Content Area -->
       <main
         :class="isSidebarCollapsed ? 'md:ml-16' : 'md:ml-60'"
-        class="flex-1 ml-0 p-6 overflow-x-hidden min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
+        class="flex-1 ml-0 p-6 overflow-x-clip min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
       >
         <!-- Slot Content -->
         <slot />
@@ -388,6 +391,8 @@ const siteName = computed(() => page.props.settings?.site_name || 'KitPress');
 const currentUrl = computed(() => page.url);
 
 const isSidebarCollapsed = ref(false);
+const isSidebarHovered = ref(false);
+const isSidebarCompact = computed(() => isSidebarCollapsed.value && !isSidebarHovered.value);
 const isMobileMenuOpen = ref(false);
 const isThemeMenuOpen = ref(page.url.startsWith('/admin/theme'));
 const toastSuccess = ref('');
@@ -412,7 +417,7 @@ watch(
 );
 
 const toggleThemeMenu = () => {
-  if (isSidebarCollapsed.value) {
+  if (isSidebarCompact.value) {
     isSidebarCollapsed.value = false;
     isThemeMenuOpen.value = true;
     return;
@@ -430,6 +435,9 @@ onMounted(() => {
 
 const toggleDesktopCollapse = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value;
+  if (isSidebarCollapsed.value) {
+    isSidebarHovered.value = false;
+  }
   try {
     localStorage.setItem(SIDEBAR_STORAGE_KEY, String(isSidebarCollapsed.value));
   } catch {

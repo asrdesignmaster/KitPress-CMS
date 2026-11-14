@@ -3,7 +3,7 @@
     <form @submit.prevent="savePost" class="space-y-6">
       
       <!-- Top Sticky Action Bar -->
-      <div class="sticky top-12 z-20 -mx-6 px-6 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+      <div class="sticky top-12 z-20 -mx-6 -mt-6 px-6 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
         <div class="flex items-center space-x-3">
           <Link :href="`/admin/posts?type=${type}`" class="text-xs text-slate-500 hover:text-slate-800 transition flex items-center space-x-1">
             <span>&larr; Back to {{ type }}s</span>

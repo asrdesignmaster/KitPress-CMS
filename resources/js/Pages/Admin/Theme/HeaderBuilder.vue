@@ -28,12 +28,18 @@
             :style="{
               backgroundColor: form.transparent ? 'transparent' : form.bg_color,
               color: form.text_color,
+              '--header-link-color': form.transparent ? (form.transparent_nav_link_color || '#ffffff') : (form.nav_link_color || form.text_color),
+              '--header-link-hover-color': form.nav_link_hover_color || '#4f46e5',
+              '--header-link-active-color': form.nav_link_active_color || form.nav_link_hover_color || '#4f46e5',
             }"
             :class="form.transparent ? '' : 'border-b border-slate-200/70'"
           >
             <!-- Top Bar -->
             <div class="h-16 px-6 flex items-center justify-between gap-4">
-              <div class="flex items-center space-x-2 font-bold text-base shrink-0">
+              <div
+                class="flex items-center space-x-2 font-bold text-base shrink-0"
+                :style="{ color: form.transparent ? (form.transparent_logo_text_color || '#ffffff') : (form.logo_text_color || form.text_color) }"
+              >
                 <img v-if="form.logo_image" :src="form.logo_image" alt="Logo" class="h-8 w-auto object-contain" />
                 <KitPressLogo v-else-if="form.show_logo_icon" size-class="w-6 h-6 shrink-0" />
                 <span>{{ form.logo_text || $page.props.settings?.site_name || 'KitPress' }}</span>
@@ -41,7 +47,11 @@
 
               <!-- Style 2 Centered Nav -->
               <div v-if="form.layout_style === 'style_2'" class="flex-1 flex items-center justify-center space-x-5 text-xs font-semibold overflow-hidden">
-                <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85 truncate">
+                <span
+                  v-for="(link, idx) in form.nav_links"
+                  :key="idx"
+                  :class="['preview-nav-link truncate cursor-pointer', idx === 0 ? 'is-active' : '']"
+                >
                   {{ link.label || 'Link' }}
                 </span>
               </div>
@@ -49,7 +59,11 @@
               <!-- Right Side -->
               <div class="flex items-center space-x-4 text-xs font-semibold shrink-0">
                 <template v-if="form.layout_style === 'style_1'">
-                  <span v-for="(link, idx) in form.nav_links" :key="idx" class="opacity-85">
+                  <span
+                    v-for="(link, idx) in form.nav_links"
+                    :key="idx"
+                    :class="['preview-nav-link cursor-pointer', idx === 0 ? 'is-active' : '']"
+                  >
                     {{ link.label || 'Link' }}
                   </span>
                 </template>
@@ -70,10 +84,15 @@
                 borderTopColor: form.menu_bar_border,
                 borderBottomColor: form.menu_bar_border,
                 color: form.menu_bar_text,
+                '--header-link-color': form.nav_link_color || form.menu_bar_text,
               }"
               class="w-full px-6 py-2.5 border-t border-b flex items-center justify-center space-x-6 text-xs font-semibold"
             >
-              <span v-for="(link, idx) in form.nav_links" :key="idx">
+              <span
+                v-for="(link, idx) in form.nav_links"
+                :key="idx"
+                :class="['preview-nav-link cursor-pointer', idx === 0 ? 'is-active' : '']"
+              >
                 {{ link.label || 'Link' }}
               </span>
             </div>
@@ -87,9 +106,10 @@
         <!-- Left 7 Cols: Controls -->
         <form @submit.prevent="save" class="xl:col-span-7 space-y-6">
           <!-- Brand & Style -->
-          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
+          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-5 text-xs">
             <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Branding &amp; Appearance</h2>
 
+            <!-- Brand Identity -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-1">
                 <label class="font-semibold text-slate-700 block">Logo Text (optional override)</label>
@@ -105,25 +125,53 @@
                   </button>
                 </div>
               </div>
+            </div>
 
-              <ThemeColorPicker v-model="form.bg_color" label="Header Background Color" />
-              <ThemeColorPicker v-model="form.text_color" label="Header Text Color" />
+            <!-- Header & Logo Colors -->
+            <div class="bg-slate-50/70 border border-slate-200/80 rounded-xl p-4 space-y-3">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Header &amp; Logo Colors</div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <ThemeColorPicker v-model="form.bg_color" label="Background" compact />
+                <ThemeColorPicker v-model="form.text_color" label="Header Text" compact />
+                <ThemeColorPicker v-model="form.logo_text_color" label="Logo Text" compact />
+              </div>
+            </div>
+
+            <!-- Menu Link Colors -->
+            <div class="bg-slate-50/70 border border-slate-200/80 rounded-xl p-4 space-y-3">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Menu Link Colors</div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <ThemeColorPicker v-model="form.nav_link_color" label="Normal" compact />
+                <ThemeColorPicker v-model="form.nav_link_hover_color" label="Hover" compact />
+                <ThemeColorPicker v-model="form.nav_link_active_color" label="Active" compact />
+              </div>
             </div>
 
             <!-- Transparent, Sticky & Brand Icon Toggles -->
-            <div class="flex flex-wrap items-center gap-6 pt-2 border-t border-slate-100">
-              <label class="flex items-center space-x-2 cursor-pointer">
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.transparent" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
-                <span class="font-semibold text-slate-700">Transparent Header</span>
+                <span class="font-semibold text-slate-700">Transparent Header <span class="text-[10px] font-normal text-slate-400">(Home page only)</span></span>
               </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
+              <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.sticky" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
                 <span class="font-semibold text-slate-700">Sticky Header on Scroll</span>
               </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
+              <label class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50/60 hover:bg-slate-100/70 cursor-pointer transition">
                 <input v-model="form.show_logo_icon" type="checkbox" class="rounded border-slate-300 text-indigo-600" />
                 <span class="font-semibold text-slate-700">Show Default Brand Icon</span>
               </label>
+            </div>
+
+            <!-- Transparent Header Colors (Home Page Only) -->
+            <div v-if="form.transparent" class="bg-indigo-50/60 border border-indigo-200/80 rounded-xl p-4 space-y-3">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-700">
+                Transparent Header Colors (Home Page Only)
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ThemeColorPicker v-model="form.transparent_logo_text_color" label="Logo Text (Transparent)" compact />
+                <ThemeColorPicker v-model="form.transparent_nav_link_color" label="Menu Link (Transparent)" compact />
+              </div>
             </div>
 
             <!-- Style 3 Menu Bar Colors -->
@@ -325,11 +373,17 @@ const form = useForm({
   layout_style: props.header?.layout_style || 'style_1',
   transparent: Boolean(props.header?.transparent),
   logo_text: props.header?.logo_text || '',
+  logo_text_color: props.header?.logo_text_color || props.header?.text_color || '#0f172a',
+  transparent_logo_text_color: props.header?.transparent_logo_text_color || '#ffffff',
+  transparent_nav_link_color: props.header?.transparent_nav_link_color || '#ffffff',
   logo_image: props.header?.logo_image || '',
   show_logo_icon: props.header?.show_logo_icon !== undefined ? Boolean(props.header.show_logo_icon) : true,
   sticky: props.header?.sticky !== undefined ? Boolean(props.header.sticky) : true,
   bg_color: props.header?.bg_color || '#ffffff',
   text_color: props.header?.text_color || '#0f172a',
+  nav_link_color: props.header?.nav_link_color || props.header?.text_color || '#334155',
+  nav_link_hover_color: props.header?.nav_link_hover_color || '#4f46e5',
+  nav_link_active_color: props.header?.nav_link_active_color || props.header?.nav_link_hover_color || '#4f46e5',
   menu_bar_bg: props.header?.menu_bar_bg || '#f8fafc',
   menu_bar_border: props.header?.menu_bar_border || '#e2e8f0',
   menu_bar_text: props.header?.menu_bar_text || '#1e293b',
@@ -367,3 +421,18 @@ const save = () => {
   form.post('/admin/theme/header');
 };
 </script>
+
+<style scoped>
+.preview-nav-link {
+  color: var(--header-link-color);
+  transition: color 0.15s ease;
+}
+
+.preview-nav-link:hover {
+  color: var(--header-link-hover-color);
+}
+
+.preview-nav-link.is-active {
+  color: var(--header-link-active-color);
+}
+</style>
