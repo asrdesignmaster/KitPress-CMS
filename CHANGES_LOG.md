@@ -4,6 +4,18 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 12:11 — Default First Widget Category Open, Others Collapsed
+- **Summary**: Updated Visual Builder widget categories so only the first category (`Basic`) is expanded by default while all other categories start collapsed.
+- **Files**:
+  - `resources/js/Components/Builder/VisualBuilder.vue` — initialized `collapsedCategories` with `idx !== 0`
+- **Verification**: Not run (Vite dev server active).
+
+### 2026-11-14 12:02 — Collapsible Widget Categories in Visual Builder
+- **Summary**: Made all widget category groups (`Basic`, `Pro Elements`, `Interactive`, `Social & Media`) collapsible in the Visual Builder sidebar with widget count badges and auto-expand during search.
+- **Files**:
+  - `resources/js/Components/Builder/VisualBuilder.vue` — added collapsible category headers, `collapsedCategories` state, `isCategoryCollapsed()`, and `toggleCategory()`
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 11:51 — Default Collapsed Right Panel in Visual Builder Mode
 - **Summary**: Configured the post/page editor so the right sidebar panel is collapsed by default whenever Visual Builder mode is active or selected, while preserving the user's Classic TipTap sidebar preference.
 - **Files**:
