@@ -4,6 +4,12 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 11:44 — Added 6 Preset Color Palettes to Theme General Page
+- **Summary**: Added 6 curated one-click color palettes (`Indigo Modern`, `Emerald Editorial`, `Midnight Slate`, `Warm Terracotta`, `Oceanic Teal`, `Royal Plum`) with live swatch previews and active state indicator to the Colors tab on the Theme General page.
+- **Files**:
+  - `resources/js/Pages/Admin/Theme/General.vue` — added `colorPalettes`, `applyPalette()`, `isPaletteActive()`, and preset palette cards UI
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 11:37 — Header Builder Left-Sidebar Tabs Layout
 - **Summary**: Reorganized Header Builder below the Live Header Preview into a left-sidebar tabbed layout (`Branding & Appearance`, `Navigation Menu`, `Action Button`, `Header Styles`) matching Settings and Footer Builder.
 - **Files**:
