@@ -190,6 +190,13 @@ class ThemeController extends Controller
             'text_color' => '#64748b',
             'copyright_text' => 'Build Smarter. Publish Faster.',
             'show_year' => true,
+            'show_powered_by' => true,
+            'contact_enabled' => false,
+            'contact_title' => 'Contact Us',
+            'contact_email' => '',
+            'contact_phone' => '',
+            'contact_address' => '',
+            'social_links' => [],
             'columns' => [
                 [
                     'title' => 'Navigation',
@@ -208,10 +215,18 @@ class ThemeController extends Controller
         ];
     }
 
+    public static function defaultBlog(): array
+    {
+        return [
+            'layout_style' => 'style_1',
+        ];
+    }
+
     public static function getThemeConfig(): array
     {
         $general = Setting::get('theme_general', []);
         $buttons = Setting::get('theme_buttons', []);
+        $blog = Setting::get('theme_blog', []);
         $header = Setting::get('theme_header', []);
         $footer = Setting::get('theme_footer', []);
 
@@ -252,6 +267,7 @@ class ThemeController extends Controller
                 'shape' => array_merge($defaultButtons['shape'], is_array($buttons['shape'] ?? null) ? $buttons['shape'] : []),
                 'variants' => $mergedVariants,
             ],
+            'blog' => array_merge(static::defaultBlog(), is_array($blog) ? $blog : []),
             'header' => array_merge(static::defaultHeader(), is_array($header) ? $header : []),
             'footer' => array_merge(static::defaultFooter(), is_array($footer) ? $footer : []),
         ];
@@ -396,6 +412,15 @@ class ThemeController extends Controller
             'text_color' => ['required', 'string', 'max:30'],
             'copyright_text' => ['nullable', 'string', 'max:255'],
             'show_year' => ['boolean'],
+            'show_powered_by' => ['boolean'],
+            'contact_enabled' => ['boolean'],
+            'contact_title' => ['nullable', 'string', 'max:80'],
+            'contact_email' => ['nullable', 'string', 'max:120'],
+            'contact_phone' => ['nullable', 'string', 'max:60'],
+            'contact_address' => ['nullable', 'string', 'max:255'],
+            'social_links' => ['nullable', 'array'],
+            'social_links.*.platform' => ['required', 'in:facebook,twitter,instagram,linkedin,youtube,github'],
+            'social_links.*.url' => ['required', 'string', 'max:500'],
             'columns' => ['nullable', 'array'],
             'columns.*.title' => ['required', 'string', 'max:80'],
             'columns.*.links' => ['nullable', 'array'],
@@ -404,9 +429,28 @@ class ThemeController extends Controller
         ]);
 
         $validated['columns'] = $validated['columns'] ?? [];
+        $validated['social_links'] = $validated['social_links'] ?? [];
         Setting::set('theme_footer', $validated, 'theme');
 
         return redirect()->back()->with('success', 'Footer Builder settings saved.');
+    }
+
+    public function blog(): Response
+    {
+        return Inertia::render('Admin/Theme/Blog', [
+            'blog' => static::getThemeConfig()['blog'],
+        ]);
+    }
+
+    public function updateBlog(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'layout_style' => ['required', 'in:style_1,style_2,style_3'],
+        ]);
+
+        Setting::set('theme_blog', $validated, 'theme');
+
+        return redirect()->back()->with('success', 'Blog layout style updated.');
     }
 }
 

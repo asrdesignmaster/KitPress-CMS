@@ -52,18 +52,37 @@
             </svg>
           </div>
 
-          <div v-for="cat in filteredCategories" :key="cat.id" class="space-y-2">
-            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              {{ cat.label }}
-            </p>
+          <div v-for="cat in filteredCategories" :key="cat.id" class="border border-slate-200/80 rounded-xl bg-slate-50/40 overflow-hidden">
+            <button
+              type="button"
+              @click="toggleCategory(cat.id)"
+              class="w-full px-3 py-2 flex items-center justify-between text-left hover:bg-slate-100/70 transition"
+            >
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 flex items-center space-x-1.5">
+                <span>{{ cat.label }}</span>
+                <span class="px-1.5 py-0.2 rounded-full bg-slate-200/70 text-slate-500 text-[9px] font-semibold">
+                  {{ cat.widgets.length }}
+                </span>
+              </span>
+              <svg
+                :class="isCategoryCollapsed(cat.id) ? '' : 'rotate-90'"
+                class="w-3.5 h-3.5 text-slate-400 transition-transform duration-150"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
 
             <draggable
+              v-show="!isCategoryCollapsed(cat.id)"
               :list="cat.widgets"
               :group="{ name: 'builder-widgets', pull: 'clone', put: false }"
               :clone="cloneWidget"
               :sort="false"
               item-key="type"
-              class="grid grid-cols-2 gap-2"
+              class="grid grid-cols-2 gap-2 p-2.5 pt-1 bg-white border-t border-slate-200/70"
             >
               <template #item="{ element }">
                 <button
@@ -465,6 +484,22 @@ const viewportWidth = computed(() => {
   if (viewport.value === 'tablet') return '768px';
   return '100%';
 });
+
+const collapsedCategories = ref(
+  Object.fromEntries(WIDGET_CATEGORIES.map((cat, idx) => [cat.id, idx !== 0]))
+);
+
+const isCategoryCollapsed = (catId) => {
+  if (widgetSearch.value.trim()) return false;
+  return Boolean(collapsedCategories.value[catId]);
+};
+
+const toggleCategory = (catId) => {
+  collapsedCategories.value = {
+    ...collapsedCategories.value,
+    [catId]: !collapsedCategories.value[catId],
+  };
+};
 
 const filteredCategories = computed(() => {
   const q = widgetSearch.value.trim().toLowerCase();

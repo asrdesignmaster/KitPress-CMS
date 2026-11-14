@@ -100,13 +100,41 @@
         </div>
       </div>
 
-      <!-- Main Grid: Left Controls + Right Styles Panel -->
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        
-        <!-- Left 7 Cols: Controls -->
-        <form @submit.prevent="save" class="xl:col-span-7 space-y-6">
-          <!-- Brand & Style -->
-          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-5 text-xs">
+      <!-- 2-Column Layout: Left Tabs Sidebar + Right Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left Vertical Tabs Sidebar -->
+        <aside class="lg:col-span-3 bg-white rounded-xl border border-slate-200/90 shadow-2xs p-2 space-y-1">
+          <button
+            v-for="tab in tabs"
+            :key="tab.id"
+            type="button"
+            @click="activeTab = tab.id"
+            :class="activeTab === tab.id ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'"
+            class="w-full flex items-start space-x-3 px-3 py-2.5 rounded-lg text-left text-xs transition"
+          >
+            <svg
+              class="w-4 h-4 shrink-0 mt-0.5"
+              :class="activeTab === tab.id ? 'text-indigo-600' : 'text-slate-400'"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path v-if="tab.id === 'branding'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              <path v-else-if="tab.id === 'menu'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path v-else-if="tab.id === 'cta'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+            <div class="min-w-0">
+              <div class="truncate">{{ tab.label }}</div>
+              <div class="text-[11px] text-slate-400 font-normal truncate">{{ tab.description }}</div>
+            </div>
+          </button>
+        </aside>
+
+        <!-- Right Tab Content -->
+        <form @submit.prevent="save" class="lg:col-span-9 space-y-6">
+          <!-- TAB 1: BRANDING & APPEARANCE -->
+          <div v-show="activeTab === 'branding'" class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-5 text-xs">
             <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Branding &amp; Appearance</h2>
 
             <!-- Brand Identity -->
@@ -180,15 +208,15 @@
                 <h3 class="text-xs font-bold text-indigo-700 uppercase tracking-wider">Style 3 &mdash; Full-Width Menu Bar Colors</h3>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <ThemeColorPicker v-model="form.menu_bar_bg" label="Menu Background" />
-                <ThemeColorPicker v-model="form.menu_bar_border" label="Menu Border Color" />
-                <ThemeColorPicker v-model="form.menu_bar_text" label="Menu Text Color" />
+                <ThemeColorPicker v-model="form.menu_bar_bg" label="Menu Background" compact />
+                <ThemeColorPicker v-model="form.menu_bar_border" label="Menu Border Color" compact />
+                <ThemeColorPicker v-model="form.menu_bar_text" label="Menu Text Color" compact />
               </div>
             </div>
           </div>
 
-          <!-- Navigation Menu Builder -->
-          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
+          <!-- TAB 2: NAVIGATION MENU -->
+          <div v-show="activeTab === 'menu'" class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div>
                 <h2 class="text-sm font-bold text-slate-800">Navigation Menu Links</h2>
@@ -238,8 +266,8 @@
             </div>
           </div>
 
-          <!-- Header CTA Button -->
-          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
+          <!-- TAB 3: ACTION BUTTON -->
+          <div v-show="activeTab === 'cta'" class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
               <h2 class="text-sm font-bold text-slate-800">Action Button (CTA)</h2>
               <label class="flex items-center space-x-2 cursor-pointer">
@@ -260,26 +288,13 @@
             </div>
           </div>
 
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              :disabled="form.processing"
-              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-xs transition disabled:opacity-50"
-            >
-              {{ form.processing ? 'Saving...' : 'Save Header Builder' }}
-            </button>
-          </div>
-        </form>
-
-        <!-- Right 5 Cols: Header Styles Selector & Live Preview -->
-        <aside class="xl:col-span-5 xl:sticky xl:top-20 space-y-5">
-          <!-- 3 Header Styles -->
-          <div class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-3 text-xs">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2">
-              Header Styles
+          <!-- TAB 4: HEADER STYLES -->
+          <div v-show="activeTab === 'styles'" class="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-4 text-xs">
+            <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">
+              Header Layout Styles
             </h2>
 
-            <div class="space-y-2.5">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <!-- Style 1 -->
               <button
                 type="button"
@@ -308,12 +323,12 @@
                 class="w-full text-left p-3 rounded-xl border transition space-y-2"
               >
                 <div class="flex items-center justify-between">
-                  <span class="font-bold text-slate-800">Style 2 &mdash; Centered Menu</span>
+                  <span class="font-bold text-slate-800">Style 2 &mdash; Centered</span>
                   <span v-if="form.layout_style === 'style_2'" class="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">Active</span>
                 </div>
                 <div class="p-2 bg-slate-100 rounded border border-slate-200 flex items-center justify-between text-[9px] text-slate-500">
                   <span class="font-bold text-slate-700">LOGO</span>
-                  <span>Menu &bull; Menu &bull; Menu</span>
+                  <span>Menu &bull; Menu</span>
                   <span class="px-1.5 py-0.5 bg-indigo-600 text-white rounded">CTA</span>
                 </div>
               </button>
@@ -326,24 +341,32 @@
                 class="w-full text-left p-3 rounded-xl border transition space-y-2"
               >
                 <div class="flex items-center justify-between">
-                  <span class="font-bold text-slate-800">Style 3 &mdash; Menu Below Logo</span>
+                  <span class="font-bold text-slate-800">Style 3 &mdash; Menu Below</span>
                   <span v-if="form.layout_style === 'style_3'" class="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">Active</span>
                 </div>
-                <p class="text-[11px] text-slate-500">Full-width menu bar below logo with custom background, border &amp; text color.</p>
                 <div class="bg-slate-100 rounded border border-slate-200 overflow-hidden text-[9px] text-slate-500">
-                  <div class="px-2 py-1.5 flex items-center justify-between bg-white">
+                  <div class="px-2 py-1 flex items-center justify-between bg-white">
                     <span class="font-bold text-slate-700">LOGO</span>
                     <span class="px-1.5 py-0.5 bg-indigo-600 text-white rounded">CTA</span>
                   </div>
                   <div class="px-2 py-1 border-t border-slate-200 text-center">
-                    Menu &bull; Menu &bull; Menu
+                    Menu &bull; Menu
                   </div>
                 </div>
               </button>
             </div>
           </div>
-        </aside>
 
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              :disabled="form.processing"
+              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-xs transition disabled:opacity-50"
+            >
+              {{ form.processing ? 'Saving...' : 'Save Header Builder' }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -367,6 +390,14 @@ const props = defineProps({
   },
 });
 
+const tabs = [
+  { id: 'branding', label: 'Branding & Appearance', description: 'Logo, colors & behavior' },
+  { id: 'menu', label: 'Navigation Menu', description: 'Header links & ordering' },
+  { id: 'cta', label: 'Action Button', description: 'CTA button text & URL' },
+  { id: 'styles', label: 'Header Styles', description: 'Layout structure' },
+];
+
+const activeTab = ref('branding');
 const mediaModalOpen = ref(false);
 
 const form = useForm({

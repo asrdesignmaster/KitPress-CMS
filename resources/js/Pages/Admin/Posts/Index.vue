@@ -136,6 +136,12 @@
                   >
                     {{ post.title }}
                   </Link>
+                  <span
+                    v-if="homepagePostId && post.id === homepagePostId"
+                    class="px-2 py-0.5 text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full shrink-0"
+                  >
+                    Home Page
+                  </span>
                 </div>
                 <div class="flex items-center space-x-2 text-[11px] text-slate-400 mt-0.5">
                   <span>/{{ post.slug }}</span>
@@ -264,6 +270,10 @@ const props = defineProps({
   categories: Array,
   counts: Object,
   type: String,
+  homepagePostId: {
+    type: Number,
+    default: null,
+  },
 });
 
 const search = ref(props.filters.search || '');

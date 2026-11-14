@@ -28,7 +28,16 @@ class PublicController extends Controller
             }
         }
 
-        // Default: show latest published posts
+        return $this->renderBlogFeed();
+    }
+
+    public function blog(): Response
+    {
+        return $this->renderBlogFeed();
+    }
+
+    private function renderBlogFeed(): Response
+    {
         $posts = Post::published()
             ->posts()
             ->with(['category', 'user', 'tags'])

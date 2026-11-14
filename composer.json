@@ -1,9 +1,16 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "asrdesignmaster/kitpress-cms",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "KitPress CMS — Fast, modular Laravel + Vue 3 CMS platform with visual page builder, header/footer builders, and automated WebP optimization.",
+    "keywords": ["kitpress", "cms", "laravel", "vue3", "inertiajs"],
+    "homepage": "https://github.com/asrdesignmaster/KitPress-CMS",
+    "authors": [
+        {
+            "name": "Altamash Sajid Rashid Shaikh",
+            "homepage": "https://github.com/asrdesignmaster"
+        }
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",

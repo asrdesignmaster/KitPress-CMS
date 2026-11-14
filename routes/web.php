@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::get('/blog', [PublicController::class, 'blog'])->name('blog');
 Route::get('/sitemap.xml', [PublicController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [PublicController::class, 'robots'])->name('robots');
 
@@ -83,6 +84,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,editor,a
         Route::post('/theme/general', [ThemeController::class, 'updateGeneral'])->name('theme.general.update');
         Route::get('/theme/buttons', [ThemeController::class, 'buttons'])->name('theme.buttons');
         Route::post('/theme/buttons', [ThemeController::class, 'updateButtons'])->name('theme.buttons.update');
+        Route::get('/theme/blog', [ThemeController::class, 'blog'])->name('theme.blog');
+        Route::post('/theme/blog', [ThemeController::class, 'updateBlog'])->name('theme.blog.update');
         Route::get('/theme/header', [ThemeController::class, 'header'])->name('theme.header');
         Route::post('/theme/header', [ThemeController::class, 'updateHeader'])->name('theme.header.update');
         Route::get('/theme/footer', [ThemeController::class, 'footer'])->name('theme.footer');

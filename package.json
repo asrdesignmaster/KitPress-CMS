@@ -1,5 +1,11 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
+    "name": "kitpress-cms",
+    "version": "0.1.0",
+    "description": "KitPress CMS — Fast, modular Laravel + Vue 3 CMS platform.",
+    "author": "Altamash Sajid Rashid Shaikh",
+    "license": "MIT",
+    "homepage": "https://github.com/asrdesignmaster/KitPress-CMS",
     "private": true,
     "type": "module",
     "scripts": {

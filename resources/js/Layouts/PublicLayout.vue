@@ -146,7 +146,7 @@
     >
       <div class="max-w-6xl mx-auto px-4 space-y-8">
         <div
-          v-if="footerConfig.brand_enabled || (footerConfig.columns && footerConfig.columns.length)"
+          v-if="footerConfig.brand_enabled || (footerConfig.columns && footerConfig.columns.length) || footerConfig.contact_enabled"
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8"
         >
           <!-- Default Brand Column -->
@@ -180,12 +180,44 @@
               </li>
             </ul>
           </div>
+
+          <!-- Contact & Social Icons Column -->
+          <div v-if="footerConfig.contact_enabled" class="space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider">{{ footerConfig.contact_title || 'Contact Us' }}</h4>
+            <ul class="space-y-2 opacity-85">
+              <li v-if="footerConfig.contact_email">
+                <a :href="`mailto:${footerConfig.contact_email}`" class="hover:underline">{{ footerConfig.contact_email }}</a>
+              </li>
+              <li v-if="footerConfig.contact_phone">
+                <a :href="`tel:${footerConfig.contact_phone}`" class="hover:underline">{{ footerConfig.contact_phone }}</a>
+              </li>
+              <li v-if="footerConfig.contact_address" class="whitespace-pre-line">{{ footerConfig.contact_address }}</li>
+            </ul>
+            <div v-if="footerConfig.social_links && footerConfig.social_links.length" class="flex flex-wrap items-center gap-2.5 pt-1">
+              <a
+                v-for="(social, sIdx) in footerConfig.social_links"
+                :key="sIdx"
+                :href="social.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                :aria-label="social.platform"
+                :title="social.platform"
+                class="p-1.5 rounded-lg border border-current/20 opacity-80 hover:opacity-100 transition"
+              >
+                <SocialIcon :platform="social.platform" />
+              </a>
+            </div>
+          </div>
         </div>
 
         <div class="pt-6 border-t border-current/15 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>
             &copy; <span v-if="footerConfig.show_year">{{ new Date().getFullYear() }}</span> {{ siteName }}.
             {{ footerConfig.copyright_text }}
+            <span v-if="footerConfig.show_powered_by" class="opacity-75">
+              &bull; Powered by
+              <a href="https://github.com/asrdesignmaster/KitPress-CMS" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline">KitPress</a>
+            </span>
           </p>
           <div class="flex items-center space-x-4">
             <Link href="/" class="hover:underline">Home</Link>
@@ -203,6 +235,7 @@ import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import KitPressLogo from '@/Components/KitPressLogo.vue';
 import { getTypographyFontsHref, compileTypographyCss } from '@/utils/themeFonts';
+import SocialIcon from '@/Components/SocialIcon.vue';
 
 const page = usePage();
 const siteName = computed(() => page.props.settings?.site_name || 'KitPress');
@@ -261,7 +294,11 @@ const isHomePage = computed(() => {
   return path === '/';
 });
 
-const isTransparentHeader = computed(() => Boolean(headerConfig.value.transparent) && isHomePage.value);
+const isTransparentHeader = computed(() =>
+  Boolean(headerConfig.value.transparent) &&
+  isHomePage.value &&
+  page.props.settings?.homepage_display !== 'latest_posts'
+);
 
 const footerConfig = computed(() => ({
   brand_enabled: true,
@@ -272,6 +309,13 @@ const footerConfig = computed(() => ({
   text_color: '#64748b',
   copyright_text: 'High-Performance Laravel + Vue CMS.',
   show_year: true,
+  show_powered_by: true,
+  contact_enabled: false,
+  contact_title: 'Contact Us',
+  contact_email: '',
+  contact_phone: '',
+  contact_address: '',
+  social_links: [],
   columns: [],
   ...(page.props.theme?.footer || {}),
 }));

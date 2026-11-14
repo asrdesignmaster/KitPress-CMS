@@ -21,7 +21,7 @@
     </component>
 
     <!-- 2. Text / Paragraph -->
-    <p
+    <div
       v-else-if="widget.type === 'text'"
       :style="{
         color: widget.color || 'inherit',
@@ -29,10 +29,9 @@
         textAlign: widget.textAlign || 'left',
         lineHeight: widget.lineHeight || '1.7',
       }"
-      class="whitespace-pre-line"
-    >
-      {{ widget.content || 'Paragraph content...' }}
-    </p>
+      class="builder-rich-text max-w-none"
+      v-html="widget.content || '<p>Paragraph content...</p>'"
+    ></div>
 
     <!-- 3. Image -->
     <div
@@ -60,13 +59,14 @@
       <a
         :href="isEditor ? 'javascript:void(0)' : (widget.url || '#')"
         @click="isEditor && $event.preventDefault()"
-        :style="{
+        :style="isThemeButton ? (isEditor ? themeButtonPreviewStyle : undefined) : {
           backgroundColor: widget.backgroundColor || '#4f46e5',
           color: widget.textColor || '#ffffff',
           borderRadius: widget.borderRadius || '8px',
         }"
-        :class="buttonSizeClass(widget.size)"
-        class="inline-flex items-center space-x-2 font-semibold shadow-xs hover:opacity-90 transition"
+        :class="isThemeButton
+          ? [`theme-btn-${widget.variant}`, 'inline-flex items-center space-x-2 text-xs shadow-xs transition']
+          : [buttonSizeClass(widget.size), 'inline-flex items-center space-x-2 font-semibold shadow-xs hover:opacity-90 transition']"
       >
         <span>{{ widget.content || 'Click Here' }}</span>
         <span v-if="widget.showArrow">&rarr;</span>
@@ -444,6 +444,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
   widget: {
@@ -454,6 +455,35 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+});
+
+const page = usePage();
+const isThemeButton = computed(() =>
+  props.widget.type === 'button' && ['primary', 'secondary'].includes(props.widget.variant)
+);
+
+const themeButtonPreviewStyle = computed(() => {
+  if (!isThemeButton.value) return undefined;
+  const cfg = page.props.theme?.buttons;
+  const variant = cfg?.variants?.[props.widget.variant];
+  const normal = variant?.normal;
+  if (!normal) {
+    return props.widget.variant === 'secondary'
+      ? { backgroundColor: '#0f172a', color: '#ffffff', borderRadius: '8px', padding: '9px 18px', fontWeight: '600' }
+      : { backgroundColor: '#4f46e5', color: '#ffffff', borderRadius: '8px', padding: '9px 18px', fontWeight: '600' };
+  }
+  const shape = cfg.shape || {};
+  const bg = normal.bg_type === 'gradient'
+    ? `linear-gradient(${normal.grad_angle || '135deg'}, ${normal.grad_start}, ${normal.grad_end})`
+    : (normal.bg_color || 'transparent');
+  return {
+    borderRadius: shape.border_radius || '8px',
+    padding: `${shape.padding_y || '9px'} ${shape.padding_x || '18px'}`,
+    fontWeight: shape.font_weight || '600',
+    border: `1px solid ${normal.border_color || 'transparent'}`,
+    background: bg,
+    color: normal.text_color || '#ffffff',
+  };
 });
 
 const activeAccordion = ref(0);
@@ -516,4 +546,41 @@ const alertVariantClasses = (variant) => {
   }
 };
 </script>
+
+<style scoped>
+.builder-rich-text :deep(p) {
+  margin-bottom: 0.75em;
+}
+.builder-rich-text :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.builder-rich-text :deep(ul) {
+  list-style: disc;
+  padding-left: 1.4rem;
+  margin-bottom: 0.75em;
+}
+.builder-rich-text :deep(ol) {
+  list-style: decimal;
+  padding-left: 1.4rem;
+  margin-bottom: 0.75em;
+}
+.builder-rich-text :deep(blockquote) {
+  border-left: 3px solid #cbd5e1;
+  padding-left: 0.9rem;
+  margin: 0.75em 0;
+  opacity: 0.85;
+}
+.builder-rich-text :deep(a) {
+  color: var(--theme-primary, #4f46e5);
+  text-decoration: underline;
+}
+.builder-rich-text :deep(h1),
+.builder-rich-text :deep(h2),
+.builder-rich-text :deep(h3),
+.builder-rich-text :deep(h4) {
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0.5em 0 0.35em;
+}
+</style>
 

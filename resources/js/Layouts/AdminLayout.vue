@@ -255,6 +255,16 @@
                   <span>Buttons</span>
                 </Link>
                 <Link
+                  v-if="page.props.settings?.homepage_display === 'latest_posts'"
+                  href="/admin/theme/blog"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/blog') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Blog</span>
+                </Link>
+                <Link
                   href="/admin/theme/header"
                   @click="closeMobileMenu"
                   :class="isActive('/admin/theme/header') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
@@ -278,7 +288,7 @@
             <Link 
               href="/admin/settings/optimization" 
               @click="closeMobileMenu"
-              title="Optimization Panel"
+              title="Settings"
               :class="[
                 isActive('/admin/settings/optimization') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
                 isSidebarCompact ? 'md:justify-center md:px-0' : ''
@@ -288,7 +298,7 @@
               <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Optimization Panel</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Settings</span>
             </Link>
           </div>
 
@@ -326,8 +336,9 @@
             </svg>
           </button>
 
-          <div v-show="!isSidebarCompact" class="p-3 border-t border-slate-800/70 text-[11px] text-slate-500 text-center whitespace-nowrap">
-            Laravel v{{ $page.props.server_info?.laravel_version || '11' }} &bull; Vue 3
+          <div v-show="!isSidebarCompact" class="p-3 border-t border-slate-800/70 text-[11px] text-slate-500 text-center whitespace-nowrap space-y-0.5">
+            <div class="font-semibold text-slate-400">KitPress CMS v0.1.0</div>
+            <div>Laravel v{{ $page.props.server_info?.laravel_version || '11' }} &bull; Vue 3</div>
           </div>
         </div>
       </aside>
@@ -335,10 +346,23 @@
       <!-- Main Content Area -->
       <main
         :class="isSidebarCollapsed ? 'md:ml-16' : 'md:ml-60'"
-        class="flex-1 ml-0 p-6 overflow-x-clip min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
+        class="flex-1 flex flex-col ml-0 p-6 overflow-x-clip min-h-[calc(100vh-48px)] transition-all duration-200 ease-in-out"
       >
         <!-- Slot Content -->
-        <slot />
+        <div class="flex-1">
+          <slot />
+        </div>
+
+        <!-- Admin Dashboard Footer -->
+        <footer class="mt-8 pt-4 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+          <span>
+            Powered by
+            <a href="https://github.com/asrdesignmaster/KitPress-CMS" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-600 hover:text-indigo-600 transition">
+              KitPress CMS
+            </a>
+          </span>
+          <span class="font-mono text-slate-500">Version 0.1.0</span>
+        </footer>
       </main>
     </div>
 

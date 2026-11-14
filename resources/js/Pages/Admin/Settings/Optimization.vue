@@ -97,7 +97,7 @@
                   class="mt-0.5 text-indigo-600 focus:ring-indigo-500"
                 />
                 <div>
-                  <span class="font-bold text-slate-800 block">Your latest posts</span>
+                  <span class="font-bold text-slate-800 block">Blog</span>
                   <span class="text-slate-500 text-[11px]">Displays the default blog feed and featured articles on the homepage (/).</span>
                 </div>
               </label>

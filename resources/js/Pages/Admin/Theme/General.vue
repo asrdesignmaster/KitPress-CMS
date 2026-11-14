@@ -61,7 +61,39 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+            <!-- Preset Color Palettes -->
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-slate-700">Preset Color Palettes</span>
+                <span class="text-[11px] text-slate-400">Click any palette to apply</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                <button
+                  v-for="palette in colorPalettes"
+                  :key="palette.name"
+                  type="button"
+                  @click="applyPalette(palette)"
+                  :class="isPaletteActive(palette) ? 'border-indigo-600 bg-indigo-50/60 ring-1 ring-indigo-600' : 'border-slate-200 bg-slate-50/60 hover:bg-white hover:border-slate-300'"
+                  class="p-3 rounded-xl border text-left transition space-y-2"
+                >
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-semibold text-slate-800 truncate">{{ palette.name }}</span>
+                    <span v-if="isPaletteActive(palette)" class="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded-full shrink-0">Active</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span
+                      v-for="key in ['primary', 'secondary', 'accent', 'background', 'surface', 'text']"
+                      :key="key"
+                      :title="`${key}: ${palette.colors[key]}`"
+                      :style="{ backgroundColor: palette.colors[key] }"
+                      class="w-4 h-4 rounded-full border border-slate-300/80 shadow-2xs"
+                    ></span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs pt-2 border-t border-slate-100">
               <div v-for="field in colorFields" :key="field.key" class="p-3 rounded-lg border border-slate-200 bg-slate-50/50 space-y-2">
                 <label class="font-semibold text-slate-700 block">{{ field.label }}</label>
                 <div class="flex items-center space-x-2">
@@ -363,6 +395,42 @@ const colorFields = [
   { key: 'text', label: 'Body Text Color', varName: '--theme-text' },
   { key: 'accent', label: 'Link / Accent', varName: '--theme-accent' },
 ];
+
+const colorPalettes = [
+  {
+    name: 'Indigo Modern',
+    colors: { primary: '#4f46e5', secondary: '#0f172a', background: '#f8fafc', surface: '#ffffff', text: '#1e293b', accent: '#6366f1' },
+  },
+  {
+    name: 'Emerald Editorial',
+    colors: { primary: '#059669', secondary: '#064e3b', background: '#f4faf7', surface: '#ffffff', text: '#1f2937', accent: '#10b981' },
+  },
+  {
+    name: 'Midnight Slate',
+    colors: { primary: '#6366f1', secondary: '#f8fafc', background: '#0b1120', surface: '#111827', text: '#cbd5e1', accent: '#818cf8' },
+  },
+  {
+    name: 'Warm Terracotta',
+    colors: { primary: '#ea580c', secondary: '#292524', background: '#faf7f5', surface: '#ffffff', text: '#44403c', accent: '#f97316' },
+  },
+  {
+    name: 'Oceanic Teal',
+    colors: { primary: '#0284c7', secondary: '#0c4a6e', background: '#f0f9ff', surface: '#ffffff', text: '#1e293b', accent: '#06b6d4' },
+  },
+  {
+    name: 'Royal Plum',
+    colors: { primary: '#9333ea', secondary: '#1e1b4b', background: '#faf5ff', surface: '#ffffff', text: '#334155', accent: '#c084fc' },
+  },
+];
+
+const applyPalette = (palette) => {
+  Object.assign(form.colors, palette.colors);
+};
+
+const isPaletteActive = (palette) =>
+  Object.entries(palette.colors).every(
+    ([key, val]) => (form.colors[key] || '').toLowerCase() === val.toLowerCase()
+  );
 
 const elementTabs = [
   { tag: 'p', label: 'Paragraph' },
