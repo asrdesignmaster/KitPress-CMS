@@ -4,6 +4,20 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 11:51 — Default Collapsed Right Panel in Visual Builder Mode
+- **Summary**: Configured the post/page editor so the right sidebar panel is collapsed by default whenever Visual Builder mode is active or selected, while preserving the user's Classic TipTap sidebar preference.
+- **Files**:
+  - `resources/js/Pages/Admin/Posts/Editor.vue` — defaulted `rightSidebarCollapsed` to `true` for `editor_type === 'builder'` and added a watcher on `form.editor_type`
+- **Verification**: Not run (Vite dev server active).
+
+### 2026-11-14 11:49 — Visual Builder Button Alignment Icons & Theme Button Variants
+- **Summary**: Replaced `L / C / R` alignment labels with alignment icons in Widget Inspector and added `Primary`, `Secondary`, and `Custom` button style options linked to Theme › Buttons.
+- **Files**:
+  - `resources/js/Components/Builder/widgetRegistry.js` — added default `variant: 'primary'` to the Button widget
+  - `resources/js/Components/Builder/WidgetInspector.vue` — replaced `L / C / R` with left/center/right alignment SVG icons and added `Button Style` (`Primary` / `Secondary` / `Custom`) selector
+  - `resources/js/Components/Builder/BuilderWidgetRenderer.vue` — rendered `theme-btn-primary` / `theme-btn-secondary` on frontend and live-matched Theme Buttons styles inside the editor
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 11:44 — Added 6 Preset Color Palettes to Theme General Page
 - **Summary**: Added 6 curated one-click color palettes (`Indigo Modern`, `Emerald Editorial`, `Midnight Slate`, `Warm Terracotta`, `Oceanic Teal`, `Royal Plum`) with live swatch previews and active state indicator to the Colors tab on the Theme General page.
 - **Files**:

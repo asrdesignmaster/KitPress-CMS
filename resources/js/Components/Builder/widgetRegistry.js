@@ -60,6 +60,7 @@ export const WIDGET_DEFINITIONS = [
     badge: 'BTN',
     defaults: () => ({
       type: 'button',
+      variant: 'primary',
       content: 'Get Started Free',
       url: '#',
       size: 'md',

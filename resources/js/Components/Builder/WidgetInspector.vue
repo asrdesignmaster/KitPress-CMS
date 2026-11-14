@@ -342,13 +342,66 @@
       <!-- TAB 2: STYLE & SPACING -->
       <div v-show="inspectorSubTab === 'style'" class="space-y-3 text-xs">
         
+        <!-- Button Theme Variant -->
+        <div v-if="selectedWidget.type === 'button'" class="space-y-1.5 pb-2 border-b border-slate-100">
+          <label class="text-slate-600 font-medium block">Button Style</label>
+          <div class="grid grid-cols-3 gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+            <button
+              v-for="opt in [{ id: 'primary', label: 'Primary' }, { id: 'secondary', label: 'Secondary' }, { id: 'custom', label: 'Custom' }]"
+              :key="opt.id"
+              type="button"
+              @click="selectedWidget.variant = opt.id"
+              :class="(selectedWidget.variant || 'custom') === opt.id ? 'bg-white shadow-2xs text-indigo-600 font-bold' : 'text-slate-600 hover:text-slate-900'"
+              class="px-2 py-1 rounded text-[11px] transition"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+          <p v-if="selectedWidget.variant === 'primary' || selectedWidget.variant === 'secondary'" class="text-[11px] text-slate-400">
+            Styled by <strong>Theme &rsaquo; Buttons</strong>.
+          </p>
+        </div>
+
         <!-- Alignment -->
         <div v-if="selectedWidget.textAlign !== undefined" class="flex items-center justify-between">
           <label class="text-slate-600 font-medium">Alignment</label>
           <div class="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border">
-            <button type="button" @click="selectedWidget.textAlign = 'left'" :class="selectedWidget.textAlign === 'left' ? 'bg-white shadow-2xs text-indigo-600 font-bold' : 'text-slate-600'" class="px-2 py-1 rounded">L</button>
-            <button type="button" @click="selectedWidget.textAlign = 'center'" :class="selectedWidget.textAlign === 'center' ? 'bg-white shadow-2xs text-indigo-600 font-bold' : 'text-slate-600'" class="px-2 py-1 rounded">C</button>
-            <button type="button" @click="selectedWidget.textAlign = 'right'" :class="selectedWidget.textAlign === 'right' ? 'bg-white shadow-2xs text-indigo-600 font-bold' : 'text-slate-600'" class="px-2 py-1 rounded">R</button>
+            <button
+              type="button"
+              @click="selectedWidget.textAlign = 'left'"
+              :class="selectedWidget.textAlign === 'left' ? 'bg-white shadow-2xs text-indigo-600' : 'text-slate-600 hover:text-slate-900'"
+              class="p-1.5 rounded transition"
+              title="Align Left"
+              aria-label="Align Left"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h14" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              @click="selectedWidget.textAlign = 'center'"
+              :class="selectedWidget.textAlign === 'center' ? 'bg-white shadow-2xs text-indigo-600' : 'text-slate-600 hover:text-slate-900'"
+              class="p-1.5 rounded transition"
+              title="Align Center"
+              aria-label="Align Center"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M7 12h10M5 18h14" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              @click="selectedWidget.textAlign = 'right'"
+              :class="selectedWidget.textAlign === 'right' ? 'bg-white shadow-2xs text-indigo-600' : 'text-slate-600 hover:text-slate-900'"
+              class="p-1.5 rounded transition"
+              title="Align Right"
+              aria-label="Align Right"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M10 12h10M6 18h14" />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -361,7 +414,7 @@
           </div>
         </div>
 
-        <div v-if="selectedWidget.backgroundColor !== undefined" class="flex items-center justify-between">
+        <div v-if="selectedWidget.backgroundColor !== undefined && !(selectedWidget.type === 'button' && ['primary', 'secondary'].includes(selectedWidget.variant))" class="flex items-center justify-between">
           <label class="text-slate-600">Background</label>
           <div class="flex items-center space-x-1.5">
             <input v-model="selectedWidget.backgroundColor" type="color" class="w-6 h-6 rounded border cursor-pointer" />
@@ -392,7 +445,7 @@
           <input v-model="selectedWidget.fontSize" type="text" placeholder="24px" class="w-24 px-2 py-1 border rounded font-mono" />
         </div>
 
-        <div v-if="selectedWidget.borderRadius !== undefined" class="flex items-center justify-between">
+        <div v-if="selectedWidget.borderRadius !== undefined && !(selectedWidget.type === 'button' && ['primary', 'secondary'].includes(selectedWidget.variant))" class="flex items-center justify-between">
           <label class="text-slate-600">Border Radius</label>
           <input v-model="selectedWidget.borderRadius" type="text" placeholder="12px" class="w-24 px-2 py-1 border rounded font-mono" />
         </div>

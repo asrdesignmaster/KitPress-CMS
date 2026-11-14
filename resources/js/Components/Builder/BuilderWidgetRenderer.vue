@@ -60,13 +60,14 @@
       <a
         :href="isEditor ? 'javascript:void(0)' : (widget.url || '#')"
         @click="isEditor && $event.preventDefault()"
-        :style="{
+        :style="isThemeButton ? (isEditor ? themeButtonPreviewStyle : undefined) : {
           backgroundColor: widget.backgroundColor || '#4f46e5',
           color: widget.textColor || '#ffffff',
           borderRadius: widget.borderRadius || '8px',
         }"
-        :class="buttonSizeClass(widget.size)"
-        class="inline-flex items-center space-x-2 font-semibold shadow-xs hover:opacity-90 transition"
+        :class="isThemeButton
+          ? [`theme-btn-${widget.variant}`, 'inline-flex items-center space-x-2 text-xs shadow-xs transition']
+          : [buttonSizeClass(widget.size), 'inline-flex items-center space-x-2 font-semibold shadow-xs hover:opacity-90 transition']"
       >
         <span>{{ widget.content || 'Click Here' }}</span>
         <span v-if="widget.showArrow">&rarr;</span>
@@ -444,6 +445,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
   widget: {
@@ -454,6 +456,35 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+});
+
+const page = usePage();
+const isThemeButton = computed(() =>
+  props.widget.type === 'button' && ['primary', 'secondary'].includes(props.widget.variant)
+);
+
+const themeButtonPreviewStyle = computed(() => {
+  if (!isThemeButton.value) return undefined;
+  const cfg = page.props.theme?.buttons;
+  const variant = cfg?.variants?.[props.widget.variant];
+  const normal = variant?.normal;
+  if (!normal) {
+    return props.widget.variant === 'secondary'
+      ? { backgroundColor: '#0f172a', color: '#ffffff', borderRadius: '8px', padding: '9px 18px', fontWeight: '600' }
+      : { backgroundColor: '#4f46e5', color: '#ffffff', borderRadius: '8px', padding: '9px 18px', fontWeight: '600' };
+  }
+  const shape = cfg.shape || {};
+  const bg = normal.bg_type === 'gradient'
+    ? `linear-gradient(${normal.grad_angle || '135deg'}, ${normal.grad_start}, ${normal.grad_end})`
+    : (normal.bg_color || 'transparent');
+  return {
+    borderRadius: shape.border_radius || '8px',
+    padding: `${shape.padding_y || '9px'} ${shape.padding_x || '18px'}`,
+    fontWeight: shape.font_weight || '600',
+    border: `1px solid ${normal.border_color || 'transparent'}`,
+    background: bg,
+    color: normal.text_color || '#ffffff',
+  };
 });
 
 const activeAccordion = ref(0);

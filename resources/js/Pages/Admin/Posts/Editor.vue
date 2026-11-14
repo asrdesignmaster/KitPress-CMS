@@ -380,7 +380,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import TipTapEditor from '@/Components/TipTapEditor.vue';
@@ -434,12 +434,26 @@ const mediaTarget = ref('featured'); // 'featured', 'tiptap', 'builder_widget', 
 const showRevisionsModal = ref(false);
 const seoScore = ref({ passed: 0, total: 6, dotClass: 'bg-rose-500', textClass: 'text-rose-600' });
 const rightSidebarCollapsed = ref(
-  typeof window !== 'undefined' && window.localStorage.getItem('cms_editor_right_sidebar_collapsed') === 'true'
+  form.editor_type === 'builder' ||
+    (typeof window !== 'undefined' && window.localStorage.getItem('cms_editor_right_sidebar_collapsed') === 'true')
+);
+
+watch(
+  () => form.editor_type,
+  (mode) => {
+    if (mode === 'builder') {
+      rightSidebarCollapsed.value = true;
+    } else if (typeof window !== 'undefined') {
+      rightSidebarCollapsed.value = window.localStorage.getItem('cms_editor_right_sidebar_collapsed') === 'true';
+    } else {
+      rightSidebarCollapsed.value = false;
+    }
+  }
 );
 
 const toggleRightSidebar = () => {
   rightSidebarCollapsed.value = !rightSidebarCollapsed.value;
-  if (typeof window !== 'undefined') {
+  if (form.editor_type !== 'builder' && typeof window !== 'undefined') {
     window.localStorage.setItem('cms_editor_right_sidebar_collapsed', String(rightSidebarCollapsed.value));
   }
 };
