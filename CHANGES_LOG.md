@@ -4,6 +4,12 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 11:37 — Header Builder Left-Sidebar Tabs Layout
+- **Summary**: Reorganized Header Builder below the Live Header Preview into a left-sidebar tabbed layout (`Branding & Appearance`, `Navigation Menu`, `Action Button`, `Header Styles`) matching Settings and Footer Builder.
+- **Files**:
+  - `resources/js/Pages/Admin/Theme/HeaderBuilder.vue` — added `lg:grid-cols-12` left vertical tabs sidebar, tabbed form sections, and compact Style 3 menu bar color pickers
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 11:34 — Added Powered By & Version Footer to Admin Dashboard Layout
 - **Summary**: Added a persistent bottom footer to the admin dashboard layout displaying "Powered by KitPress CMS" and "Version 0.1.0".
 - **Files**:
