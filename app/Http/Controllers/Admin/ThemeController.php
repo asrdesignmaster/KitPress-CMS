@@ -190,6 +190,12 @@ class ThemeController extends Controller
             'text_color' => '#64748b',
             'copyright_text' => 'Build Smarter. Publish Faster.',
             'show_year' => true,
+            'contact_enabled' => false,
+            'contact_title' => 'Contact Us',
+            'contact_email' => '',
+            'contact_phone' => '',
+            'contact_address' => '',
+            'social_links' => [],
             'columns' => [
                 [
                     'title' => 'Navigation',
@@ -396,6 +402,14 @@ class ThemeController extends Controller
             'text_color' => ['required', 'string', 'max:30'],
             'copyright_text' => ['nullable', 'string', 'max:255'],
             'show_year' => ['boolean'],
+            'contact_enabled' => ['boolean'],
+            'contact_title' => ['nullable', 'string', 'max:80'],
+            'contact_email' => ['nullable', 'string', 'max:120'],
+            'contact_phone' => ['nullable', 'string', 'max:60'],
+            'contact_address' => ['nullable', 'string', 'max:255'],
+            'social_links' => ['nullable', 'array'],
+            'social_links.*.platform' => ['required', 'in:facebook,twitter,instagram,linkedin,youtube,github'],
+            'social_links.*.url' => ['required', 'string', 'max:500'],
             'columns' => ['nullable', 'array'],
             'columns.*.title' => ['required', 'string', 'max:80'],
             'columns.*.links' => ['nullable', 'array'],
@@ -404,6 +418,7 @@ class ThemeController extends Controller
         ]);
 
         $validated['columns'] = $validated['columns'] ?? [];
+        $validated['social_links'] = $validated['social_links'] ?? [];
         Setting::set('theme_footer', $validated, 'theme');
 
         return redirect()->back()->with('success', 'Footer Builder settings saved.');

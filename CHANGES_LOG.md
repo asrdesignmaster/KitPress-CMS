@@ -4,6 +4,15 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 11:14 — Footer Builder Left-Sidebar Tabs & Contact/Social Icons Section
+- **Summary**: Reorganized Footer Builder below the Live Footer Preview into a left-sidebar tabbed layout (`Brand column`, `Links column`, `Contact & social icons`, `Copyright`, `Style`) matching the Settings page, and added full Contact & Social Icons support to the backend, live preview, and frontend footer.
+- **Files**:
+  - `resources/js/Components/SocialIcon.vue` — created reusable SVG social icon component (Facebook, X/Twitter, Instagram, LinkedIn, YouTube, GitHub)
+  - `app/Http/Controllers/Admin/ThemeController.php` — added `contact_enabled`, `contact_title`, `contact_email`, `contact_phone`, `contact_address`, and `social_links` defaults & validation
+  - `resources/js/Pages/Admin/Theme/FooterBuilder.vue` — added left-side vertical tabs sidebar below Live Footer Preview, Contact & Social Icons editor, compact `ThemeColorPicker`s in Style tab, and live preview rendering
+  - `resources/js/Layouts/PublicLayout.vue` — rendered Contact & Social Icons column in the public footer
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 05:27 — Added Project Change Log Skill, Rule, and Log File
 - **Summary**: Created a workspace skill and always-on rule to ensure `CHANGES_LOG.md` is updated after every change, and initialized `CHANGES_LOG.md` with recent session changes.
 - **Files**:
