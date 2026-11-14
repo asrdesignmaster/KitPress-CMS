@@ -21,7 +21,7 @@
     </component>
 
     <!-- 2. Text / Paragraph -->
-    <p
+    <div
       v-else-if="widget.type === 'text'"
       :style="{
         color: widget.color || 'inherit',
@@ -29,10 +29,9 @@
         textAlign: widget.textAlign || 'left',
         lineHeight: widget.lineHeight || '1.7',
       }"
-      class="whitespace-pre-line"
-    >
-      {{ widget.content || 'Paragraph content...' }}
-    </p>
+      class="builder-rich-text max-w-none"
+      v-html="widget.content || '<p>Paragraph content...</p>'"
+    ></div>
 
     <!-- 3. Image -->
     <div
@@ -547,4 +546,41 @@ const alertVariantClasses = (variant) => {
   }
 };
 </script>
+
+<style scoped>
+.builder-rich-text :deep(p) {
+  margin-bottom: 0.75em;
+}
+.builder-rich-text :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.builder-rich-text :deep(ul) {
+  list-style: disc;
+  padding-left: 1.4rem;
+  margin-bottom: 0.75em;
+}
+.builder-rich-text :deep(ol) {
+  list-style: decimal;
+  padding-left: 1.4rem;
+  margin-bottom: 0.75em;
+}
+.builder-rich-text :deep(blockquote) {
+  border-left: 3px solid #cbd5e1;
+  padding-left: 0.9rem;
+  margin: 0.75em 0;
+  opacity: 0.85;
+}
+.builder-rich-text :deep(a) {
+  color: var(--theme-primary, #4f46e5);
+  text-decoration: underline;
+}
+.builder-rich-text :deep(h1),
+.builder-rich-text :deep(h2),
+.builder-rich-text :deep(h3),
+.builder-rich-text :deep(h4) {
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0.5em 0 0.35em;
+}
+</style>
 

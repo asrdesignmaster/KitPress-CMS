@@ -41,14 +41,12 @@
       <div v-show="inspectorSubTab === 'content'" class="space-y-3 text-xs">
         
         <!-- Heading / Text / Button content -->
-        <div v-if="['heading', 'text', 'button'].includes(selectedWidget.type)" class="space-y-1">
+        <div v-if="['heading', 'text', 'button'].includes(selectedWidget.type)" class="space-y-1.5">
           <label class="font-semibold text-slate-700 block">Text Content</label>
-          <textarea
+          <RichParagraphEditor
             v-if="selectedWidget.type === 'text'"
             v-model="selectedWidget.content"
-            rows="4"
-            class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg"
-          ></textarea>
+          />
           <input
             v-else
             v-model="selectedWidget.content"
@@ -652,6 +650,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import RichParagraphEditor from '@/Components/RichParagraphEditor.vue';
 
 defineProps({
   selectedWidget: Object,

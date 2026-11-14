@@ -4,6 +4,20 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 13:27 — Elementor-Style Rich Text Editor for Visual Builder Text Widget
+- **Summary**: Replaced the plain `<textarea>` in the Visual Builder Text Editor widget inspector with an Elementor-style rich text editor (`Visual` / `Text` tabs, block format dropdown, Bold/Italic/Underline/Strike, lists, blockquote, link, text color, clear formatting, undo/redo, fullscreen) and updated `BuilderWidgetRenderer.vue` to render rich HTML output.
+- **Files**:
+  - `resources/js/Components/RichParagraphEditor.vue` — added `Visual`/`Text` mode bar, Strikethrough, Blockquote, Text Color mark, Clear Formatting, Undo, and Redo controls
+  - `resources/js/Components/Builder/WidgetInspector.vue` — replaced `textarea` with `RichParagraphEditor` for `selectedWidget.type === 'text'`
+  - `resources/js/Components/Builder/BuilderWidgetRenderer.vue` — rendered `text` widget via `v-html` with `.builder-rich-text` typography/list/blockquote/link styling
+- **Verification**: Not run (Vite dev server active).
+
+### 2026-11-14 13:20 — Applied Theme Colors & Typography to Blog Frontend
+- **Summary**: Updated all 3 Blog layout styles and pagination in `Public/Home.vue` to use the active Theme General CSS variables (`--theme-primary`, `--theme-secondary`, `--theme-surface`, `--theme-text`, `--theme-accent`, `--theme-font-heading`) and `.theme-btn-primary`.
+- **Files**:
+  - `resources/js/Pages/Public/Home.vue` — replaced hardcoded indigo/slate/amber colors with theme CSS variables and button classes across Style 1, Style 2, Style 3, and pagination
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 13:18 — Uncheck Transparent Header When Blog Homepage Mode Is Selected
 - **Summary**: Automatically disabled `theme_header.transparent` in Settings when `homepage_display` is set to `latest_posts` (Blog), and guarded `PublicLayout.vue` so the transparent header never activates on Blog mode.
 - **Files**:
