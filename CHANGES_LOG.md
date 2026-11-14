@@ -4,6 +4,38 @@ All project changes are recorded here (newest first).
 
 ## Change Log
 
+### 2026-11-14 13:18 — Uncheck Transparent Header When Blog Homepage Mode Is Selected
+- **Summary**: Automatically disabled `theme_header.transparent` in Settings when `homepage_display` is set to `latest_posts` (Blog), and guarded `PublicLayout.vue` so the transparent header never activates on Blog mode.
+- **Files**:
+  - `app/Http/Controllers/Admin/OptimizationController.php` — set `theme_header.transparent = false` when `homepage_display === 'latest_posts'`
+  - `resources/js/Layouts/PublicLayout.vue` — added `page.props.settings?.homepage_display !== 'latest_posts'` guard to `isTransparentHeader`
+- **Verification**: `php -l` passed on `OptimizationController.php` (Vite dev server active).
+
+### 2026-11-14 13:16 — Removed Redundant Hero Header from Blog Homepage
+- **Summary**: Removed the extra Hero Header banner from `Public/Home.vue` since `PublicLayout` already provides the site header and footer.
+- **Files**:
+  - `resources/js/Pages/Public/Home.vue` — removed the redundant `Hero Header` `<section>` above `<main>`
+- **Verification**: Not run (Vite dev server active).
+
+### 2026-11-14 13:15 — Added Public `/blog` Route & Renamed Sidebar "Optimization Panel" to "Settings"
+- **Summary**: Added an explicit `/blog` public route (`PublicController@blog`) so visiting `/blog` renders the blog feed instead of 404, cleared Laravel route cache, and renamed "Optimization Panel" to "Settings" in the admin sidebar.
+- **Files**:
+  - `routes/web.php` — added `GET /blog` (`blog`) route before dynamic slug catch-all
+  - `app/Http/Controllers/PublicController.php` — extracted `renderBlogFeed()` and added `blog()` method
+  - `resources/js/Layouts/AdminLayout.vue` — renamed `Optimization Panel` sidebar label/title to `Settings`
+- **Verification**: `php -l` passed on `PublicController.php` and `routes/web.php`; `php artisan route:clear` succeeded.
+
+### 2026-11-14 13:12 — Added Conditional Theme Blog Submenu & 3 Blog Layout Styles
+- **Summary**: Displayed a conditional "Blog" submenu item under Theme (after Buttons) when Blog homepage mode is active, added the Theme › Blog style selector page (`style_1`, `style_2`, `style_3`), and updated the public blog homepage to render all 3 styles with pagination.
+- **Files**:
+  - `app/Http/Middleware/HandleInertiaRequests.php` — shared `homepage_display` in Inertia `settings` props
+  - `routes/web.php` — added `theme.blog` (`GET /admin/theme/blog`) and `theme.blog.update` (`POST /admin/theme/blog`) routes
+  - `app/Http/Controllers/Admin/ThemeController.php` — added `defaultBlog()`, `blog()`, `updateBlog()`, and included `blog` in `getThemeConfig()`
+  - `resources/js/Layouts/AdminLayout.vue` — added conditional `Blog` link after `Buttons` when `homepage_display === 'latest_posts'`
+  - `resources/js/Pages/Admin/Theme/Blog.vue` — created Theme › Blog style selector page with wireframe previews for Style 1, Style 2, and Style 3
+  - `resources/js/Pages/Public/Home.vue` — implemented Style 1 (Hero Post, 4 Posts, Highlighted Post, Pagination), Style 2 (2-Column Grid + Sidebar + Pagination), and Style 3 (Minimalist Horizontal List + Pagination)
+- **Verification**: Not run (Vite dev server active).
+
 ### 2026-11-14 13:06 — Renamed Homepage Reading Option Label to "Blog"
 - **Summary**: Updated the default homepage display radio option label from "Your latest posts" to "Blog" in Settings.
 - **Files**:

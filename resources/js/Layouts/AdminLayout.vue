@@ -255,6 +255,16 @@
                   <span>Buttons</span>
                 </Link>
                 <Link
+                  v-if="page.props.settings?.homepage_display === 'latest_posts'"
+                  href="/admin/theme/blog"
+                  @click="closeMobileMenu"
+                  :class="isActive('/admin/theme/blog') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
+                  class="flex items-center space-x-2.5 pl-11 pr-4 py-1.5 text-xs transition"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                  <span>Blog</span>
+                </Link>
+                <Link
                   href="/admin/theme/header"
                   @click="closeMobileMenu"
                   :class="isActive('/admin/theme/header') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400 hover:bg-slate-800 hover:text-white'"
@@ -278,7 +288,7 @@
             <Link 
               href="/admin/settings/optimization" 
               @click="closeMobileMenu"
-              title="Optimization Panel"
+              title="Settings"
               :class="[
                 isActive('/admin/settings/optimization') ? 'bg-indigo-600 text-white font-medium' : 'text-slate-300 hover:bg-slate-800 hover:text-white',
                 isSidebarCompact ? 'md:justify-center md:px-0' : ''
@@ -288,7 +298,7 @@
               <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Optimization Panel</span>
+              <span v-show="!isSidebarCompact" class="whitespace-nowrap">Settings</span>
             </Link>
           </div>
 

@@ -54,6 +54,7 @@ class HandleInertiaRequests extends Middleware
                 'site_name' => Setting::get('site_name', 'KitPress'),
                 'site_tagline' => Setting::get('site_tagline', 'Build Smarter. Publish Faster.'),
                 'lazy_loading' => (bool) Setting::get('lazy_loading', true),
+                'homepage_display' => (string) (Setting::get('homepage_display', 'latest_posts') ?: 'latest_posts'),
             ],
             'theme' => fn () => ThemeController::getThemeConfig(),
         ];

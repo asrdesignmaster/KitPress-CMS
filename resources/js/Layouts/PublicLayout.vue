@@ -294,7 +294,11 @@ const isHomePage = computed(() => {
   return path === '/';
 });
 
-const isTransparentHeader = computed(() => Boolean(headerConfig.value.transparent) && isHomePage.value);
+const isTransparentHeader = computed(() =>
+  Boolean(headerConfig.value.transparent) &&
+  isHomePage.value &&
+  page.props.settings?.homepage_display !== 'latest_posts'
+);
 
 const footerConfig = computed(() => ({
   brand_enabled: true,

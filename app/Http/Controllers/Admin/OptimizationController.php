@@ -70,6 +70,14 @@ class OptimizationController extends Controller
             Setting::set($key, $value, 'optimization');
         }
 
+        if ($validated['homepage_display'] === 'latest_posts') {
+            $header = ThemeController::getThemeConfig()['header'];
+            if (! empty($header['transparent'])) {
+                $header['transparent'] = false;
+                Setting::set('theme_header', $header, 'theme');
+            }
+        }
+
         // Apply route or config cache if toggled
         if (! empty($validated['route_caching']) && ! app()->routesAreCached()) {
             Artisan::call('route:cache');
